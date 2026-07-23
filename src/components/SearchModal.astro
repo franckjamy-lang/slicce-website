@@ -1,0 +1,117 @@
+---
+import Icon from './Icon.astro';
+---
+
+<div id="search-modal" class="search-modal" hidden>
+  <div class="search-modal__backdrop" data-search-close></div>
+  <div class="search-modal__panel" role="dialog" aria-modal="true" aria-label="Recherche">
+    <button type="button" class="search-modal__close" data-search-close aria-label="Fermer la recherche">
+      <Icon name="close" size={22} />
+    </button>
+    <div id="search"></div>
+  </div>
+</div>
+
+<link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+
+<script>
+  // La recherche site-wide est indexée par Pagefind au build (npm run build),
+  // à partir du HTML généré dans dist/. En mode "astro dev", /pagefind/ n'existe
+  // pas encore : la loupe s'ouvre mais n'affiche aucun résultat tant qu'un build
+  // n'a pas été fait (npm run build puis npm run preview pour tester en local).
+  const modal = document.getElementById('search-modal');
+  const toggle = document.getElementById('search-toggle');
+  const closeEls = document.querySelectorAll('[data-search-close]');
+  let pagefindLoaded = false;
+
+  function loadScript(src: string): Promise<void> {
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.src = src;
+      script.onload = () => resolve();
+      script.onerror = () => reject(new Error(`Failed to load ${src}`));
+      document.head.appendChild(script);
+    });
+  }
+
+  async function ensurePagefindUI() {
+    if (pagefindLoaded) return;
+    pagefindLoaded = true;
+    try {
+      // pagefind-ui.js est un script classique (pas un module ES) généré par
+      // Pagefind APRÈS le build Astro (voir package.json) : il expose
+      // window.PagefindUI une fois chargé, il ne peut pas être importé.
+      await loadScript('/pagefind/pagefind-ui.js');
+      // @ts-ignore — global injecté par le script ci-dessus
+      new window.PagefindUI({ element: '#search', showSubResults: true, showImages: false });
+    } catch {
+      const el = document.getElementById('search');
+      if (el) {
+        el.innerHTML =
+          '<p style="padding:1rem;color:#6b6b76;">Recherche indisponible en développement local — lance <code>npm run build</code> puis <code>npm run preview</code> pour la tester.</p>';
+      }
+    }
+  }
+
+  function openModal() {
+    modal?.removeAttribute('hidden');
+    document.body.style.overflow = 'hidden';
+    ensurePagefindUI();
+    modal?.querySelector<HTMLInputElement>('input')?.focus();
+  }
+
+  function closeModal() {
+    modal?.setAttribute('hidden', '');
+    document.body.style.overflow = '';
+  }
+
+  toggle?.addEventListener('click', openModal);
+  closeEls.forEach((el) => el.addEventListener('click', closeModal));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+</script>
+
+<style>
+  .search-modal[hidden] {
+    display: none;
+  }
+
+  .search-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding-top: 10vh;
+  }
+
+  .search-modal__backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(10, 10, 15, 0.6);
+  }
+
+  .search-modal__panel {
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 640px;
+    margin-inline: var(--space-6);
+    background: var(--color-white);
+    padding: var(--space-8) var(--space-6) var(--space-6);
+    box-shadow: var(--shadow-md);
+  }
+
+  .search-modal__close {
+    position: absolute;
+    top: var(--space-4);
+    right: var(--space-4);
+    background: none;
+    border: none;
+    color: var(--color-ink);
+    cursor: pointer;
+    padding: var(--space-1);
+  }
+</style>

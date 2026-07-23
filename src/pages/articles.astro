@@ -1,0 +1,32 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ArticlesWidget from '../components/widgets/ArticlesWidget.astro';
+---
+
+<BaseLayout
+  title="Articles"
+  description="Insights, technical deep-dives and news from the Slicce team on 5G, cloud-native telecom and API exposure."
+>
+  <section class="section articles-intro">
+    <div class="container">
+      <h1 data-reveal>Articles</h1>
+      <p class="articles-intro__lead" data-reveal>
+        Insights, technical deep-dives and news on 5G, cloud-native telecom and API exposure.
+      </p>
+    </div>
+  </section>
+  <ArticlesWidget />
+</BaseLayout>
+
+<style>
+  .articles-intro {
+    text-align: center;
+    padding-bottom: var(--space-8);
+  }
+
+  .articles-intro__lead {
+    max-width: 640px;
+    margin-inline: auto;
+    color: var(--text-muted);
+  }
+</style>

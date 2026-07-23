@@ -1,0 +1,173 @@
+---
+import SectionDots from '../SectionDots.astro';
+
+const featured = {
+  icon: '/images/products/icon-capif.webp',
+  title: 'Common API Framework',
+  text: 'The cornerstone of 5G network openness extended by Slicce to leverage the 3gpp common API framework for 3G and 4G networks and extended northbound APIs.',
+  href: '/products/capif-core-function',
+};
+
+const engines = [
+  {
+    icon: '/images/products/icon-aef.webp',
+    title: 'API Exposure Functions',
+    text: 'Publish REST APIs via CAPIF for common 3G / 4G / 5G telecom interfaces and provides developers an easy access these interfaces.',
+    href: '/products/api-exposure-functions',
+  },
+  {
+    icon: '/images/products/icon-af.webp',
+    title: 'Application Functions',
+    text: 'Communication engine instances that implement some specific service logic by consuming APIs published by AEFs through CAPIF-CF.',
+    href: '/products/application-functions',
+  },
+  {
+    icon: '/images/products/icon-iwf.webp',
+    title: 'Interworking Functions',
+    text: 'Converts of one telecom interface to another. Commonly referred to as Gateways, these are zero-code telecom protocol convertors.',
+    href: '/products/interworking-functions',
+  },
+  {
+    icon: '/images/products/icon-lb.webp',
+    title: 'Load Balancers',
+    text: "Telecom protocol's aware load balancers which are typically used to properly distribute the telecom control plane within a workload.",
+    href: '/products/load-balancers',
+  },
+];
+---
+
+<section class="section engines">
+  <div class="container">
+    <h2 class="engines__title" data-reveal>Introducing the Cloud Communication Engines</h2>
+    <p class="engines__lead" data-reveal>
+      We build and help build microservices and workloads that leverage the best of 3GPP
+      specifications and modern cloud infrastructure to bring telecom network services up to date.
+    </p>
+
+    <div class="engines__featured" data-reveal="left">
+      <img src={featured.icon} alt="" width="165" height="165" loading="lazy" />
+      <div>
+        <h3 class="engines__featured-title">{featured.title}</h3>
+        <p class="engines__featured-text">{featured.text}</p>
+        <a href={featured.href} class="engines__link">Read more...</a>
+      </div>
+    </div>
+
+    <div class="engines__grid" data-reveal-group="scale">
+      {engines.map((e) => (
+        <div class="engines__item">
+          <img src={e.icon} alt="" width="165" height="165" loading="lazy" />
+          <div>
+            <h3 class="engines__item-title">{e.title}</h3>
+            <p class="engines__item-text">{e.text}</p>
+            <a href={e.href} class="engines__link">Read more...</a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <SectionDots count={3} active={2} />
+  </div>
+</section>
+
+<style>
+  .engines__title {
+    text-align: center;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 42.667px;
+    margin-bottom: var(--space-6);
+  }
+
+  .engines__lead {
+    max-width: 900px;
+    text-align: center;
+    margin-inline: auto;
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    color: var(--color-ink);
+    margin-bottom: 90px;
+  }
+
+  .engines__featured {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-12);
+    padding-bottom: var(--space-16);
+  }
+
+  .engines__featured img,
+  .engines__item img {
+    flex-shrink: 0;
+  }
+
+  .engines__featured-title {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 28px;
+    margin-bottom: var(--space-6);
+  }
+
+  .engines__featured-text {
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    color: var(--color-ink);
+    margin-bottom: var(--space-4);
+  }
+
+  .engines__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16) var(--space-12);
+    margin-bottom: var(--space-8);
+  }
+
+  .engines__item {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-8);
+  }
+
+  .engines__item-title {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 18.667px;
+    margin-bottom: var(--space-6);
+  }
+
+  .engines__item-text {
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    color: var(--color-ink);
+    max-width: 267px;
+    margin-bottom: var(--space-4);
+  }
+
+  .engines__link {
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+
+  @media (max-width: 720px) {
+    /* L'icône reste centrée (colonne en flex + align-items:center), mais le
+       bloc titre+texte a une largeur fixe pour que le texte garde le même
+       retour à la ligne (~4 lignes) qu'en desktop, aligné à gauche. */
+    .engines__featured,
+    .engines__item {
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .engines__featured > div,
+    .engines__item > div {
+      width: 267px;
+      text-align: left;
+    }
+
+    .engines__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

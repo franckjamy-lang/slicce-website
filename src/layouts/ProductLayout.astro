@@ -1,0 +1,317 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import SectionDots from '../components/SectionDots.astro';
+import GetStartedSection from '../components/home/GetStartedSection.astro';
+
+interface Feature {
+  title: string;
+  description: string;
+}
+interface Spec {
+  label: string;
+  values: string[];
+}
+interface UseCase {
+  label: string;
+  href: string;
+}
+
+interface Props {
+  title: string;
+  shortName: string;
+  heroDescription: string;
+  heroIcon?: string;
+  features: Feature[];
+  specs: Spec[];
+  useCasesIcon?: string;
+  useCases: UseCase[];
+}
+
+const { title, shortName, heroDescription, heroIcon, features, specs, useCasesIcon, useCases } = Astro.props;
+const hasDiagram = Astro.slots.has('diagram');
+
+// Mini-syntaxe **gras** utilisée dans les descriptions de features (contenu de confiance, pas d'entrée utilisateur).
+function bold(text: string) {
+  return text.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+}
+---
+
+<BaseLayout title={title} description={heroDescription}>
+  <section class="section product-hero">
+    <div class="container product-hero__inner">
+      <div class="product-hero__text" data-reveal="left">
+        <h1>{title}</h1>
+        <p>{heroDescription}</p>
+      </div>
+      {
+        heroIcon && (
+          <div class="product-hero__icon" data-reveal="right">
+            <img src={heroIcon} alt="" width="200" height="200" loading="lazy" />
+          </div>
+        )
+      }
+    </div>
+  </section>
+
+  <section class="section product-features">
+    <div class="container">
+      <h2 data-reveal>Features &amp; Benefits</h2>
+      <div class="product-features__list">
+        {
+          features.map((f) => (
+            <div class="product-features__row" data-reveal>
+              <div class="product-features__label">
+                <h3>{f.title}</h3>
+                <span class="product-divider" />
+              </div>
+              <p set:html={bold(f.description)} />
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    hasDiagram && (
+      <section class="section product-diagram-section">
+        <div class="container">
+          <slot name="diagram" />
+        </div>
+      </section>
+    )
+  }
+
+  <section class="section product-differentiators">
+    <div class="container product-differentiators__inner" data-reveal>
+      <slot />
+    </div>
+    <SectionDots count={3} active={2} />
+  </section>
+
+  <section class="section product-specs">
+    <div class="container">
+      <h2 data-reveal>Technical specifications</h2>
+      <div class="product-specs__grid" data-reveal-group="scale">
+        {
+          specs.map((s) => (
+            <div class="product-specs__item">
+              <h3>{s.label}</h3>
+              <span class="product-divider" />
+              {s.values.map((v) => (
+                <p>{v}</p>
+              ))}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  {
+    useCases.length > 0 && (
+      <section class="section product-usecases">
+        <div class="container product-usecases__inner">
+          <div class="product-usecases__text" data-reveal="left">
+            <h2>
+              Check out some {shortName} use cases
+            </h2>
+            <ul class="product-usecases__list">
+              {useCases.map((u) => (
+                <li>
+                  <a href={u.href}>{u.label}</a>
+                </li>
+              ))}
+            </ul>
+          </div>
+          {useCasesIcon && (
+            <div class="product-usecases__icon" data-reveal="right">
+              <img src={useCasesIcon} alt="" width="200" height="200" loading="lazy" />
+            </div>
+          )}
+        </div>
+      </section>
+    )
+  }
+
+  <GetStartedSection />
+</BaseLayout>
+
+<style>
+  .product-hero {
+    background: var(--color-black-soft);
+    overflow: hidden;
+  }
+
+  .product-hero__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  .product-hero__text {
+    max-width: 750px;
+  }
+
+  .product-hero h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 56px;
+    color: var(--color-green);
+    margin-bottom: var(--space-6);
+  }
+
+  .product-hero__text p {
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    font-weight: 400;
+    color: var(--color-off-white);
+    line-height: 1.5;
+  }
+
+  .product-hero__icon {
+    flex-shrink: 0;
+  }
+
+  .product-divider {
+    display: block;
+    width: 64px;
+    height: 3px;
+    background: var(--color-green);
+    margin-top: var(--space-2);
+  }
+
+  .product-features__list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+  }
+
+  .product-features__row {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: var(--space-12);
+  }
+
+  .product-features__label h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 14.667px;
+    color: var(--color-ink);
+  }
+
+  .product-features__row > p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 14.667px;
+    color: var(--color-ink);
+    line-height: 1.6;
+  }
+
+  .product-features__row > p :global(strong) {
+    font-weight: 700;
+  }
+
+  .product-diagram-section {
+    background: var(--color-section-gray);
+  }
+
+  .product-differentiators__inner {
+    max-width: 720px;
+  }
+
+  .product-differentiators__inner :global(p) {
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    color: var(--color-ink);
+    line-height: 1.7;
+    margin-bottom: var(--space-6);
+  }
+
+  .product-specs__grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-12) var(--space-8);
+  }
+
+  .product-specs__item h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: 14.667px;
+    color: var(--color-ink);
+  }
+
+  .product-specs__item p {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 14.667px;
+    color: var(--color-ink);
+    line-height: 1.5;
+    margin-top: var(--space-2);
+  }
+
+  .product-usecases {
+    background: var(--color-section-gray);
+  }
+
+  .product-usecases__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  .product-usecases__text h2 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 42.667px;
+    color: var(--color-ink);
+    margin-bottom: var(--space-6);
+  }
+
+  .product-usecases__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .product-usecases__list a {
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    font-weight: 600;
+    text-decoration: underline;
+    color: var(--color-ink);
+  }
+
+  .product-usecases__icon {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 760px) {
+    .product-hero__inner,
+    .product-usecases__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+
+    .product-features__row {
+      grid-template-columns: 1fr;
+      gap: var(--space-4);
+    }
+
+    .product-specs__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 480px) {
+    .product-specs__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

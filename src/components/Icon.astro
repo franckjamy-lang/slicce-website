@@ -1,0 +1,54 @@
+---
+// Pictogrammes fournis par Franck (public/images/icons/*) : 9 icônes de
+// marque en PNG + 4 icônes réseaux sociaux en SVG, + quelques icônes d'UI
+// recréées à la main (chevron, recherche, fermeture).
+const brandIcons = {
+  'cost-effective': '/images/icons/cost-effective.png',
+  elastic: '/images/icons/elastic.png',
+  customizable: '/images/icons/customizable.png',
+  secure: '/images/icons/secure.png',
+  fast: '/images/icons/fast.png',
+  privacy: '/images/icons/privacy.png',
+  'cloud-native': '/images/icons/cloud-native.png',
+  'open-api': '/images/icons/open-api.png',
+  'rocket-heptagon': '/images/icons/rocket-heptagon.png',
+  whatsapp: '/images/icons/whatsapp.svg',
+  mail: '/images/icons/mail.svg',
+  linkedin: '/images/icons/linkedin.svg',
+  youtube: '/images/icons/youtube.svg',
+} as const;
+
+interface Props {
+  name: keyof typeof brandIcons | 'chevron-down' | 'search' | 'close';
+  size?: number;
+  class?: string;
+}
+
+const { name, size = 48, class: className } = Astro.props;
+const brandSrc = (brandIcons as Record<string, string>)[name];
+---
+
+{brandSrc && (
+  <img src={brandSrc} alt="" width={size} height={size} style={`height:${size}px;width:auto;`} class={className} loading="lazy" />
+)}
+
+{name === 'chevron-down' && (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" class={className} aria-hidden="true">
+    <path d="M5 8 L12 15 L19 8" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  </svg>
+)}
+
+{name === 'search' && (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" class={className} aria-hidden="true">
+    <circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2" />
+    <line x1="15.3" y1="15.3" x2="21" y2="21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </svg>
+)}
+
+{name === 'close' && (
+  <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" class={className} aria-hidden="true">
+    <line x1="5" y1="5" x2="19" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+    <line x1="19" y1="5" x2="5" y2="19" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+  </svg>
+)}
+

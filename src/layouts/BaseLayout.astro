@@ -1,0 +1,42 @@
+---
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import ScrollReveal from '../components/ScrollReveal.astro';
+import '../styles/global.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+
+const { title, description } = Astro.props;
+const pageTitle = title === 'Slicce' ? title : `${title} | Slicce`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <meta name="generator" content={Astro.generator} />
+
+    <title>{pageTitle}</title>
+    <meta name="description" content={description} />
+
+    <!--
+      SEO (sitemap, Open Graph, JSON-LD) : ajoutés à l'étape 7.
+      GTM (GTM-KR7PVXT5) : ajouté à l'étape 8.
+    -->
+  </head>
+  <body>
+    <a href="#main-content" class="visually-hidden">Skip to content</a>
+    <Header />
+    <main id="main-content">
+      <slot />
+    </main>
+    <Footer />
+    <ScrollReveal />
+  </body>
+</html>

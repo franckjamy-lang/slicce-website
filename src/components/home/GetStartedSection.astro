@@ -1,0 +1,81 @@
+---
+import Icon from '../Icon.astro';
+import { siteInfo } from '../../data/navigation';
+---
+
+<section class="section get-started">
+  <div class="container get-started__inner">
+    <div class="get-started__text" data-reveal="left">
+      <h2>Ready to get started?</h2>
+      <p>We are looking forward to demonstrate our product and real business use cases.</p>
+      <a href={siteInfo.whatsapp} target="_blank" rel="noopener noreferrer" class="btn btn--primary-bold">
+        Get in touch!
+      </a>
+    </div>
+    <div class="get-started__icon" data-reveal="right">
+      <Icon name="rocket-heptagon" size={200} />
+    </div>
+  </div>
+</section>
+
+<style>
+  .get-started {
+    position: relative;
+    background: var(--color-section-gray);
+    overflow: visible;
+  }
+
+  .get-started__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .get-started__text {
+    max-width: 700px;
+  }
+
+  .get-started__icon {
+    position: absolute;
+    right: 0;
+    bottom: -64px;
+  }
+
+  .get-started h2 {
+    font-size: 56px;
+  }
+
+  .get-started__text p {
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    color: var(--color-ink);
+    white-space: nowrap;
+    margin-bottom: var(--space-6);
+  }
+
+  @media (max-width: 760px) {
+    .get-started__inner {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: var(--space-8);
+    }
+
+    .get-started__text p {
+      white-space: normal;
+    }
+
+    /* Sur mobile, l'icône reste dans le flux normal (sous le texte) au lieu
+       d'être positionnée en absolu : ça évite tout risque de chevauchement,
+       quelle que soit la hauteur du texte au-dessus. Comme c'est le dernier
+       élément de la section et que son padding bas est supprimé, elle touche
+       le footer, comme sur desktop. */
+    .get-started {
+      padding-bottom: 0;
+    }
+
+    .get-started__icon {
+      position: static;
+    }
+  }
+</style>

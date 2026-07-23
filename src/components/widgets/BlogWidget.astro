@@ -1,0 +1,261 @@
+---
+// Widget blog — troisième widget de la console d'admin unifiée de Franck
+// (avec Articles et Catalog), données lues depuis un JSON hébergé sur
+// GitHub. Polices Outfit/Open Sans déjà chargées site-wide (global.css),
+// pas besoin de les re-importer ici.
+---
+
+<div id="blog-widget-scope">
+  <div class="wrap">
+    <div id="hero-slot"></div>
+    <div class="grid" id="grid-slot"></div>
+    <div class="loading" id="loading">Loading articles…</div>
+    <div class="empty" id="empty" style="display:none">No articles yet.</div>
+    <div class="load-more-wrap" id="load-more-wrap" style="display:none">
+      <button class="btn-load" id="load-more-btn">Load more</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal">
+      <button class="modal-close" id="modal-close-btn">✕</button>
+      <img id="modal-img" class="modal-img" style="display:none" src="" alt="" />
+      <div class="modal-inner">
+        <h1 id="modal-title" class="modal-title"></h1>
+        <div id="modal-date" class="modal-date"></div>
+        <div id="modal-body" class="modal-body"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     CONFIG — JSON hébergé sur GitHub (voir "Settings" dans la console
+     d'admin) : https://raw.githubusercontent.com/{GH_OWNER}/{GH_REPO}/{GH_BRANCH}/{GH_PATH}
+     ============================================================ */
+  const GH_OWNER = 'franckjamy-lang';
+  const GH_REPO = 'slicce-data';
+  const GH_PATH = 'blog-data.json';
+  const GH_BRANCH = 'main';
+  const PAGE_SIZE = 6;
+
+  type Post = { title: string; intro?: string; image?: string; publishDate?: string; body?: string };
+
+  let allPosts: Post[] = [];
+  let visible = PAGE_SIZE;
+  (window as any)._posts = [];
+
+  function esc(s?: string) {
+    return (s || '').toString().replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function fmtDate(d?: string) {
+    if (!d) return '';
+    try {
+      return new Date(d).toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    } catch (e) {
+      return d;
+    }
+  }
+
+  async function loadData(): Promise<{ posts: Post[] }> {
+    if (!GH_OWNER || !GH_REPO) {
+      document.getElementById('loading')!.textContent = 'Widget not configured.';
+      return { posts: [] };
+    }
+    const url =
+      'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH + '?t=' + Date.now();
+    const r = await fetch(url, { cache: 'no-store' });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+
+  function renderHero(p: Post, idx: number) {
+    (window as any)._posts[idx] = p;
+    document.getElementById('hero-slot')!.innerHTML = `
+      <article class="hero" data-open-post="${idx}">
+        ${p.image ? `<img class="hero-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">` : '<div class="hero-img"></div>'}
+        <div class="hero-text">
+          <h1 class="hero-title">${esc(p.title)}</h1>
+          ${p.intro ? `<p class="hero-excerpt">${esc(p.intro)}</p>` : ''}
+          ${p.publishDate ? `<div class="hero-date">${fmtDate(p.publishDate)}</div>` : ''}
+        </div>
+      </article>`;
+  }
+
+  function renderGrid(posts: Post[], startIdx: number) {
+    const grid = document.getElementById('grid-slot')!;
+    grid.innerHTML = posts
+      .map((p, i) => {
+        const idx = startIdx + i;
+        (window as any)._posts[idx] = p;
+        return `
+      <article class="card" data-open-post="${idx}">
+        ${p.image ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">` : '<div class="card-img"></div>'}
+        <h2 class="card-title">${esc(p.title)}</h2>
+        ${p.intro ? `<p class="card-excerpt">${esc(p.intro)}</p>` : ''}
+        ${p.publishDate ? `<div class="card-date">${fmtDate(p.publishDate)}</div>` : ''}
+      </article>`;
+      })
+      .join('');
+  }
+
+  function renderPage() {
+    const rest = allPosts.slice(1); // exclut le hero (premier article)
+    const shown = rest.slice(0, visible);
+    renderGrid(shown, 1);
+    const wrap = document.getElementById('load-more-wrap')!;
+    if (shown.length < rest.length) {
+      wrap.style.display = 'block';
+      document.getElementById('load-more-btn')!.textContent = 'Load more (' + (rest.length - shown.length) + ' remaining)';
+    } else {
+      wrap.style.display = 'none';
+    }
+  }
+
+  function loadMore() {
+    visible += PAGE_SIZE;
+    renderPage();
+  }
+
+  function openPost(idx: number) {
+    const p = (window as any)._posts[idx];
+    if (!p) return;
+    const img = document.getElementById('modal-img') as HTMLImageElement;
+    if (p.image) {
+      img.src = p.image;
+      img.alt = p.title || '';
+      img.style.display = 'block';
+    } else {
+      img.style.display = 'none';
+    }
+    document.getElementById('modal-title')!.textContent = p.title || '';
+    document.getElementById('modal-date')!.textContent = fmtDate(p.publishDate);
+    document.getElementById('modal-body')!.innerHTML = p.body || (p.intro ? '<p>' + esc(p.intro) + '</p>' : '');
+    document.getElementById('modal-overlay')!.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay')!.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') closeModal();
+  });
+
+  document.getElementById('modal-overlay')?.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+  document.getElementById('modal-close-btn')?.addEventListener('click', () => closeModal());
+
+  // Délégation d'événements (le hero/la grille sont recréés à chaque rendu)
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const loadMoreBtn = target.closest<HTMLElement>('#load-more-btn');
+    if (loadMoreBtn) {
+      loadMore();
+      return;
+    }
+    const postEl = target.closest<HTMLElement>('[data-open-post]');
+    if (postEl) openPost(Number(postEl.dataset.openPost));
+  });
+
+  (async () => {
+    try {
+      const db = await loadData();
+      allPosts = (db.posts || [])
+        .filter((p) => p.title)
+        .sort((a, b) => new Date(b.publishDate || 0).getTime() - new Date(a.publishDate || 0).getTime());
+      document.getElementById('loading')!.style.display = 'none';
+      if (!allPosts.length) {
+        document.getElementById('empty')!.style.display = 'block';
+        return;
+      }
+      renderHero(allPosts[0], 0);
+      renderPage();
+    } catch (e: any) {
+      document.getElementById('loading')!.textContent = 'Failed to load articles.';
+      console.warn('[Blog Widget]', e.message);
+    }
+  })();
+</script>
+
+<style is:global>
+  #blog-widget-scope {
+    --text: #0d0d0d;
+    --muted: #666;
+    --muted2: #999;
+    --border: #eee;
+    --bg: #fff;
+    --r: 14px;
+    --sans: var(--font-sans);
+    --head: var(--font-heading);
+
+    display: block;
+    font-family: var(--sans);
+    color: var(--text);
+    background: var(--bg);
+    font-size: 15px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  #blog-widget-scope .wrap { max-width: 1120px; margin: 0 auto; padding: 2rem 1.25rem 3rem; }
+
+  #blog-widget-scope .hero { display: grid; grid-template-columns: 1fr 1fr; gap: 2.5rem; align-items: center; margin-bottom: 3rem; cursor: pointer; }
+  #blog-widget-scope .hero-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--r); display: block; background: #f2f2f2; }
+  #blog-widget-scope .hero-title { font-family: var(--head); font-weight: 700; font-size: 2rem; line-height: 1.2; color: var(--text); margin-bottom: 1rem; }
+  #blog-widget-scope .hero-excerpt { font-size: 1rem; color: var(--muted); line-height: 1.7; margin-bottom: 1rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  #blog-widget-scope .hero-date { font-size: 0.85rem; color: var(--muted2); font-weight: 500; }
+
+  #blog-widget-scope .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem 1.75rem; }
+  #blog-widget-scope .card { cursor: pointer; }
+  #blog-widget-scope .card-img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; border-radius: var(--r); display: block; background: #f2f2f2; margin-bottom: 1rem; transition: opacity 0.18s; }
+  #blog-widget-scope .card:hover .card-img { opacity: 0.92; }
+  #blog-widget-scope .card-title { font-family: var(--head); font-weight: 700; font-size: 1.15rem; line-height: 1.3; color: var(--text); margin-bottom: 0.5rem; }
+  #blog-widget-scope .card-excerpt { font-size: 0.9rem; color: var(--muted); line-height: 1.65; margin-bottom: 0.65rem; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  #blog-widget-scope .card-date { font-size: 0.8rem; color: var(--muted2); font-weight: 500; }
+
+  #blog-widget-scope .load-more-wrap { text-align: center; margin-top: 2.5rem; }
+  #blog-widget-scope .btn-load { font-family: var(--sans); font-weight: 600; font-size: 0.9rem; padding: 0.7rem 1.75rem; border: 1.5px solid #ddd; border-radius: 30px; background: #fff; color: var(--text); cursor: pointer; transition: all 0.15s; }
+  #blog-widget-scope .btn-load:hover { border-color: var(--text); background: #fafafa; }
+
+  #blog-widget-scope .loading { padding: 4rem 0; text-align: center; color: var(--muted); font-size: 0.9rem; }
+  #blog-widget-scope .empty { padding: 4rem 0; text-align: center; color: var(--muted); font-size: 0.9rem; }
+
+  #blog-widget-scope .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.6); z-index: 9999; align-items: flex-start; justify-content: center; overflow-y: auto; padding: 2.5rem 1rem; backdrop-filter: blur(3px); }
+  #blog-widget-scope .modal-overlay.open { display: flex; }
+  #blog-widget-scope .modal { background: #fff; border-radius: 20px; max-width: 760px; width: 100%; margin: auto; position: relative; overflow: hidden; box-shadow: 0 24px 80px rgba(0, 0, 0, 0.2); animation: blog-modal-in 0.2s ease; }
+  @keyframes blog-modal-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  #blog-widget-scope .modal-close { position: absolute; top: 16px; right: 16px; z-index: 5; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.06); border: none; cursor: pointer; font-size: 18px; color: #333; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+  #blog-widget-scope .modal-close:hover { background: rgba(0, 0, 0, 0.12); }
+  #blog-widget-scope .modal-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
+  #blog-widget-scope .modal-inner { padding: 2.5rem 2.75rem 3rem; }
+  #blog-widget-scope .modal-title { font-family: var(--head); font-weight: 700; font-size: 1.85rem; line-height: 1.2; color: var(--text); margin-bottom: 0.6rem; }
+  #blog-widget-scope .modal-date { font-size: 0.85rem; color: var(--muted2); font-weight: 500; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
+  #blog-widget-scope .modal-body { font-size: 1rem; line-height: 1.85; color: #333; }
+  #blog-widget-scope .modal-body h2 { font-family: var(--head); font-weight: 700; font-size: 1.35rem; margin: 1.75rem 0 0.75rem; }
+  #blog-widget-scope .modal-body h3 { font-family: var(--head); font-weight: 600; font-size: 1.15rem; margin: 1.4rem 0 0.5rem; }
+  #blog-widget-scope .modal-body p { margin-bottom: 1rem; }
+  #blog-widget-scope .modal-body ul, #blog-widget-scope .modal-body ol { margin: 0 0 1rem 1.4rem; }
+  #blog-widget-scope .modal-body blockquote { border-left: 3px solid var(--text); padding: 0.75rem 1.25rem; margin: 1.25rem 0; background: #f7f7f7; font-style: italic; color: #444; }
+  #blog-widget-scope .modal-body img { max-width: 100%; border-radius: 10px; margin: 1rem 0; }
+  #blog-widget-scope .modal-body a { color: #0a6c3d; text-decoration: underline; }
+
+  @media (max-width: 860px) {
+    #blog-widget-scope .grid { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 640px) {
+    #blog-widget-scope .hero { grid-template-columns: 1fr; gap: 1.25rem; }
+    #blog-widget-scope .hero-title { font-size: 1.5rem; }
+    #blog-widget-scope .grid { grid-template-columns: 1fr; }
+    #blog-widget-scope .modal-inner { padding: 1.75rem 1.5rem 2.25rem; }
+    #blog-widget-scope .modal-title { font-size: 1.4rem; }
+  }
+</style>

@@ -1,0 +1,177 @@
+---
+import Icon from './Icon.astro';
+import { footerNav, siteInfo } from '../data/navigation';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="site-footer">
+  <div class="container site-footer__grid">
+    <nav class="site-footer__col" aria-label="Products">
+      <h4>Products</h4>
+      <ul>
+        {footerNav.products.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Use cases">
+      <h4>Use cases</h4>
+      <ul>
+        {footerNav.useCases.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <nav class="site-footer__col" aria-label="Company">
+      <h4>Company</h4>
+      <ul>
+        {footerNav.company.map((item) => (
+          <li><a href={item.href}>{item.label}</a></li>
+        ))}
+      </ul>
+    </nav>
+
+    <div class="site-footer__col site-footer__contact">
+      <h4>Contact Information</h4>
+      <p class="site-footer__address">
+        101 W Renner Rd, Richardson<br />
+        TX 75082 United States
+      </p>
+      <p class="site-footer__address">
+        tel: {siteInfo.phone} | <a href={`mailto:${siteInfo.email}`}>{siteInfo.email}</a>
+      </p>
+      <div class="site-footer__socials">
+        <a href={`mailto:${siteInfo.email}`} class="site-footer__social-icon" aria-label="Email">
+          <Icon name="mail" size={20} />
+        </a>
+        <a href={siteInfo.linkedin} target="_blank" rel="noopener noreferrer" class="site-footer__social-icon" aria-label="LinkedIn">
+          <Icon name="linkedin" size={18} />
+        </a>
+        <a href={siteInfo.whatsapp} target="_blank" rel="noopener noreferrer" class="site-footer__social-icon" aria-label="WhatsApp">
+          <Icon name="whatsapp" size={20} />
+        </a>
+        <a href={siteInfo.youtube} target="_blank" rel="noopener noreferrer" class="site-footer__social-icon" aria-label="YouTube">
+          <Icon name="youtube" size={40} />
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="site-footer__divider"></div>
+    <div class="site-footer__bottom">
+      <p>&copy; {year} {siteInfo.legalName}. All rights reserved.</p>
+      <div class="site-footer__legal">
+        <a href="/privacy-policy">Privacy Policy</a>
+        <span aria-hidden="true">|</span>
+        <a href="/terms-of-use">Terms of Use</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 3;
+    background: var(--color-black-soft);
+    color: var(--color-white);
+    padding-top: var(--space-16);
+  }
+
+  .site-footer a {
+    color: var(--color-white);
+    font-size: 12px;
+  }
+
+  .site-footer a:hover {
+    opacity: 0.8;
+  }
+
+  .site-footer__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1.2fr;
+    gap: var(--space-8);
+    padding-bottom: var(--space-12);
+  }
+
+  .site-footer__col h4 {
+    color: var(--color-white);
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    font-weight: 600;
+    margin-bottom: var(--space-4);
+  }
+
+  .site-footer__col ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: 12px;
+  }
+
+  .site-footer__address {
+    font-size: 12px;
+    color: #e8e8e8;
+    line-height: 1.7;
+    margin: 0 0 var(--space-2);
+  }
+
+  .site-footer__address a {
+    color: #e8e8e8;
+  }
+
+  .site-footer__socials {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+
+  .site-footer__social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-white);
+  }
+
+  .site-footer__divider {
+    height: 2px;
+    background: var(--color-green);
+  }
+
+  .site-footer__bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    padding-block: var(--space-6);
+    font-size: 12px;
+  }
+
+  .site-footer__legal {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  @media (max-width: 800px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .site-footer__grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

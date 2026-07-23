@@ -1,0 +1,123 @@
+---
+// Un nœud de l'arbre `productsMenu` (voir src/data/navigation.ts), rendu
+// récursivement : chaque nœud avec des enfants a son propre petit chevron
+// qui déplie/replie SES enfants en place (accordéon), exactement comme sur
+// le site actuel. Le libellé est un vrai lien s'il a un `href` (ex: "API
+// Exposure Functions" mène à sa page catégorie), ou un simple texte non
+// cliquable s'il ne fait que grouper (ex: "3G & Circuit Switched").
+import type { NavGroup } from '../data/navigation';
+import Icon from './Icon.astro';
+
+interface Props {
+  item: NavGroup;
+}
+
+const { item } = Astro.props;
+const hasChildren = !!item.children?.length;
+---
+
+<li class="site-nav__node">
+  <div class="site-nav__row">
+    {
+      item.href ? (
+        <a href={item.href} class="site-nav__label">
+          {item.label}
+        </a>
+      ) : (
+        <span class="site-nav__label site-nav__label--group">{item.label}</span>
+      )
+    }
+    {
+      hasChildren && (
+        <button type="button" class="site-nav__toggle" aria-expanded="false" aria-label={`Afficher ${item.label}`}>
+          <span class="site-nav__toggle-icon">
+            <Icon name="chevron-down" size={14} />
+          </span>
+        </button>
+      )
+    }
+  </div>
+  {
+    hasChildren && (
+      <ul class="site-nav__children">
+        {item.children!.map((child) => (
+          <Astro.self item={child} />
+        ))}
+      </ul>
+    )
+  }
+</li>
+
+<style>
+  .site-nav__node {
+    position: relative;
+  }
+
+  .site-nav__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-2);
+  }
+
+  .site-nav__label {
+    display: block;
+    flex: 1;
+    padding: var(--space-3);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    white-space: nowrap;
+    border-radius: var(--radius-sm);
+  }
+
+  a.site-nav__label:hover {
+    background: var(--color-off-white);
+    text-decoration: none;
+  }
+
+  .site-nav__label--group {
+    color: var(--text-muted);
+    font-weight: 600;
+    font-size: var(--text-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+  }
+
+  .site-nav__toggle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
+    background: transparent;
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-sm);
+    color: var(--text-muted);
+    cursor: pointer;
+  }
+
+  .site-nav__toggle:hover {
+    background: var(--color-off-white);
+  }
+
+  .site-nav__toggle-icon {
+    display: inline-flex;
+    transition: transform 0.15s ease;
+  }
+
+  .site-nav__toggle[aria-expanded='true'] .site-nav__toggle-icon {
+    transform: rotate(180deg);
+  }
+
+  .site-nav__children {
+    display: none;
+    list-style: none;
+    margin: 0;
+    padding-left: 14px;
+  }
+
+  .site-nav__node:has(> .site-nav__row > .site-nav__toggle[aria-expanded='true']) > .site-nav__children {
+    display: block;
+  }
+</style>

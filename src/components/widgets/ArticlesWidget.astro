@@ -1,0 +1,725 @@
+---
+// Widget articles — anciennement encapsulé dans un iframe hébergé sur
+// files.slicce.co, désormais intégré directement dans la page (voir
+// src/pages/articles.astro). Données lues depuis un JSON hébergé sur GitHub
+// (console d'admin unifiée de Franck) ; le contenu de chaque article est du
+// HTML déjà prêt à l'affichage (plus de rendu Markdown côté client). Le
+// "pont" iframe↔page parente (postMessage) et le tag GTM ont été retirés,
+// devenus inutiles/redondants hors iframe (GTM sera ajouté une seule fois,
+// site-wide, à l'étape 7 du projet).
+---
+
+<div id="articles-widget-scope">
+  <div class="widget">
+    <div id="hero-container"></div>
+    <div class="filter-bar" id="filter-bar"></div>
+    <div class="article-grid" id="article-grid">
+      <div class="loader">Loading articles…</div>
+    </div>
+  </div>
+
+  <!-- Modal article -->
+  <div class="modal-overlay" id="modal-overlay">
+    <div class="modal" id="modal">
+      <button class="modal-close" id="modal-close-btn" title="Close">✕</button>
+      <img class="modal-cover" id="modal-cover" src="" alt="" />
+      <div class="modal-body">
+        <div class="modal-meta">
+          <div class="modal-cats" id="modal-cats"></div>
+          <span class="modal-dot" id="modal-dot">·</span>
+          <span class="modal-date" id="modal-date"></span>
+        </div>
+        <h1 class="modal-title" id="modal-title"></h1>
+        <div class="prose" id="modal-prose"></div>
+        <a class="modal-ext-link" id="modal-ext-link" href="#" target="_blank">↗ View full article</a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  /* ============================================================
+     ▼  CONFIGURATION  ▼
+     JSON hébergé sur GitHub (voir "Settings" dans la console d'admin) :
+     https://raw.githubusercontent.com/{ghOwner}/{ghRepo}/{ghBranch}/{ghPath}
+     Le fichier doit contenir { "articles": [ {titre, date, extrait, image,
+     lien, categorie, featured, contenu (HTML)}, ... ] }
+     ============================================================ */
+  const CONFIG = {
+    ghOwner: 'franckjamy-lang',
+    ghRepo: 'slicce-data',
+    ghPath: 'articles-data.json',
+    ghBranch: 'main',
+    maxItems: 12,
+    heroLayout: 'square', // 'square' | 'portrait' | 'landscape'
+  };
+
+  /* ============================================================
+     DONNÉES DE DÉMO (fallback si le Sheet est inaccessible)
+     ============================================================ */
+  const DEMO = [
+    {
+      titre: "CAPIF : le cœur de l'exposition d'API en 5G",
+      date: '12 avril 2025',
+      extrait:
+        "Découvrez comment la fonction CAPIF standardise l'accès aux APIs dans les architectures 5G et simplifie l'intégration pour les développeurs.",
+      image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=75',
+      lien: 'https://www.slicce.co/products/capif-core-function',
+      categorie: '5G',
+      featured: 'oui',
+      contenu: `<h2>Introduction</h2>
+<p>La <strong>Common API Framework (CAPIF)</strong> est définie par le 3GPP comme la fonction centrale d'exposition d'APIs dans les réseaux 5G. Elle standardise la manière dont les applications externes accèdent aux capabilities réseau.</p>
+<h2>Architecture CAPIF</h2>
+<p>Le framework repose sur trois entités principales :</p>
+<ul>
+<li><strong>CAPIF Core Function</strong> — le cœur du système, gère l'enregistrement et la découverte d'APIs</li>
+<li><strong>API Exposing Function (AEF)</strong> — expose les APIs réseau aux applications tierces</li>
+<li><strong>API Invoking Function (AIF)</strong> — représente l'application qui consomme les APIs</li>
+</ul>
+<h2>Pourquoi adopter CAPIF ?</h2>
+<blockquote>
+<p>CAPIF simplifie radicalement l'intégration pour les développeurs tiers en offrant un point d'entrée unique, standardisé et sécurisé.</p>
+</blockquote>
+<p>Les bénéfices concrets pour les opérateurs :</p>
+<ol>
+<li><strong>Sécurité renforcée</strong> — authentification et autorisation centralisées</li>
+<li><strong>Monétisation simplifiée</strong> — contrôle fin des accès et de la facturation</li>
+<li><strong>Interopérabilité</strong> — compatibilité entre équipements de différents fournisseurs</li>
+</ol>
+<h2>Conclusion</h2>
+<p>CAPIF est devenu un composant incontournable pour tout opérateur souhaitant exposer ses capabilities réseau de manière sécurisée et scalable.</p>`,
+    },
+    {
+      titre: 'Comment les opérateurs monétisent leurs APIs réseau',
+      date: '3 avril 2025',
+      extrait:
+        "L'exposition d'APIs réseau représente une nouvelle source de revenus. Modèles commerciaux et meilleures pratiques.",
+      image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=600&q=70',
+      lien: 'https://www.slicce.co/blog',
+      categorie: 'API',
+      featured: 'non',
+      contenu: `<h2>Un marché en pleine croissance</h2>
+<p>La monétisation des APIs réseau est devenue un enjeu stratégique pour les opérateurs télécoms. Selon les analystes, ce marché représentera <strong>plus de 15 milliards USD d'ici 2027</strong>.</p>
+<h2>Les principaux modèles de revenus</h2>
+<ul>
+<li><strong>Pay-per-use</strong> — facturation à l'appel d'API</li>
+<li><strong>Abonnement</strong> — accès forfaitaire mensuel ou annuel</li>
+<li><strong>Revenue sharing</strong> — partage de revenus avec les développeurs</li>
+</ul>
+<h2>Meilleures pratiques</h2>
+<blockquote>
+<p>Commencez par exposer des APIs à forte valeur ajoutée : localisation, SMS, vérification d'identité.</p>
+</blockquote>
+<p>Les opérateurs les plus performants combinent une <strong>plateforme technique robuste</strong> (CAPIF, NEF) avec un <strong>portail développeurs</strong> soigné.</p>`,
+    },
+    {
+      titre: 'Private Networks : déployer la 5G en entreprise',
+      date: '25 mars 2025',
+      extrait:
+        'Les réseaux privés 5G transforment les opérations industrielles. Architectures, cas d\'usage et considérations de déploiement.',
+      image: 'https://images.unsplash.com/photo-1504711434969-e33886168f5c?w=600&q=70',
+      lien: 'https://www.slicce.co/use-cases/private-networks',
+      categorie: 'Cloud',
+      featured: 'non',
+      contenu: `<h2>Qu'est-ce qu'un réseau privé 5G ?</h2>
+<p>Un réseau privé 5G est une infrastructure cellulaire dédiée à une organisation, déployée dans ses locaux ou en cloud. Il offre les performances de la 5G avec un contrôle total sur la sécurité et les données.</p>
+<h2>Cas d'usage industriels</h2>
+<ul>
+<li><strong>Industrie 4.0</strong> — robotique mobile, AGV, contrôle en temps réel</li>
+<li><strong>Logistique</strong> — traçabilité, drones de manutention</li>
+<li><strong>Santé</strong> — imagerie médicale, monitoring à distance</li>
+<li><strong>Énergie</strong> — surveillance d'infrastructures critiques</li>
+</ul>
+<h2>Architecture de déploiement</h2>
+<blockquote>
+<p>Le mode <em>standalone</em> avec core réseau on-premise offre la latence la plus faible, idéale pour les applications temps réel.</p>
+</blockquote>
+<p>Trois modèles existent : <strong>on-premise</strong>, <strong>edge cloud</strong> et <strong>hybride</strong>. Le choix dépend des contraintes de latence, sécurité et budget.</p>`,
+    },
+    {
+      titre: 'Interworking SMS entre réseaux legacy et 5G',
+      date: '18 mars 2025',
+      extrait:
+        'La coexistence entre réseaux CS legacy et IMS/5G nécessite des fonctions d\'interworking robustes.',
+      image: 'https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=600&q=70',
+      lien: 'https://www.slicce.co/products/interworking-functions/short-message-iwf',
+      categorie: 'Interworking',
+      featured: 'non',
+      contenu: `<h2>Le défi de la transition</h2>
+<p>Malgré le déploiement massif de la 5G, les réseaux <strong>circuit-switched (CS) legacy</strong> continuent d'opérer en parallèle. Cette coexistence crée des défis techniques, notamment pour la continuité du service SMS.</p>
+<h2>Rôle de la SMS-IWF</h2>
+<p>La <strong>Short Message Interworking Function</strong> assure la translation de protocoles entre :</p>
+<ul>
+<li>SS7/MAP (réseaux 2G/3G)</li>
+<li>IMS/SIP (réseaux 4G/5G)</li>
+<li>Diameter (cœur EPC)</li>
+</ul>
+<h2>Points de vigilance</h2>
+<blockquote>
+<p>La gestion des numéros de routage (MSISDN vs IMSI) est critique pour éviter les pertes de messages lors des handovers inter-réseaux.</p>
+</blockquote>
+<p>Les opérateurs doivent également gérer la <strong>charge de signalisation</strong> lors des pics de trafic SMS (réveillon, événements).</p>`,
+    },
+    {
+      titre: 'CAMARA : standardiser les APIs telco au niveau mondial',
+      date: '10 mars 2025',
+      extrait:
+        'Le projet CAMARA de la GSMA harmonise les APIs réseau entre opérateurs, ouvrant la voie à un marché mondial.',
+      image: 'https://images.unsplash.com/photo-1607799279861-4dd421887fb3?w=600&q=70',
+      lien: 'https://www.slicce.co/blog',
+      categorie: '5G',
+      featured: 'non',
+      contenu: `<h2>Le projet CAMARA</h2>
+<p><strong>CAMARA</strong> est une initiative open source co-pilotée par la GSMA et la Linux Foundation. Son objectif : définir des APIs réseau standardisées, utilisables de la même manière chez n'importe quel opérateur mondial.</p>
+<h2>APIs disponibles</h2>
+<ul>
+<li><em>Number Verification</em> — vérifie le numéro de téléphone d'un utilisateur</li>
+<li><em>Device Location</em> — localisation du device en temps réel</li>
+<li><em>Quality on Demand (QoD)</em> — garantie de bande passante pour une session</li>
+<li><em>SIM Swap</em> — détection des changements de SIM récents</li>
+</ul>
+<h2>Impact pour l'écosystème</h2>
+<blockquote>
+<p>Un développeur peut désormais écrire son application une seule fois et la déployer chez tous les opérateurs membres CAMARA.</p>
+</blockquote>
+<p>C'est une révolution pour l'industrie telco, comparable à ce qu'AWS a représenté pour le cloud computing.</p>`,
+    },
+    {
+      titre: 'NEF et SCEF : passerelles vers les APIs 5G Core',
+      date: '2 mars 2025',
+      extrait: 'La Network Exposure Function est la clé de voûte de l\'exposition sécurisée des capabilities 5G.',
+      image: 'https://images.unsplash.com/photo-1509718443690-d8e2fb3474b7?w=600&q=70',
+      lien: 'https://www.slicce.co/blog',
+      categorie: 'API',
+      featured: 'non',
+      contenu: `<h2>NEF vs SCEF</h2>
+<p>La <strong>Network Exposure Function (NEF)</strong> est le composant 5G Core qui succède à la <strong>SCEF</strong> (Service Capability Exposure Function) de la 4G. Elle centralise l'exposition sécurisée des capabilities réseau vers les applications tierces.</p>
+<h2>Fonctions principales</h2>
+<ul>
+<li><strong>Traduction de protocoles</strong> entre SBI (5G) et APIs REST externes</li>
+<li><strong>Gestion des politiques</strong> d'accès et de sécurité</li>
+<li><strong>Analytics</strong> et monitoring des appels d'API</li>
+<li><strong>Facturation</strong> et rate limiting</li>
+</ul>
+<h2>Relation avec CAPIF</h2>
+<blockquote>
+<p>NEF est l'implémentation concrète du rôle AEF dans l'architecture CAPIF, assurant l'exposition effective des services réseau.</p>
+</blockquote>
+<p>La combinaison NEF + CAPIF forme le socle technique de toute plateforme d'APIs telco moderne.</p>`,
+    },
+    {
+      titre: 'Architecture Cloud-Native pour les fonctions réseau',
+      date: '22 février 2025',
+      extrait:
+        'La virtualisation (VNF) et la conteneurisation (CNF) des fonctions réseau redéfinissent les infrastructures télécoms.',
+      image: 'https://images.unsplash.com/photo-1544197150-b99a580bb7a8?w=600&q=70',
+      lien: 'https://www.slicce.co/technology',
+      categorie: 'Cloud',
+      featured: 'non',
+      contenu: `<h2>Du matériel au logiciel</h2>
+<p>La transformation Cloud-Native des réseaux télécoms représente un changement de paradigme : les fonctions réseau passent de <strong>hardware dédié</strong> à des <strong>microservices containerisés</strong> déployables sur infrastructure standard.</p>
+<h2>VNF vs CNF</h2>
+<table>
+<thead>
+<tr><th></th><th>VNF</th><th>CNF</th></tr>
+</thead>
+<tbody>
+<tr><td>Déploiement</td><td>VM</td><td>Container (K8s)</td></tr>
+<tr><td>Scalabilité</td><td>Verticale</td><td>Horizontale</td></tr>
+<tr><td>Temps de démarrage</td><td>Minutes</td><td>Secondes</td></tr>
+</tbody>
+</table>
+<h2>Kubernetes comme socle</h2>
+<blockquote>
+<p>La majorité des opérateurs Tier-1 ont adopté Kubernetes comme orchestrateur standard pour leurs CNF 5G Core.</p>
+</blockquote>
+<p>Les bénéfices : <strong>réduction des CAPEX</strong>, déploiement accéléré de nouvelles features, et résilience améliorée grâce à l'auto-healing.</p>`,
+    },
+  ];
+
+  /* ============================================================
+     MOTEUR
+     ============================================================ */
+  let allCards: any[] = [];
+  let activeFilter = 'All';
+
+  function esc(s: string) {
+    return (s || '')
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+
+  function formatDate(str: string) {
+    if (!str) return '';
+    const months: Record<string, string> = {
+      janvier: 'January', février: 'February', mars: 'March', avril: 'April',
+      mai: 'May', juin: 'June', juillet: 'July', août: 'August',
+      septembre: 'September', octobre: 'October', novembre: 'November', décembre: 'December',
+      january: 'January', february: 'February', march: 'March', april: 'April',
+      may: 'May', june: 'June', july: 'July', august: 'August',
+      september: 'September', october: 'October', november: 'November', december: 'December',
+    };
+    const m = str.trim().match(/^(\d{1,2})\s+([A-Za-zéûôîèùà]+)\s+(\d{4})$/);
+    if (m) {
+      const month = months[m[2].toLowerCase()];
+      return month ? `${month} ${parseInt(m[1])}, ${m[3]}` : str;
+    }
+    const mIso = str.trim().match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (mIso) {
+      const d = new Date(str + 'T00:00:00');
+      return d.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+    }
+    return str;
+  }
+
+  async function loadData() {
+    if (CONFIG.ghOwner && CONFIG.ghRepo) {
+      try {
+        const url =
+          'https://raw.githubusercontent.com/' +
+          CONFIG.ghOwner + '/' + CONFIG.ghRepo + '/' + CONFIG.ghBranch + '/' + CONFIG.ghPath +
+          '?t=' + Date.now();
+        const r = await fetch(url, { cache: 'no-store' });
+        if (!r.ok) throw new Error('HTTP ' + r.status);
+        const db = await r.json();
+        const rows = (db.articles || []).filter((a: any) => a.titre);
+        if (rows.length === 0) throw new Error('No articles found');
+        return rows.slice(0, CONFIG.maxItems);
+      } catch (e: any) {
+        console.warn('[Widget] Erreur GitHub :', e.message, '→ demo data.');
+      }
+    }
+    return DEMO;
+  }
+
+  (window as any)._art = [];
+
+  function renderBadges(catStr: string, cls: string) {
+    if (!catStr) return '';
+    return catStr
+      .split(',')
+      .map((c) => c.trim())
+      .filter(Boolean)
+      .map((c) => `<span class="${cls}">${esc(c)}</span>`)
+      .join('');
+  }
+
+  function renderHero(a: any, idx: number) {
+    if (!a) return;
+    (window as any)._art[idx] = a;
+    const hasContent = (a.contenu && a.contenu.trim()) || (a.extrait && a.extrait.trim());
+    const btn = hasContent
+      ? `<button class="btn btn-hero" data-open-modal="${idx}">Read article →</button>`
+      : a.lien
+        ? `<a class="btn btn-hero" href="${esc(a.lien)}" target="_blank">Read article →</a>`
+        : '';
+    const layout = a.layout || CONFIG.heroLayout || 'square';
+    const badges = a.categorie ? `<div class="badge-wrap">${renderBadges(a.categorie, 'badge')}</div>` : '';
+    const meta = `
+      ${badges}
+      ${a.date ? `<time class="hero-date">${formatDate(a.date)}</time>` : ''}
+      <h2 class="hero-title">${esc(a.titre)}</h2>
+      ${a.extrait ? `<p class="hero-exc">${esc(a.extrait)}</p>` : ''}`;
+    const bodyInner = `${meta}${btn}`;
+    const heroEl = document.getElementById('hero-container');
+    if (heroEl) {
+      heroEl.innerHTML = `
+        <div class="hero layout-${layout}">
+          <div class="hero-image">
+            <img src="${esc(a.image)}" alt="${esc(a.titre)}" />
+          </div>
+          <div class="hero-body">${bodyInner}</div>
+        </div>`;
+      const img = heroEl.querySelector('img');
+      img?.addEventListener('error', () => {
+        img.src = 'https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=800&q=75';
+      });
+    }
+  }
+
+  function renderFilters(articles: any[]) {
+    const allArticles = [(window as any)._art[0], ...articles].filter(Boolean);
+    const cats = [
+      'All',
+      ...new Set(allArticles.flatMap((a) => (a.categorie || '').split(',').map((c: string) => c.trim()).filter(Boolean))),
+    ];
+    const bar = document.getElementById('filter-bar');
+    if (bar) {
+      bar.innerHTML =
+        '<span class="filter-label">Filter:</span>' +
+        cats
+          .map((c) => `<button class="filter-btn${c === activeFilter ? ' active' : ''}" data-filter="${esc(c)}">${esc(c)}</button>`)
+          .join('');
+    }
+  }
+
+  function renderGrid(articles: any[], startIdx: number) {
+    const g = document.getElementById('article-grid');
+    if (!g) return;
+    if (!articles.length) {
+      g.innerHTML = '<div class="empty">No articles in this category.</div>';
+      return;
+    }
+    try {
+      g.innerHTML = articles
+        .map((a, i) => {
+          const idx = startIdx + i;
+          (window as any)._art[idx] = a;
+          const hasContent = (a.contenu && a.contenu.trim()) || (a.extrait && a.extrait.trim());
+          const cta = hasContent
+            ? `<button class="btn btn-card" data-open-modal="${idx}">Read article →</button>`
+            : a.lien
+              ? `<a class="btn btn-card" href="${esc(a.lien)}" target="_blank">Read article →</a>`
+              : '';
+          return `
+            <article class="card">
+              <img class="card-img" src="${esc(a.image || '')}" alt="${esc(a.titre || '')}" data-fallback-hide />
+              <div class="card-body">
+                ${a.categorie ? `<div class="badge-wrap">${renderBadges(a.categorie, 'card-cat')}</div>` : ''}
+                ${a.date ? `<time class="card-date">${formatDate(a.date)}</time>` : ''}
+                <h3 class="card-title">${esc(a.titre || '')}</h3>
+                ${a.extrait ? `<p class="card-exc">${esc(a.extrait)}</p>` : ''}
+                ${cta ? `<div class="card-footer" style="margin-top:auto">${cta}</div>` : ''}
+              </div>
+            </article>`;
+        })
+        .join('');
+      g.querySelectorAll<HTMLImageElement>('img[data-fallback-hide]').forEach((img) => {
+        img.addEventListener('error', () => { img.style.display = 'none'; });
+      });
+    } catch (err) {
+      console.error('[Widget] renderGrid error:', err);
+      g.innerHTML = '<div class="empty">Error rendering articles.</div>';
+    }
+  }
+
+  function filterBy(btn: HTMLElement, cat: string) {
+    activeFilter = cat;
+    document.querySelectorAll('.filter-btn').forEach((b) => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filteredList =
+      cat === 'All' ? allCards : allCards.filter((a) => (a.categorie || '').split(',').map((c: string) => c.trim()).includes(cat));
+    renderGrid(filteredList, 1);
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    pushEvent({ event: 'filter_click', filter_category: cat });
+  }
+
+  function openModal(idx: number) {
+    const a = (window as any)._art[idx];
+    if (!a) return;
+    (document.getElementById('modal-cover') as HTMLImageElement).src = a.image || '';
+    (document.getElementById('modal-cover') as HTMLImageElement).alt = a.titre || '';
+    document.getElementById('modal-cats')!.innerHTML = renderBadges(a.categorie || '', 'modal-cat-badge');
+    (document.getElementById('modal-dot') as HTMLElement).style.display = a.categorie && a.date ? '' : 'none';
+    document.getElementById('modal-date')!.textContent = formatDate(a.date);
+    document.getElementById('modal-title')!.textContent = a.titre || '';
+
+    const prose = document.getElementById('modal-prose')!;
+    if (a.contenu && a.contenu.trim()) {
+      // Le contenu vient déjà en HTML prêt à l'affichage (rendu côté admin).
+      prose.innerHTML = a.contenu;
+    } else {
+      prose.innerHTML = a.extrait ? `<p>${esc(a.extrait)}</p>` : '';
+    }
+
+    const extLink = document.getElementById('modal-ext-link') as HTMLAnchorElement;
+    if (a.lien) {
+      extLink.href = a.lien;
+      extLink.style.display = 'inline-flex';
+    } else {
+      extLink.style.display = 'none';
+    }
+
+    document.getElementById('modal-overlay')!.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    pushEvent({ event: 'article_view', article_title: a.titre || '', article_category: a.categorie || '', article_date: a.date || '' });
+  }
+
+  function closeModal() {
+    document.getElementById('modal-overlay')!.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('modal-overlay')?.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('modal-overlay')) closeModal();
+  });
+  document.getElementById('modal-close-btn')?.addEventListener('click', () => closeModal());
+  document.addEventListener('keydown', (e) => { if (e.key === 'Escape') closeModal(); });
+
+  // Délégation d'événements (les boutons sont recréés à chaque rendu)
+  document.addEventListener('click', (e) => {
+    const target = e.target as HTMLElement;
+    const filterBtn = target.closest<HTMLElement>('[data-filter]');
+    if (filterBtn) { filterBy(filterBtn, filterBtn.dataset.filter!); return; }
+    const modalBtn = target.closest<HTMLElement>('[data-open-modal]');
+    if (modalBtn) { openModal(Number(modalBtn.dataset.openModal)); }
+  });
+
+  function pushEvent(payload: Record<string, unknown>) {
+    (window as any).dataLayer = (window as any).dataLayer || [];
+    (window as any).dataLayer.push(payload);
+  }
+
+  (async () => {
+    try {
+      const data = await loadData();
+      const heroIdx = data.findIndex((a: any) => (a.featured || '').toLowerCase() === 'oui');
+      const hIdx = heroIdx >= 0 ? heroIdx : 0;
+      const hero = data[hIdx];
+      allCards = data.filter((_: any, i: number) => i !== hIdx);
+      renderHero(hero, 0);
+      renderFilters(allCards);
+      renderGrid(allCards, 1);
+    } catch (err) {
+      console.error('[Widget] Init error:', err);
+      const grid = document.getElementById('article-grid');
+      if (grid) grid.innerHTML = '<div class="empty">Error loading articles. Check console for details.</div>';
+    }
+  })();
+</script>
+
+<style is:global>
+  @import '@fontsource-variable/sora';
+  @import '@fontsource-variable/dm-sans';
+
+  #articles-widget-scope {
+    --accent: #00ff78;
+    --accent-dark: #00cc62;
+    --navy: #000000;
+    --text: #1e293b;
+    --muted: #64748b;
+    --border: #e2e8f0;
+    --bg: #ffffff;
+    --bg-subtle: #f8fafc;
+    --r: 12px;
+    --r-sm: 6px;
+  }
+
+  #articles-widget-scope .widget {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 2rem 1rem 3rem;
+    font-family: 'DM Sans Variable', 'DM Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+    color: var(--text);
+    line-height: 1.5;
+  }
+
+  #articles-widget-scope .hero { border-radius: var(--r); overflow: hidden; background: var(--navy); margin-bottom: 2.5rem; }
+
+  #articles-widget-scope .hero.layout-square { display: grid; grid-template-columns: 55% 45%; min-height: 340px; }
+  #articles-widget-scope .hero.layout-square .hero-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  #articles-widget-scope .hero.layout-square .hero-body { padding: 2.5rem 2rem 1.5rem 1.75rem; display: flex; flex-direction: column; justify-content: flex-start; gap: 14px; align-self: stretch; }
+  #articles-widget-scope .hero.layout-square .hero-body .btn-hero { margin-top: auto; margin-bottom: 0; align-self: flex-end; }
+
+  #articles-widget-scope .hero.layout-portrait { display: grid; grid-template-columns: 60% 40%; min-height: 460px; }
+  #articles-widget-scope .hero.layout-portrait .hero-image { order: 2; }
+  #articles-widget-scope .hero.layout-portrait .hero-image img { width: 100%; height: 100%; object-fit: cover; object-position: top center; display: block; }
+  #articles-widget-scope .hero.layout-portrait .hero-body { order: 1; padding: 2.5rem 1.75rem 1.5rem 2.5rem; display: flex; flex-direction: column; justify-content: flex-start; gap: 14px; align-self: stretch; }
+  #articles-widget-scope .hero.layout-portrait .hero-body .btn-hero { margin-top: auto; margin-bottom: 0; align-self: flex-end; }
+
+  #articles-widget-scope .hero.layout-landscape { display: flex; flex-direction: column; }
+  #articles-widget-scope .hero.layout-landscape .hero-image img { width: 100%; height: auto; max-height: 70vh; object-fit: contain; object-position: center; display: block; background: #000; }
+  #articles-widget-scope .hero.layout-landscape .hero-body { padding: 2rem 2.5rem 1.5rem; display: flex; flex-direction: column; gap: 14px; background: var(--navy); }
+  #articles-widget-scope .hero.layout-landscape .hero-body .btn-hero { margin-top: 0.5rem; margin-bottom: 0; align-self: flex-end; }
+
+  #articles-widget-scope .badge {
+    display: inline-block;
+    background: #00ff78;
+    color: #000;
+    border: 1px solid #00ff78;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 3px 10px;
+    border-radius: 20px;
+    align-self: flex-start;
+  }
+  #articles-widget-scope .badge-wrap { display: flex; flex-wrap: wrap; gap: 5px; align-items: flex-start; }
+  #articles-widget-scope .hero-title { font-family: 'Sora Variable', 'Sora', sans-serif; font-size: 1.5rem; font-weight: 700; color: #f8fafc; line-height: 1.3; }
+  #articles-widget-scope .hero-date { font-size: 12px; color: rgba(248, 250, 252, 0.4); }
+  #articles-widget-scope .hero-exc { font-size: 14px; color: rgba(248, 250, 252, 0.65); line-height: 1.7; }
+
+  #articles-widget-scope .filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 1.75rem;
+    padding-bottom: 1.25rem;
+    border-bottom: 1px solid var(--border);
+  }
+  #articles-widget-scope .filter-label { font-size: 12px; font-weight: 500; color: var(--muted); margin-right: 4px; }
+  #articles-widget-scope .filter-btn {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-family: inherit;
+    cursor: pointer;
+    color: var(--muted);
+    transition: all 0.15s;
+  }
+  #articles-widget-scope .filter-btn:hover { border-color: var(--accent); color: var(--accent); }
+  #articles-widget-scope .filter-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  #articles-widget-scope .article-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+  #articles-widget-scope .card {
+    border: 1px solid var(--border);
+    border-radius: var(--r);
+    overflow: hidden;
+    background: var(--bg);
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  #articles-widget-scope .card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08); }
+  #articles-widget-scope .card-img { width: 100%; height: 160px; object-fit: cover; display: block; background: var(--bg-subtle); }
+  #articles-widget-scope .card-body { padding: 1.1rem; display: flex; flex-direction: column; flex: 1; gap: 6px; justify-content: flex-start; }
+  #articles-widget-scope .card-cat {
+    display: inline-block;
+    background: #00ff78;
+    color: #000;
+    border: 1px solid #00ff78;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 9px;
+    border-radius: 20px;
+  }
+  #articles-widget-scope .card-title { font-family: 'Sora Variable', 'Sora', sans-serif; font-size: 0.9rem; font-weight: 600; color: var(--text); line-height: 1.45; }
+  #articles-widget-scope .card-date { font-size: 11px; color: var(--muted); }
+  #articles-widget-scope .card-exc {
+    font-size: 12.5px;
+    color: var(--muted);
+    line-height: 1.65;
+    flex: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  #articles-widget-scope .card-footer { margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border); }
+
+  #articles-widget-scope .btn { display: inline-block; font-family: inherit; font-size: 12.5px; font-weight: 500; padding: 7px 16px; border-radius: var(--r-sm); cursor: pointer; text-decoration: none; transition: all 0.15s; }
+  #articles-widget-scope .btn-hero { background: var(--accent); color: #000; border: none; padding: 10px 22px; font-size: 13.5px; align-self: flex-end; }
+  #articles-widget-scope .btn-hero:hover { background: var(--accent-dark); }
+  #articles-widget-scope .btn-card { display: block; width: 100%; text-align: center; background: var(--accent); color: #000; border: 1px solid var(--accent); font-weight: 600; }
+  #articles-widget-scope .btn-card:hover { background: var(--accent-dark); border-color: var(--accent-dark); color: #000; }
+
+  #articles-widget-scope .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.72);
+    z-index: 1000;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 2rem 1rem;
+    overflow-y: auto;
+  }
+  #articles-widget-scope .modal-overlay.open { display: flex; }
+
+  #articles-widget-scope .modal {
+    background: var(--bg);
+    border-radius: 16px;
+    max-width: 960px;
+    width: 100%;
+    margin: auto;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.25);
+    animation: articles-slide-up 0.2s ease;
+  }
+  @keyframes articles-slide-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  #articles-widget-scope .modal-cover { width: 100%; height: auto; max-height: 70vh; object-fit: contain; display: block; background: #f8fafc; }
+
+  #articles-widget-scope .modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: background 0.15s;
+  }
+  #articles-widget-scope .modal-close:hover { background: rgba(0, 0, 0, 0.75); }
+
+  #articles-widget-scope .modal-body { padding: 2rem 2.5rem 2.5rem; }
+  #articles-widget-scope .modal-meta { display: flex; align-items: center; gap: 10px; margin-bottom: 1rem; }
+  #articles-widget-scope .modal-cats { display: flex; flex-wrap: wrap; gap: 5px; }
+  #articles-widget-scope .modal-cat-badge {
+    display: inline-block;
+    background: #00ff78;
+    color: #000;
+    border: 1px solid #00ff78;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 2px 9px;
+    border-radius: 20px;
+  }
+  #articles-widget-scope .modal-dot { color: var(--border); }
+  #articles-widget-scope .modal-date { font-size: 12px; color: var(--muted); }
+  #articles-widget-scope .modal-title { font-family: 'Sora Variable', 'Sora', sans-serif; font-size: 1.6rem; font-weight: 700; color: var(--text); line-height: 1.3; margin-bottom: 1.5rem; }
+
+  #articles-widget-scope .prose { font-size: 15px; line-height: 1.8; color: var(--text); }
+  #articles-widget-scope .prose h1, #articles-widget-scope .prose h2 { font-family: 'Sora Variable', 'Sora', sans-serif; font-size: 1.2rem; font-weight: 700; color: var(--navy); margin: 1.75rem 0 0.6rem; padding-bottom: 0.4rem; border-bottom: 2px solid var(--border); }
+  #articles-widget-scope .prose h3 { font-family: 'Sora Variable', 'Sora', sans-serif; font-size: 1rem; font-weight: 600; color: var(--text); margin: 1.5rem 0 0.4rem; }
+  #articles-widget-scope .prose p { margin: 0 0 1rem; }
+  #articles-widget-scope .prose strong { font-weight: 600; color: var(--navy); }
+  #articles-widget-scope .prose em { font-style: italic; }
+  #articles-widget-scope .prose ul, #articles-widget-scope .prose ol { margin: 0 0 1rem 1.5rem; }
+  #articles-widget-scope .prose li { margin-bottom: 0.3rem; }
+  #articles-widget-scope .prose blockquote { border-left: 3px solid var(--accent); background: var(--bg-subtle); padding: 0.75rem 1.25rem; margin: 1rem 0; border-radius: 0 var(--r-sm) var(--r-sm) 0; color: var(--muted); font-style: italic; }
+  #articles-widget-scope .prose blockquote p { margin: 0; }
+  #articles-widget-scope .prose code { background: var(--bg-subtle); border: 1px solid var(--border); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 0.88em; }
+  #articles-widget-scope .prose pre { background: var(--navy); color: #cbd5e1; padding: 1rem 1.25rem; border-radius: var(--r-sm); overflow-x: auto; margin: 1rem 0; font-family: monospace; font-size: 0.88em; line-height: 1.6; }
+  #articles-widget-scope .prose pre code { background: none; border: none; padding: 0; color: inherit; }
+  #articles-widget-scope .prose hr { border: none; border-top: 1px solid var(--border); margin: 1.5rem 0; }
+  #articles-widget-scope .prose table { width: 100%; border-collapse: collapse; margin: 0 0 1rem; font-size: 0.9em; }
+  #articles-widget-scope .prose th, #articles-widget-scope .prose td { border: 1px solid var(--border); padding: 0.5rem 0.75rem; text-align: left; }
+  #articles-widget-scope .prose th { background: var(--bg-subtle); font-weight: 600; }
+  #articles-widget-scope .prose a { color: var(--accent-dark); }
+  #articles-widget-scope .prose img { max-width: 100%; height: auto; display: block; margin: 1.5rem auto; border-radius: var(--r); }
+
+  #articles-widget-scope .modal-ext-link { display: inline-flex; align-items: center; gap: 6px; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--border); color: var(--accent-dark); font-size: 13px; font-weight: 500; text-decoration: none; }
+  #articles-widget-scope .modal-ext-link:hover { color: var(--accent); }
+
+  #articles-widget-scope .empty { grid-column: 1 / -1; text-align: center; padding: 3rem; color: var(--muted); font-size: 14px; }
+  #articles-widget-scope .loader { display: flex; align-items: center; justify-content: center; padding: 4rem; color: var(--muted); font-size: 14px; }
+
+  @media (max-width: 768px) {
+    #articles-widget-scope .hero.layout-square, #articles-widget-scope .hero.layout-portrait { grid-template-columns: 1fr; }
+    #articles-widget-scope .hero.layout-portrait .hero-image { order: 1; }
+    #articles-widget-scope .hero.layout-portrait .hero-body { order: 2; }
+    #articles-widget-scope .hero.layout-square .hero-image img, #articles-widget-scope .hero.layout-portrait .hero-image img { height: 240px; }
+    #articles-widget-scope .hero.layout-landscape .hero-image img { max-height: 55vw; }
+    #articles-widget-scope .hero.layout-landscape .hero-body { flex-direction: column; align-items: flex-start; gap: 1rem; }
+    #articles-widget-scope .article-grid { grid-template-columns: repeat(2, 1fr); }
+    #articles-widget-scope .modal-body { padding: 1.25rem 1.25rem 2rem; }
+    #articles-widget-scope .modal-title { font-size: 1.25rem; }
+  }
+  @media (max-width: 520px) {
+    #articles-widget-scope .article-grid { grid-template-columns: 1fr; }
+    #articles-widget-scope .widget { padding: 1rem 0.75rem 2rem; }
+  }
+</style>

@@ -1,0 +1,51 @@
+---
+import { siteInfo } from '../../data/navigation';
+---
+
+<a href={siteInfo.whatsapp} target="_blank" rel="noopener noreferrer" class="whatsapp-banner" data-reveal="scale">
+  <img src="/images/icons/whatsapp.svg" alt="" width="158" height="158" class="whatsapp-banner__icon" />
+  <span>Talk to an expert now.</span>
+</a>
+
+<style>
+  .whatsapp-banner {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-8);
+    height: 206px;
+    margin-bottom: var(--space-16);
+    background: var(--color-green);
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-size: 3rem;
+    font-weight: 700;
+  }
+
+  .whatsapp-banner__icon {
+    width: 158px;
+    height: 158px;
+    flex-shrink: 0;
+  }
+
+  .whatsapp-banner:hover {
+    text-decoration: none;
+    opacity: 0.9;
+  }
+
+  @media (max-width: 760px) {
+    .whatsapp-banner {
+      height: auto;
+      padding-block: var(--space-8);
+      font-size: 1.75rem;
+      flex-direction: column;
+      gap: var(--space-4);
+      text-align: center;
+    }
+
+    .whatsapp-banner__icon {
+      width: 64px;
+      height: 64px;
+    }
+  }
+</style>

@@ -1,11 +1,20 @@
 ---
-import Welcome from '../components/Welcome.astro';
-import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Hero from '../components/home/Hero.astro';
+import IntroSection from '../components/home/IntroSection.astro';
+import FeatureGrid from '../components/home/FeatureGrid.astro';
+import WhatsAppBanner from '../components/home/WhatsAppBanner.astro';
+import EnginesSection from '../components/home/EnginesSection.astro';
+import WorkloadsSection from '../components/home/WorkloadsSection.astro';
+import GetStartedSection from '../components/home/GetStartedSection.astro';
 ---
 
-<Layout>
-	<Welcome />
-</Layout>
+<BaseLayout title="Telco Cloud Experts" description="Unlocking the telecom network for innovation">
+  <Hero />
+  <IntroSection />
+  <FeatureGrid />
+  <WhatsAppBanner />
+  <EnginesSection />
+  <WorkloadsSection />
+  <GetStartedSection />
+</BaseLayout>

@@ -1,0 +1,34 @@
+---
+// Séparateur décoratif à carrés (repris du site actuel), un seul en vert.
+interface Props {
+  count?: 3 | 4;
+  active?: number;
+}
+const { count = 4, active = 0 } = Astro.props;
+const dots = Array.from({ length: count }, (_, i) => i);
+---
+
+<div class="section-dots" aria-hidden="true">
+  {dots.map((i) => (
+    <span class:list={['section-dots__dot', { 'is-active': i === active }]}></span>
+  ))}
+</div>
+
+<style>
+  .section-dots {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-1);
+    margin-block: var(--space-8);
+  }
+
+  .section-dots__dot {
+    width: 12px;
+    height: 12px;
+    background: #1c1c1c;
+  }
+
+  .section-dots__dot.is-active {
+    background: var(--color-green);
+  }
+</style>

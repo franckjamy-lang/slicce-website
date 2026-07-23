@@ -1,0 +1,372 @@
+---
+// Widget catalogue produits — anciennement encapsulé dans un iframe hébergé
+// sur files.slicce.co, désormais intégré directement dans la page (voir
+// src/pages/products/catalog.astro). Données lues depuis un JSON hébergé sur
+// GitHub (console d'admin unifiée de Franck) ; logique de rendu/SEO (JSON-LD,
+// microdata) conservée. Tout le "pont" iframe↔page parente (blocage du
+// scroll interne, report de hauteur via postMessage) a été retiré, devenu
+// inutile hors iframe.
+---
+
+<div id="catalog-widget-scope">
+  <div class="catalog-widget">
+    <!-- Liste sémantique cachée visuellement, lue par les crawlers -->
+    <section id="seo-product-list" aria-hidden="true">
+      <h2>Slicce Product Catalog</h2>
+      <p>Cloud-native telecom products for 5G core, API exposure, IMS and interworking functions.</p>
+      <ol id="seo-list" itemscope itemtype="https://schema.org/ItemList">
+        <meta itemprop="name" content="Slicce Product Catalog" />
+        <meta itemprop="description" content="Complete catalog of Slicce cloud-native telecom network functions." />
+      </ol>
+    </section>
+
+    <div id="app">
+      <div class="cards-grid">
+        <div class="state-msg"><div class="spinner"></div><br />Chargement du catalogue…</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  const GH_OWNER = 'franckjamy-lang';
+  const GH_REPO = 'slicce-data';
+  const GH_PATH = 'catalog-data.json';
+  const GH_BRANCH = 'main';
+
+  const ITEMS_PER_PAGE = 6;
+  const CANONICAL_URL = 'https://www.slicce.co/products/catalog';
+
+  type Product = { name: string; image: string; category: string; family: string; networks: string; description: string; url: string };
+
+  let allProducts: Product[] = [];
+  let filtered: Product[] = [];
+  let currentPage = 1;
+
+  function stripHtml(html: string) {
+    const div = document.createElement('div');
+    div.innerHTML = html || '';
+    return (div.textContent || div.innerText || '').trim();
+  }
+
+  async function fetchProducts(): Promise<Product[]> {
+    if (!GH_OWNER || !GH_REPO) {
+      console.warn('[Catalog Widget] GH_OWNER/GH_REPO not set — showing empty state.');
+      return [];
+    }
+    const url =
+      'https://raw.githubusercontent.com/' + GH_OWNER + '/' + GH_REPO + '/' + GH_BRANCH + '/' + GH_PATH + '?t=' + Date.now();
+    const res = await fetch(url, { cache: 'no-store' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const db = await res.json();
+    return (db.products || []).filter((p: Product) => p.name);
+  }
+
+  function injectJsonLd(products: Product[]) {
+    const old = document.getElementById('jsonld-catalog');
+    if (old) old.remove();
+
+    const itemListElement = products.map((p, i) => {
+      const productSchema: Record<string, unknown> = {
+        '@type': 'Product',
+        position: i + 1,
+        name: p.name,
+        description: p.description ? stripHtml(p.description) : undefined,
+        image: p.image || undefined,
+        url: p.url || undefined,
+      };
+      if (p.category) productSchema['additionalType'] = p.category;
+      if (p.networks) productSchema['keywords'] = p.networks;
+      if (p.family) productSchema['category'] = p.family;
+      Object.keys(productSchema).forEach((k) => productSchema[k] === undefined && delete productSchema[k]);
+      return { '@type': 'ListItem', position: i + 1, item: productSchema };
+    });
+
+    const schema = {
+      '@context': 'https://schema.org',
+      '@type': 'ItemList',
+      name: 'Slicce Product Catalog',
+      description: 'Cloud-native telecom network functions for 5G, API exposure, IMS and interworking.',
+      url: CANONICAL_URL,
+      numberOfItems: products.length,
+      itemListElement,
+    };
+
+    const script = document.createElement('script');
+    script.id = 'jsonld-catalog';
+    script.type = 'application/ld+json';
+    script.textContent = JSON.stringify(schema, null, 2);
+    document.head.appendChild(script);
+  }
+
+  function injectSeoList(products: Product[]) {
+    const list = document.getElementById('seo-list');
+    if (!list) return;
+    list.innerHTML = products
+      .map((p, i) => {
+        const nets = p.networks ? p.networks.split(',').map((n) => n.trim()).filter(Boolean) : [];
+        return `
+        <li itemprop="itemListElement" itemscope itemtype="https://schema.org/ListItem">
+          <meta itemprop="position" content="${i + 1}">
+          <div itemprop="item" itemscope itemtype="https://schema.org/Product">
+            <h2 itemprop="name">${esc(p.name)}</h2>
+            ${p.description ? `<p itemprop="description">${esc(stripHtml(p.description))}</p>` : ''}
+            ${p.image ? `<meta itemprop="image" content="${esc(p.image)}">` : ''}
+            ${p.url ? `<link itemprop="url" href="${esc(p.url)}">` : ''}
+            ${p.category ? `<meta itemprop="additionalType" content="${esc(p.category)}">` : ''}
+            ${p.family ? `<meta itemprop="category" content="${esc(p.family)}">` : ''}
+            ${nets.length ? `<meta itemprop="keywords" content="${esc(nets.join(', '))}">` : ''}
+          </div>
+        </li>`;
+      })
+      .join('');
+  }
+
+  function uniqueSorted(products: Product[], key: keyof Product) {
+    const set = new Set<string>();
+    products.forEach((p) => { if (p[key]) p[key].split(',').forEach((v) => set.add(v.trim())); });
+    return Array.from(set).filter(Boolean).sort();
+  }
+
+  function readFilters() {
+    return {
+      desc: (document.getElementById('f-desc') as HTMLInputElement)?.value?.toLowerCase() ?? '',
+      cat: (document.getElementById('f-cat') as HTMLSelectElement)?.value ?? '',
+      net: (document.getElementById('f-net') as HTMLSelectElement)?.value ?? '',
+      fam: (document.getElementById('f-fam') as HTMLSelectElement)?.value ?? '',
+    };
+  }
+
+  function applyFilters() {
+    const { desc, cat, net, fam } = readFilters();
+    filtered = allProducts.filter((p) => {
+      if (desc && !p.name.toLowerCase().includes(desc) && !p.description.toLowerCase().includes(desc)) return false;
+      if (cat && p.category !== cat) return false;
+      if (net && !p.networks.split(',').map((s) => s.trim()).includes(net)) return false;
+      if (fam && p.family !== fam) return false;
+      return true;
+    });
+    currentPage = 1;
+    renderPage();
+  }
+
+  function goPage(n: number) {
+    const max = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+    if (n < 1 || n > max) return;
+    currentPage = n;
+    renderPage();
+    document.getElementById('app')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function pagHTML(total: number, page: number) {
+    const max = Math.ceil(total / ITEMS_PER_PAGE);
+    const start = total === 0 ? 0 : (page - 1) * ITEMS_PER_PAGE + 1;
+    const end = Math.min(page * ITEMS_PER_PAGE, total);
+    return `
+      <div class="pagination">
+        <span class="page-info">${start}&thinsp;–&thinsp;${end} / ${total}</span>
+        <button class="page-btn" data-page="${page - 1}" ${page <= 1 ? 'disabled' : ''}>&#8249;</button>
+        <button class="page-btn" data-page="${page + 1}" ${page >= max ? 'disabled' : ''}>&#8250;</button>
+      </div>`;
+  }
+
+  function cardHTML(p: Product) {
+    const nets = p.networks ? p.networks.split(',').map((n) => n.trim()).filter(Boolean) : [];
+    return `
+      <article class="card" itemscope itemtype="https://schema.org/Product">
+        <h2 class="card-title" itemprop="name">${esc(p.name)}</h2>
+        ${p.image ? `
+        <div class="card-image">
+          <img src="${esc(p.image)}" alt="${esc(p.name)}" loading="lazy" itemprop="image" data-fallback-hide-parent>
+        </div>` : ''}
+        <div class="card-details">
+          ${p.category ? `<p><strong>Category:</strong> <span itemprop="additionalType">${esc(p.category)}</span></p>` : ''}
+          ${p.family ? `<p><strong>Family:</strong> <span itemprop="category">${esc(p.family)}</span></p>` : ''}
+          ${nets.length ? `<div class="network-tags">${nets.map((n) => `<span class="network-tag" itemprop="keywords">${esc(n)}</span>`).join('')}</div>` : ''}
+          ${p.description ? `<div class="card-desc"><p><strong>Description:</strong></p><div itemprop="description" class="desc-html">${p.description}</div></div>` : ''}
+        </div>
+        ${p.url ? `<div class="card-footer"><a href="${esc(p.url)}" target="_blank" rel="noopener" class="btn-learn" itemprop="url">Learn More</a></div>` : ''}
+      </article>`;
+  }
+
+  function esc(str: string) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#39;');
+  }
+
+  function renderPage() {
+    const { desc, cat, net, fam } = readFilters();
+    const categories = uniqueSorted(allProducts, 'category');
+    const networks = uniqueSorted(allProducts, 'networks');
+    const families = uniqueSorted(allProducts, 'family');
+    const pageSlice = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+    const optionsHTML = (arr: string[], placeholder: string, selected: string) =>
+      `<option value="">${placeholder}</option>` +
+      arr.map((v) => `<option value="${esc(v)}" ${v === selected ? 'selected' : ''}>${esc(v)}</option>`).join('');
+
+    const app = document.getElementById('app');
+    if (!app) return;
+    app.innerHTML = `
+      <div class="filters">
+        <div class="filter-wrap">
+          <input id="f-desc" class="filter-input" type="text" placeholder="Search products…" value="${esc(desc)}" aria-label="Search by name or description">
+        </div>
+        <div class="filter-wrap">
+          <select id="f-cat" class="filter-select" aria-label="Filter by category">${optionsHTML(categories, 'Category', cat)}</select>
+          <span class="filter-icon" aria-hidden="true">▾</span>
+        </div>
+        <div class="filter-wrap">
+          <select id="f-net" class="filter-select" aria-label="Filter by network">${optionsHTML(networks, 'Networks', net)}</select>
+          <span class="filter-icon" aria-hidden="true">▾</span>
+        </div>
+        <div class="filter-wrap">
+          <select id="f-fam" class="filter-select" aria-label="Filter by family">${optionsHTML(families, 'Family', fam)}</select>
+          <span class="filter-icon" aria-hidden="true">▾</span>
+        </div>
+      </div>
+
+      ${pagHTML(filtered.length, currentPage)}
+
+      <div class="cards-grid" role="list" aria-label="Product catalog">
+        ${pageSlice.length ? pageSlice.map(cardHTML).join('') : '<div class="state-msg">No results for these filters.</div>'}
+      </div>
+
+      ${pagHTML(filtered.length, currentPage)}
+    `;
+
+    let debounce: ReturnType<typeof setTimeout>;
+    document.getElementById('f-desc')?.addEventListener('input', () => {
+      clearTimeout(debounce);
+      debounce = setTimeout(applyFilters, 220);
+    });
+    ['f-cat', 'f-net', 'f-fam'].forEach((id) => document.getElementById(id)?.addEventListener('change', applyFilters));
+
+    app.querySelectorAll<HTMLImageElement>('img[data-fallback-hide-parent]').forEach((img) => {
+      img.addEventListener('error', () => {
+        const wrap = img.closest<HTMLElement>('.card-image');
+        if (wrap) wrap.style.display = 'none';
+      });
+    });
+  }
+
+  // Délégation pour la pagination (boutons recréés à chaque rendu)
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('[data-page]');
+    if (btn) goPage(Number(btn.dataset.page));
+  });
+
+  (async () => {
+    try {
+      allProducts = await fetchProducts();
+      filtered = [...allProducts];
+      injectJsonLd(allProducts);
+      injectSeoList(allProducts);
+      renderPage();
+    } catch (err: any) {
+      const app = document.getElementById('app');
+      if (app) {
+        app.innerHTML = `<div class="error-msg">⚠️ Loading error: ${err.message}<br><small>Please check the GitHub data source configuration.</small></div>`;
+      }
+      console.error(err);
+    }
+  })();
+</script>
+
+<style is:global>
+  #catalog-widget-scope .catalog-widget {
+    font-family: 'Open Sans Variable', 'Open Sans', sans-serif;
+    color: #111;
+    padding: 20px 0 28px;
+  }
+
+  #catalog-widget-scope #seo-product-list {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  #catalog-widget-scope .filters { display: flex; gap: 10px; margin-bottom: 10px; flex-wrap: wrap; }
+  #catalog-widget-scope .filter-wrap { position: relative; display: flex; align-items: center; }
+  #catalog-widget-scope .filter-input, #catalog-widget-scope .filter-select {
+    height: 38px;
+    border: 1.5px solid #ddd;
+    border-radius: 6px;
+    padding: 0 12px;
+    font-family: inherit;
+    font-size: 13.5px;
+    color: #444;
+    background: #fff;
+    outline: none;
+    min-width: 155px;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    transition: border-color 0.15s;
+  }
+  #catalog-widget-scope .filter-select { padding-right: 32px; }
+  #catalog-widget-scope .filter-input { cursor: text; }
+  #catalog-widget-scope .filter-input:focus, #catalog-widget-scope .filter-select:focus { border-color: #00c95e; box-shadow: 0 0 0 2.5px rgba(0, 255, 120, 0.15); }
+  #catalog-widget-scope .filter-icon { position: absolute; right: 10px; pointer-events: none; font-size: 11px; color: #888; line-height: 1; }
+
+  #catalog-widget-scope .pagination { display: flex; align-items: center; gap: 2px; padding: 6px 0; font-size: 13.5px; color: #555; user-select: none; justify-content: flex-end; }
+  #catalog-widget-scope .page-info { margin-right: 4px; }
+  #catalog-widget-scope .page-btn { background: none; border: none; cursor: pointer; width: 28px; height: 28px; display: flex; align-items: center; justify-content: center; border-radius: 5px; font-size: 20px; font-weight: 700; color: #111; transition: background 0.12s; line-height: 1; }
+  #catalog-widget-scope .page-btn:hover:not(:disabled) { background: #efefef; }
+  #catalog-widget-scope .page-btn:disabled { font-weight: 300; color: #bbb; cursor: default; }
+
+  #catalog-widget-scope .cards-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin: 6px 0; }
+  @media (max-width: 860px) { #catalog-widget-scope .cards-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { #catalog-widget-scope .cards-grid { grid-template-columns: 1fr; } }
+
+  #catalog-widget-scope .card {
+    background: #fafbfa;
+    border-radius: 16px;
+    padding: 20px 16px 16px;
+    box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12), 0 1px 4px rgba(0, 0, 0, 0.07);
+    display: flex;
+    flex-direction: column;
+    transition: box-shadow 0.18s, transform 0.18s;
+    max-width: 300px;
+    height: 520px;
+    margin: 0 auto;
+    width: 100%;
+  }
+  #catalog-widget-scope .card:hover { box-shadow: 0 14px 40px rgba(0, 0, 0, 0.18), 0 2px 8px rgba(0, 0, 0, 0.08); transform: translateY(-3px); }
+  #catalog-widget-scope .card-title { font-size: 17px; font-weight: 700; text-align: center; margin-bottom: 4px; }
+  #catalog-widget-scope .card-image { display: flex; justify-content: center; align-items: center; min-height: 140px; margin: 10px 0 14px; }
+  #catalog-widget-scope .card-image img { max-width: 220px; max-height: 160px; width: 100%; object-fit: contain; border-radius: 4px; }
+  #catalog-widget-scope .card-details { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-height: 0; }
+  #catalog-widget-scope .card-details p { font-size: 13.5px; margin: 5px 0; line-height: 1.5; }
+  #catalog-widget-scope .card-desc { flex: 1; overflow-y: auto; min-height: 0; padding-right: 4px; scrollbar-width: thin; scrollbar-color: #ccc transparent; }
+  #catalog-widget-scope .card-desc::-webkit-scrollbar { width: 4px; }
+  #catalog-widget-scope .card-desc::-webkit-scrollbar-track { background: transparent; }
+  #catalog-widget-scope .card-desc::-webkit-scrollbar-thumb { background: #ccc; border-radius: 4px; }
+
+  #catalog-widget-scope .network-tags { display: flex; gap: 6px; flex-wrap: wrap; margin: 8px 0 6px; }
+  #catalog-widget-scope .network-tag { background: #00ff78; color: #000; font-size: 11px; font-weight: 700; padding: 3px 10px; border-radius: 20px; letter-spacing: 0.3px; }
+
+  #catalog-widget-scope .card-footer { display: flex; justify-content: flex-end; margin-top: 14px; padding-top: 10px; }
+  #catalog-widget-scope .btn-learn { background: #00ff78; color: #000; font-family: inherit; font-weight: 700; font-size: 13.5px; padding: 8px 18px; border-radius: 6px; text-decoration: none; border: none; cursor: pointer; transition: opacity 0.15s, transform 0.15s; display: inline-block; }
+  #catalog-widget-scope .btn-learn:hover { opacity: 0.82; transform: scale(1.02); }
+
+  #catalog-widget-scope .state-msg { grid-column: 1 / -1; text-align: center; padding: 50px 20px; color: #999; font-size: 15px; }
+  #catalog-widget-scope .spinner { display: inline-block; width: 22px; height: 22px; border: 2px solid #ddd; border-top-color: #00c95e; border-radius: 50%; animation: catalog-spin 0.7s linear infinite; margin-bottom: 10px; }
+  @keyframes catalog-spin { to { transform: rotate(360deg); } }
+  #catalog-widget-scope .error-msg { background: #fff3f3; border: 1.5px solid #fcc; border-radius: 8px; padding: 16px 20px; color: #c00; font-size: 13.5px; }
+
+  #catalog-widget-scope .desc-html { font-size: inherit; line-height: 1.6; }
+  #catalog-widget-scope .desc-html p { margin: 0 0 0.5em; }
+  #catalog-widget-scope .desc-html ul, #catalog-widget-scope .desc-html ol { margin: 0 0 0.5em 1.2em; }
+  #catalog-widget-scope .desc-html blockquote { border-left: 3px solid currentColor; opacity: 0.8; padding-left: 0.75em; margin: 0.5em 0; font-style: italic; }
+  #catalog-widget-scope .desc-html a { text-decoration: underline; }
+  #catalog-widget-scope .desc-html img { max-width: 100%; border-radius: 6px; margin: 0.4em 0; }
+</style>

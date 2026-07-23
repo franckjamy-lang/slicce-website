@@ -1,0 +1,41 @@
+---
+import { getCollection, render } from 'astro:content';
+import ProductLayout from '../../layouts/ProductLayout.astro';
+import ChargingIwfDiagram from '../../components/products/ChargingIwfDiagram.astro';
+
+// Certains produits ont un diagramme spécifique (fait main, pas dérivable des
+// specs génériques) : mappage explicite id de collection -> composant.
+const diagrams: Record<string, any> = {
+  'interworking-functions/charging-iwf': ChargingIwfDiagram,
+};
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { Content } = await render(product);
+const Diagram = diagrams[product.id];
+---
+
+<ProductLayout
+  title={product.data.title}
+  shortName={product.data.shortName}
+  heroDescription={product.data.heroDescription}
+  heroIcon={product.data.heroIcon}
+  features={product.data.features}
+  specs={product.data.specs}
+  useCasesIcon={product.data.useCasesIcon}
+  useCases={product.data.useCases}
+>
+  {Diagram && (
+    <Fragment slot="diagram">
+      <Diagram />
+    </Fragment>
+  )}
+  <Content />
+</ProductLayout>

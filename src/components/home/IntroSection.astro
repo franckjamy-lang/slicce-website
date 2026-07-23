@@ -1,0 +1,111 @@
+---
+import Icon from '../Icon.astro';
+import SectionDots from '../SectionDots.astro';
+---
+
+<section id="unlocking" class="section intro">
+  <div class="container">
+    <h2 class="intro__title" data-reveal>Unlocking the telecom network for innovation</h2>
+    <p class="intro__lead" data-reveal>
+      Slicce cloud communication engines are cloud-native, self-contained microservices designed to
+      streamline access to telecom interfaces, facilitating the rapid adoption of scalable network
+      services. They enable seamless interworking across network generations and promote convergence
+      between telecom network APIs and public web APIs.
+    </p>
+
+    <div class="intro__columns">
+      <div class="intro__column" data-reveal="left">
+        <h3>The Simplest way to adopt<br />cloud native</h3>
+        <span class="intro__divider" aria-hidden="true"></span>
+        <p>
+          Slicce ensures smooth migration of legacy services to modern infrastructure, while keeping
+          costs low and maintaining agility to quickly adapt to evolving market needs.
+        </p>
+        <Icon name="cloud-native" size={72} />
+        <span class="intro__column-label">Cloud Native</span>
+      </div>
+
+      <div class="intro__column" data-reveal="right">
+        <h3>The Fastest way to offer<br />smart VAS</h3>
+        <span class="intro__divider" aria-hidden="true"></span>
+        <p>
+          Slicce enables seamless and quick development of new value-added services to create
+          competitive differentiation and generate revenue streams through innovation.
+        </p>
+        <Icon name="open-api" size={72} />
+        <span class="intro__column-label">Open API</span>
+      </div>
+    </div>
+
+    <SectionDots active={1} />
+  </div>
+</section>
+
+<style>
+  .intro {
+    position: relative;
+    background: var(--color-white);
+    text-align: center;
+  }
+
+  .intro__title {
+    max-width: 760px;
+    margin-inline: auto;
+    font-size: clamp(1.5rem, 1.2rem + 1.2vw, 2rem);
+  }
+
+  .intro__lead {
+    max-width: 920px;
+    margin-inline: auto;
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+  }
+
+  .intro__columns {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    margin-top: var(--space-16);
+    text-align: center;
+  }
+
+  .intro__column {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .intro__column h3 {
+    font-size: 1.875rem;
+    margin-bottom: var(--space-3);
+  }
+
+  .intro__divider {
+    display: block;
+    width: 96px;
+    height: 3px;
+    background: var(--color-green);
+    margin-bottom: var(--space-4);
+  }
+
+  .intro__column p {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    max-width: 270px;
+    margin-bottom: var(--space-12);
+  }
+
+  .intro__column-label {
+    font-weight: 700;
+    margin-top: var(--space-3);
+  }
+
+  @media (max-width: 720px) {
+    .intro__columns {
+      grid-template-columns: 1fr;
+      gap: var(--space-12);
+    }
+  }
+</style>

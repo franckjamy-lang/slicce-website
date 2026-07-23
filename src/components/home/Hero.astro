@@ -1,0 +1,145 @@
+---
+import Icon from '../Icon.astro';
+---
+
+<section class="hero" id="hero">
+  <div class="hero__media" data-parallax-image>
+    <img src="/images/hero/skyline.jpg" alt="" width="1772" height="1000" />
+  </div>
+  <div class="container hero__content">
+    <h1>Monetize beyond<br />connectivity.</h1>
+    <p class="hero__subhead">Create value with light and simple<br />telecom cloud native services.</p>
+  </div>
+  <a href="#unlocking" class="hero__scroll" aria-label="Défiler vers le contenu">
+    <Icon name="chevron-down" size={28} />
+  </a>
+</section>
+
+<script>
+  // Parallax mesuré directement sur le site original (slicce.co) : le texte
+  // défile à vitesse normale (aucun JS dessus), seul le visuel de fond monte
+  // deux fois moins vite que le scroll (translateY = -scrollY * 0.5), ce qui
+  // lui donne l'effet de "rester en arrière". Le hero est en flux normal
+  // (pas de sticky) : une fois scrollé, il ne peut pas réapparaître plus bas.
+  const hero = document.getElementById('hero');
+  const image = hero?.querySelector<HTMLElement>('[data-parallax-image]');
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (hero && image && !prefersReducedMotion) {
+    const IMAGE_SPEED = 0.5; // valeur mesurée sur le site original
+    let ticking = false;
+
+    const update = () => {
+      const rect = hero.getBoundingClientRect();
+      const progress = Math.max(0, -rect.top);
+      // Le fond bouge nativement à 1x avec le flux normal ; on ajoute un
+      // décalage positif pour ramener sa vitesse effective à 0.5x (il "reste
+      // en arrière" par rapport au reste de la page qui défile normalement).
+      image.style.transform = `translate3d(0, ${progress * IMAGE_SPEED}px, 0)`;
+      ticking = false;
+    };
+
+    const onScroll = () => {
+      if (!ticking) {
+        requestAnimationFrame(update);
+        ticking = true;
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          window.addEventListener('scroll', onScroll, { passive: true });
+          window.addEventListener('resize', onScroll, { passive: true });
+          update();
+        } else {
+          window.removeEventListener('scroll', onScroll);
+          window.removeEventListener('resize', onScroll);
+        }
+      },
+      { rootMargin: '200px 0px' }
+    );
+    observer.observe(hero);
+  }
+</script>
+
+<style>
+  .hero {
+    position: relative;
+    background: var(--color-black-soft);
+    color: var(--text-inverse);
+    overflow: hidden;
+  }
+
+  .hero__media {
+    width: 100%;
+    will-change: transform;
+  }
+
+  .hero__media img {
+    width: 100%;
+    height: auto;
+    display: block;
+  }
+
+  /* Le texte est calé sur la hauteur du 1er carré vert du visuel (en vw, pour
+     rester aligné quelle que soit la largeur d'écran, l'image étant plein-bleed). */
+  .hero__content {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 0;
+    width: 100%;
+    bottom: 40vw;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    z-index: 2;
+  }
+
+  .hero__content h1 {
+    color: var(--text-inverse);
+    font-size: 56px;
+    margin-bottom: var(--space-4);
+  }
+
+  .hero__subhead {
+    font-family: var(--font-heading);
+    font-size: 26px;
+    line-height: 1.15;
+    color: var(--text-inverse);
+    margin: 0;
+  }
+
+  .hero__scroll {
+    position: absolute;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--text-inverse);
+    z-index: 3;
+  }
+
+  @media (max-width: 780px) {
+    .hero__content {
+      position: static;
+      transform: none;
+      padding-top: var(--space-16);
+      padding-bottom: var(--space-8);
+    }
+
+    .hero__content h1 {
+      font-size: 2.25rem;
+    }
+
+    .hero__subhead {
+      font-size: 1.125rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .hero__media {
+      transform: none !important;
+    }
+  }
+</style>

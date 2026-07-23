@@ -1,0 +1,66 @@
+---
+// Anime l'apparition des blocs de contenu au scroll, via GSAP + ScrollTrigger.
+// Deux façons de marquer un élément, avec un type d'effet optionnel :
+//   data-reveal="up|left|right|scale"       → l'élément apparaît seul
+//   data-reveal-group="up|left|right|scale"  → ses enfants directs apparaissent
+//                                              l'un après l'autre ("stagger")
+// Sans valeur (juste data-reveal), l'effet par défaut est "up".
+// Se désactive automatiquement si l'utilisateur a demandé "réduire les
+// animations" (accessibilité), et n'anime chaque élément qu'une seule fois.
+---
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  if (!prefersReducedMotion) {
+    const DURATION = 1;
+    const DISTANCE = 80; // plus prononcé qu'avant (était 40)
+    const DISTANCE_X = 100;
+    const START = 'top 85%';
+
+    // Chaque variante = un point de départ ("from") différent pour GSAP.
+    const variants: Record<string, gsap.TweenVars> = {
+      up: { opacity: 0, y: DISTANCE, ease: 'power3.out' },
+      left: { opacity: 0, x: -DISTANCE_X, ease: 'power3.out' },
+      right: { opacity: 0, x: DISTANCE_X, ease: 'power3.out' },
+      scale: { opacity: 0, y: 30, scale: 0.8, ease: 'back.out(1.6)' },
+    };
+
+    function getVariant(el: HTMLElement): gsap.TweenVars {
+      const key = el.dataset.reveal || el.dataset.revealGroup || 'up';
+      return variants[key] ?? variants.up;
+    }
+
+    document.querySelectorAll<HTMLElement>('[data-reveal]').forEach((el) => {
+      gsap.from(el, {
+        ...getVariant(el),
+        duration: DURATION,
+        scrollTrigger: {
+          trigger: el,
+          start: START,
+          once: true,
+        },
+      });
+    });
+
+    document.querySelectorAll<HTMLElement>('[data-reveal-group]').forEach((group) => {
+      const children = Array.from(group.children) as HTMLElement[];
+      if (children.length === 0) return;
+      gsap.from(children, {
+        ...getVariant(group),
+        duration: DURATION,
+        stagger: 0.15,
+        scrollTrigger: {
+          trigger: group,
+          start: START,
+          once: true,
+        },
+      });
+    });
+  }
+</script>

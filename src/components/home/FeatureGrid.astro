@@ -1,0 +1,106 @@
+---
+import Icon from '../Icon.astro';
+
+const features = [
+  {
+    icon: 'cost-effective' as const,
+    title: 'Cost effective',
+    text: 'Supports pay-per-use and continuous delivery strategies with minimum overhead.',
+  },
+  {
+    icon: 'elastic' as const,
+    title: 'Elastic',
+    text: 'Automatically scales up and down according to the volume or pattern of traffic behavior.',
+  },
+  {
+    icon: 'customizable' as const,
+    title: 'Customizable',
+    text: 'Provides a high level of customization to adapt to technical challenges.',
+  },
+  {
+    icon: 'secure' as const,
+    title: 'Secure',
+    text: 'Implements encrypted interfaces and integrated firewall for all traffic types.',
+  },
+  {
+    icon: 'fast' as const,
+    title: 'Fast',
+    text: 'Enables creation of cloud-based workloads and new services within hours.',
+  },
+  {
+    icon: 'privacy' as const,
+    title: 'Ensure Privacy',
+    text: 'Facilitates data segregation to protect privacy for different customers or services.',
+  },
+];
+---
+
+<section class="section features">
+  <div class="container">
+    <h2 data-reveal>Accelerate monetization by adding value</h2>
+    <p class="features__tagline" data-reveal>
+      #Create innovative services&nbsp;&nbsp; #Share and monetize APIs&nbsp;&nbsp; #Allow convergence.
+    </p>
+
+    <div class="features__grid" data-reveal-group="scale">
+      {features.map((f) => (
+        <div class="features__card">
+          <Icon name={f.icon} size={66} />
+          <h3>{f.title}</h3>
+          <p>{f.text}</p>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    text-align: center;
+  }
+
+  .features__tagline {
+    font-family: var(--font-heading);
+    font-size: var(--text-base);
+    color: var(--color-ink);
+    margin-bottom: var(--space-16);
+  }
+
+  .features__grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-12) var(--space-8);
+  }
+
+  .features__card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .features__card h3 {
+    font-size: var(--text-lg);
+    margin: var(--space-4) 0 var(--space-2);
+  }
+
+  .features__card p {
+    font-family: var(--font-heading);
+    color: var(--color-ink);
+    font-size: var(--text-sm);
+    max-width: 320px;
+    margin: 0;
+  }
+
+  @media (max-width: 820px) {
+    .features__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  @media (max-width: 520px) {
+    .features__grid {
+      grid-template-columns: 1fr;
+      gap: var(--space-24);
+    }
+  }
+</style>
