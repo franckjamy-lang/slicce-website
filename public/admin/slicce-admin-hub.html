@@ -604,7 +604,10 @@ function artSyncDate(iso) {
 // ══════════════════════════════════════════════════════════════════════════
 async function ghGetFile(moduleName) {
   const r = await fetch('/api/data/' + moduleName);
-  if (!r.ok) throw new Error('API error: ' + r.status);
+  if (!r.ok) {
+    const e = await r.json().catch(()=>({}));
+    throw new Error(e.error || ('API error: ' + r.status));
+  }
   const data = await r.json();
   if (data.json === null) return null; // file doesn't exist yet
   return { json: data.json, sha: data.sha };

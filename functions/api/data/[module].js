@@ -43,7 +43,11 @@ export async function onRequestGet(context) {
     });
   }
   if (!r.ok) {
-    return new Response(JSON.stringify({ error: 'GitHub error ' + r.status }), { status: 502 });
+    const bodyText = await r.text();
+    return new Response(JSON.stringify({
+      error: 'GitHub error ' + r.status + ': ' + bodyText,
+      hasToken: !!env.GITHUB_TOKEN,
+    }), { status: 502 });
   }
 
   const data = await r.json();
@@ -81,7 +85,10 @@ export async function onRequestPut(context) {
 
   if (!r.ok) {
     const err = await r.text();
-    return new Response(JSON.stringify({ error: err }), { status: 502 });
+    return new Response(JSON.stringify({
+      error: 'GitHub error ' + r.status + ': ' + err,
+      hasToken: !!env.GITHUB_TOKEN,
+    }), { status: 502 });
   }
   const result = await r.json();
   return new Response(JSON.stringify({ sha: result.content.sha }), {
