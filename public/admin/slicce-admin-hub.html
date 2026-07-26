@@ -349,20 +349,17 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
         <div style="display:flex;flex-direction:column;gap:1.25rem;max-width:640px">
 
           <div class="card">
-            <div class="card-head"><span class="card-head-title">GitHub repository</span></div>
+            <div class="card-head"><span class="card-head-title">Data connection</span></div>
             <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
-              <p style="font-size:.8rem;color:var(--muted)">All data (Articles, Blog, Catalog) is stored as JSON files in a single GitHub repo. Create a <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:var(--green)">fine-grained personal access token</a> scoped to this one repo, with <strong style="color:var(--text)">Contents: Read and write</strong> permission.</p>
-              <div class="field"><label>Repo owner</label><input type="text" id="s-ghOwner" placeholder="franckjamy"></div>
-              <div class="field"><label>Repo name</label><input type="text" id="s-ghRepo" placeholder="slicce-data"></div>
-              <div class="field"><label>Branch</label><input type="text" id="s-ghBranch" value="main"></div>
-              <div class="field"><label>Personal Access Token</label><input type="password" id="s-ghToken" placeholder="github_pat_…"></div>
-              <div class="field-hint" style="background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.2);border-radius:6px;padding:.6rem .8rem;color:#e0a83a">⚠ This token is stored only in your browser and grants write access to that repo. Don't share this admin page's URL or your browser profile with anyone you don't trust. You can revoke the token anytime from GitHub settings.</div>
-              <hr class="div">
-              <div class="section-label">File paths (one JSON file per module)</div>
-              <div class="field"><label>Articles file</label><input type="text" id="s-ghArticlesPath" value="articles-data.json"></div>
-              <div class="field"><label>Blog file</label><input type="text" id="s-ghBlogPath" value="blog-data.json"></div>
-              <div class="field"><label>Catalog file</label><input type="text" id="s-ghCatalogPath" value="catalog-data.json"></div>
-              <button class="btn btn-primary" onclick="saveGithubSettings()">Save settings</button>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.6">
+                Nothing to configure here anymore. Articles, Blog, and Catalog data live in the
+                <strong style="color:var(--text)">slicce-data</strong> GitHub repo, and this admin talks to it through a secure
+                server-side connection — the access token never touches your browser.
+              </p>
+              <p style="font-size:.85rem;color:var(--muted);line-height:1.6">
+                Access to this page itself is controlled separately (Cloudflare Access). If you can see this screen,
+                you're already authorized to make changes.
+              </p>
             </div>
           </div>
 
@@ -396,17 +393,10 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 // ══════════════════════════════════════════════════════════════════════════
 const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
-const CFG = {
-  get ghOwner()      { return localStorage.getItem('hub_gh_owner') || '' },
-  get ghRepo()       { return localStorage.getItem('hub_gh_repo') || '' },
-  get ghBranch()     { return localStorage.getItem('hub_gh_branch') || 'main' },
-  get ghToken()      { return localStorage.getItem('hub_gh_token') || '' },
-  get articlesPath() { return localStorage.getItem('hub_gh_articles_path') || 'articles-data.json' },
-  get blogPath()     { return localStorage.getItem('hub_gh_blog_path') || 'blog-data.json' },
-  get catalogPath()  { return localStorage.getItem('hub_gh_catalog_path') || 'catalog-data.json' },
-};
-
-function ghReady() { return !!(CFG.ghOwner && CFG.ghRepo && CFG.ghToken); }
+// No client-side GitHub config anymore — the server-side Pages Function
+// (/api/data/:module) holds the token securely. Access to this page itself
+// is what controls who can use it (see Cloudflare Access).
+function ghReady() { return true; }
 
 let articlesDB = { articles: [] };
 let articlesSha = null;
@@ -427,16 +417,8 @@ let imgTargetIsWysiwyg = false;
 // INIT
 // ══════════════════════════════════════════════════════════════════════════
 window.onload = () => {
-  document.getElementById('s-ghOwner').value       = CFG.ghOwner;
-  document.getElementById('s-ghRepo').value        = CFG.ghRepo;
-  document.getElementById('s-ghBranch').value      = CFG.ghBranch;
-  document.getElementById('s-ghToken').value       = CFG.ghToken;
-  document.getElementById('s-ghArticlesPath').value= CFG.articlesPath;
-  document.getElementById('s-ghBlogPath').value    = CFG.blogPath;
-  document.getElementById('s-ghCatalogPath').value = CFG.catalogPath;
-
   refreshConnectionStates();
-  if (ghReady()) { loadArticles(); loadBlog(); loadCatalog(); }
+  loadArticles(); loadBlog(); loadCatalog();
 };
 
 function refreshConnectionStates() {
@@ -487,7 +469,7 @@ async function loadArticles() {
   if (!ghReady()) return;
   document.getElementById('art-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
   try {
-    const result = await ghGetFile(CFG.articlesPath);
+    const result = await ghGetFile('articles');
     if (result === null) {
       articlesDB = { articles: [] };
       articlesSha = null;
@@ -590,7 +572,7 @@ async function saveArticle() {
   const btn = document.getElementById('art-btn-save');
   btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
   try {
-    const result = await ghPutFile(CFG.articlesPath, articlesDB, articlesSha, 'Update article: ' + titre);
+    const result = await ghPutFile('articles', articlesDB, articlesSha, 'Update article: ' + titre);
     articlesSha = result.content.sha;
     toast('✓ Article saved to GitHub');
     renderArticleList(); updateArticleStats();
@@ -602,7 +584,7 @@ async function deleteArticle() {
   if (!articleEditingId || !confirm('Delete this article?')) return;
   articlesDB.articles = (articlesDB.articles||[]).filter(a => a.id !== articleEditingId);
   try {
-    const result = await ghPutFile(CFG.articlesPath, articlesDB, articlesSha, 'Delete article: ' + articleEditingId);
+    const result = await ghPutFile('articles', articlesDB, articlesSha, 'Delete article: ' + articleEditingId);
     articlesSha = result.content.sha;
     toast('Article deleted');
     renderArticleList(); updateArticleStats();
@@ -620,36 +602,28 @@ function artSyncDate(iso) {
 // ══════════════════════════════════════════════════════════════════════════
 // BLOG MODULE (GitHub-backed, WYSIWYG editor)
 // ══════════════════════════════════════════════════════════════════════════
-async function ghGetFile(path) {
-  const { ghOwner:owner, ghRepo:repo, ghBranch:branch, ghToken:token } = CFG;
-  const url = 'https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch;
-  const r = await fetch(url, { headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json' } });
-  if (r.status === 404) return null; // file doesn't exist yet
-  if (!r.ok) throw new Error('GitHub error: ' + r.status);
+async function ghGetFile(moduleName) {
+  const r = await fetch('/api/data/' + moduleName);
+  if (!r.ok) throw new Error('API error: ' + r.status);
   const data = await r.json();
-  const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
-  return { json: JSON.parse(content), sha: data.sha };
+  if (data.json === null) return null; // file doesn't exist yet
+  return { json: data.json, sha: data.sha };
 }
-async function ghPutFile(path, jsonObj, sha, message) {
-  const { ghOwner:owner, ghRepo:repo, ghBranch:branch, ghToken:token } = CFG;
-  const url = 'https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path;
-  const content = btoa(unescape(encodeURIComponent(JSON.stringify(jsonObj, null, 2))));
-  const body = { message: message || 'Update data', content, branch };
-  if (sha) body.sha = sha;
-  const r = await fetch(url, {
+async function ghPutFile(moduleName, jsonObj, sha, message) {
+  const r = await fetch('/api/data/' + moduleName, {
     method: 'PUT',
-    headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
-    body: JSON.stringify(body)
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ json: jsonObj, sha, message })
   });
-  if (!r.ok) { const e = await r.json(); throw new Error(e.message || r.status); }
-  return r.json();
+  if (!r.ok) { const e = await r.json().catch(()=>({})); throw new Error(e.error || r.status); }
+  const result = await r.json();
+  return { content: { sha: result.sha } }; // keep same shape callers expect
 }
 
 async function loadBlog() {
-  if (!CFG.ghOwner || !CFG.ghRepo || !CFG.ghToken) return;
   document.getElementById('blog-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
   try {
-    const result = await ghGetFile(CFG.blogPath);
+    const result = await ghGetFile('blog');
     if (result === null) {
       blogDB = { posts: [], categories: ['5G','Cloud','Telecom','API','Network'], authors: [{id:'slicce',name:'Slicce',role:'Company'}] };
       blogSha = null;
@@ -765,7 +739,7 @@ async function savePost() {
   const btn = document.getElementById('blog-btn-save');
   btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
   try {
-    const result = await ghPutFile(CFG.blogPath, blogDB, blogSha, 'Update post: ' + title);
+    const result = await ghPutFile('blog', blogDB, blogSha, 'Update post: ' + title);
     blogSha = result.content.sha;
     toast('✓ Post saved to GitHub');
     renderBlogList(); updateBlogStats();
@@ -778,7 +752,7 @@ async function deletePost() {
   if (!blogEditingId || !confirm('Delete this post?')) return;
   blogDB.posts = (blogDB.posts||[]).filter(p => p.id !== blogEditingId);
   try {
-    const result = await ghPutFile(CFG.blogPath, blogDB, blogSha, 'Delete post: ' + blogEditingId);
+    const result = await ghPutFile('blog', blogDB, blogSha, 'Delete post: ' + blogEditingId);
     blogSha = result.content.sha;
     toast('Post deleted');
     renderBlogList(); updateBlogStats();
@@ -820,7 +794,7 @@ async function loadCatalog() {
   if (!ghReady()) return;
   document.getElementById('cat-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
   try {
-    const result = await ghGetFile(CFG.catalogPath);
+    const result = await ghGetFile('catalog');
     if (result === null) {
       catalogDB = { products: [] };
       catalogSha = null;
@@ -916,7 +890,7 @@ async function saveProduct() {
   else (catalogDB.products = catalogDB.products||[]).push(product);
 
   try {
-    const result = await ghPutFile(CFG.catalogPath, catalogDB, catalogSha, 'Update product: ' + name);
+    const result = await ghPutFile('catalog', catalogDB, catalogSha, 'Update product: ' + name);
     catalogSha = result.content.sha;
     toast('✓ Product saved to GitHub');
     renderCatalogList(); updateCatalogStats();
@@ -927,7 +901,7 @@ async function deleteProduct() {
   if (!catalogEditingId || !confirm('Delete this product?')) return;
   catalogDB.products = (catalogDB.products||[]).filter(p => p.id !== catalogEditingId);
   try {
-    const result = await ghPutFile(CFG.catalogPath, catalogDB, catalogSha, 'Delete product: ' + catalogEditingId);
+    const result = await ghPutFile('catalog', catalogDB, catalogSha, 'Delete product: ' + catalogEditingId);
     catalogSha = result.content.sha;
     toast('Product deleted');
     renderCatalogList(); updateCatalogStats();
@@ -1014,18 +988,7 @@ function confirmImageInsert() {
 // ══════════════════════════════════════════════════════════════════════════
 // SETTINGS
 // ══════════════════════════════════════════════════════════════════════════
-function saveGithubSettings() {
-  localStorage.setItem('hub_gh_owner', document.getElementById('s-ghOwner').value.trim());
-  localStorage.setItem('hub_gh_repo', document.getElementById('s-ghRepo').value.trim());
-  localStorage.setItem('hub_gh_branch', document.getElementById('s-ghBranch').value.trim() || 'main');
-  localStorage.setItem('hub_gh_token', document.getElementById('s-ghToken').value.trim());
-  localStorage.setItem('hub_gh_articles_path', document.getElementById('s-ghArticlesPath').value.trim() || 'articles-data.json');
-  localStorage.setItem('hub_gh_blog_path', document.getElementById('s-ghBlogPath').value.trim() || 'blog-data.json');
-  localStorage.setItem('hub_gh_catalog_path', document.getElementById('s-ghCatalogPath').value.trim() || 'catalog-data.json');
-  refreshConnectionStates();
-  toast('✓ Settings saved');
-  if (ghReady()) { loadArticles(); loadBlog(); loadCatalog(); }
-}
+// GitHub config now lives server-side (Pages Function) — nothing to save here.
 </script>
 </body>
 </html>
