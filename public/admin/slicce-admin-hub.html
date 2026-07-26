@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Slicce — Admin Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --green:#00ff78;--green-d:#00cc62;--bg:#0d0d0d;--surface:#141414;
+  --surface2:#1c1c1c;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
+  --text:#f0f0f0;--muted:#777;--danger:#ff4d4d;--r:10px;--r-sm:6px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+.shell{display:grid;grid-template-columns:220px 1fr;min-height:100vh}
+
+/* SIDEBAR */
+.sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.5rem 1rem;gap:.2rem;position:sticky;top:0;height:100vh;overflow-y:auto}
+.logo{display:flex;align-items:center;gap:9px;padding:.5rem .75rem 1.25rem}
+.logo-dot{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;flex-shrink:0}
+.logo-text{font-family:"Sora",sans-serif;font-size:.88rem;font-weight:700;line-height:1.2}
+.logo-text small{display:block;font-size:.65rem;color:var(--muted);font-weight:400}
+.nav-group-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:.75rem .75rem .35rem}
+.nav-btn{display:flex;align-items:center;gap:10px;padding:.58rem .75rem;border-radius:var(--r-sm);border:none;background:none;color:var(--muted);font-family:inherit;font-size:.84rem;cursor:pointer;transition:all .15s;text-align:left;width:100%}
+.nav-btn:hover{background:var(--surface2);color:var(--text)}
+.nav-btn.active{background:rgba(0,255,120,.1);color:var(--green)}
+.nav-icon{font-size:14px;width:18px;text-align:center}
+.nav-dot{width:6px;height:6px;border-radius:50%;margin-left:auto;flex-shrink:0}
+.nav-dot.ok{background:var(--green)}
+.nav-dot.off{background:var(--danger)}
+.sidebar-foot{margin-top:auto;padding-top:1rem;border-top:1px solid var(--border)}
+.user-chip{display:flex;align-items:center;gap:8px;padding:.6rem .75rem;margin-bottom:.4rem}
+.user-avatar{width:26px;height:26px;border-radius:50%;background:var(--surface2);border:1px solid var(--border2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:600;color:var(--green);overflow:hidden;flex-shrink:0}
+.user-avatar img{width:100%;height:100%;object-fit:cover}
+.user-name{font-size:.76rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* MAIN */
+.main{display:flex;flex-direction:column;overflow:hidden}
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:1.1rem 2rem;border-bottom:1px solid var(--border);background:var(--surface);position:sticky;top:0;z-index:10}
+.topbar h1{font-family:"Sora",sans-serif;font-size:1rem;font-weight:600}
+.topbar-actions{display:flex;gap:.5rem;align-items:center}
+.content{padding:1.75rem 2rem;flex:1;overflow-y:auto}
+.panel{display:none}.panel.active{display:block}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:.84rem;font-weight:500;padding:.48rem .95rem;border-radius:var(--r-sm);cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
+.btn-primary{background:var(--green);color:#000}.btn-primary:hover{background:var(--green-d)}
+.btn-ghost{background:none;color:var(--muted);border:1px solid var(--border2)}.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
+.btn-danger{background:rgba(255,77,77,.1);color:var(--danger);border:1px solid rgba(255,77,77,.2)}.btn-danger:hover{background:rgba(255,77,77,.2)}
+.btn-sm{padding:.32rem .7rem;font-size:.78rem}.btn-icon{padding:.42rem .58rem}
+
+/* CARD */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--r)}
+.card-head{padding:.9rem 1.25rem;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.card-head-title{font-weight:600;font-size:.92rem}
+.card-body{padding:1.25rem}
+
+/* STATS */
+.stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem}
+.stat-val{font-family:"Sora",sans-serif;font-size:1.5rem;font-weight:700;color:var(--green)}
+.stat-label{font-size:.72rem;color:var(--muted);margin-top:2px}
+
+/* LIST ROWS */
+.item-list{display:flex;flex-direction:column;gap:.6rem}
+.item-row{display:grid;grid-template-columns:52px 1fr auto;align-items:center;gap:.85rem;background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.75rem .9rem;transition:border-color .15s}
+.item-row:hover{border-color:var(--border2)}
+.item-thumb{width:52px;height:36px;border-radius:4px;object-fit:cover;background:var(--surface2);display:block}
+.item-thumb-empty{width:52px;height:36px;border-radius:4px;background:var(--surface2);display:flex;align-items:center;justify-content:center;font-size:16px}
+.item-title{font-size:.88rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px}
+.item-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.item-date{font-size:.72rem;color:var(--muted)}
+.tag{display:inline-block;font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:1px 7px;border-radius:20px}
+.tag-featured{background:rgba(0,255,120,.14);color:var(--green);border:1px solid rgba(0,255,120,.25)}
+.tag-cat{background:var(--surface2);color:var(--muted);border:1px solid var(--border2)}
+.item-actions{display:flex;gap:.35rem;flex-shrink:0}
+.empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:.875rem}
+
+/* FORM */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:.9rem}
+.field{display:flex;flex-direction:column;gap:.35rem}
+.field label{font-size:.75rem;font-weight:500;color:var(--muted);text-transform:uppercase;letter-spacing:.07em}
+.field input,.field select,.field textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);color:var(--text);font-family:inherit;font-size:.88rem;padding:.58rem .8rem;transition:border-color .15s;width:100%}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--green)}
+.field textarea{resize:vertical;min-height:72px;line-height:1.6}
+.field select option{background:var(--surface2)}
+.field-hint{font-size:.72rem;color:var(--muted)}
+hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
+.section-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem}
+
+/* WYSIWYG (Blog) */
+.wysiwyg-toolbar{display:flex;gap:.3rem;flex-wrap:wrap;padding:.6rem;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm) var(--r-sm) 0 0;border-bottom:none}
+.tb-btn{background:none;border:none;color:var(--muted);padding:.4rem .55rem;border-radius:4px;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .15s}
+.tb-btn:hover{background:var(--surface);color:var(--text)}
+.tb-sep{width:1px;background:var(--border2);margin:.2rem .3rem}
+.wysiwyg-body,#post-body{background:var(--surface2);border:1px solid var(--border2);border-radius:0 0 var(--r-sm) var(--r-sm);padding:1rem 1.1rem;min-height:280px;font-size:.9rem;line-height:1.7;color:var(--text)}
+.wysiwyg-body:focus,#post-body:focus{outline:none;border-color:var(--green)}
+.wysiwyg-body h2,#post-body h2{font-family:"Sora",sans-serif;font-size:1.1rem;font-weight:700;margin:1rem 0 .5rem}
+.wysiwyg-body h3,#post-body h3{font-size:1rem;font-weight:600;margin:.85rem 0 .4rem}
+.wysiwyg-body p,#post-body p{margin:0 0 .7rem}
+.wysiwyg-body blockquote,#post-body blockquote{border-left:3px solid var(--green);padding:.5rem 1rem;margin:.6rem 0;background:rgba(0,255,120,.04);color:var(--muted);font-style:italic}
+.wysiwyg-body ul,.wysiwyg-body ol,#post-body ul,#post-body ol{margin:0 0 .7rem 1.3rem}
+.wysiwyg-body a,#post-body a{color:var(--green)}
+.wysiwyg-body img,#post-body img{max-width:100%;border-radius:6px;margin:.5rem 0}
+.wysiwyg-body:empty:before,#post-body:empty:before{content:attr(data-placeholder);color:var(--muted)}
+.wysiwyg-body-small{min-height:120px !important}
+.wysiwyg-toolbar-sm{padding:.4rem !important}
+.wysiwyg-toolbar-sm .tb-btn{padding:.3rem .45rem !important;font-size:.72rem !important}
+
+/* CONNECT BANNER */
+.connect-banner{background:rgba(255,77,77,.06);border:1px solid rgba(255,77,77,.2);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
+.connect-banner.ok{background:rgba(0,255,120,.06);border-color:rgba(0,255,120,.2)}
+.connect-text{font-size:.85rem;color:var(--text)}
+.connect-text strong{color:var(--danger)}
+.connect-banner.ok .connect-text strong{color:var(--green)}
+
+/* TOAST */
+.toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--green);color:#000;font-weight:600;font-size:.84rem;padding:.55rem 1.15rem;border-radius:var(--r-sm);transform:translateY(8px);opacity:0;transition:all .2s;pointer-events:none}
+.toast.show{transform:translateY(0);opacity:1}
+.toast.error{background:var(--danger);color:#fff}
+.spinner{width:16px;height:16px;border:2px solid rgba(0,255,120,.2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+#cover-preview,#c-image-preview{display:none;margin-top:.5rem}
+#cover-img,#c-image-preview img{height:72px;border-radius:5px;object-fit:cover;border:1px solid var(--border)}
+
+/* Login modal for Google */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:999;align-items:center;justify-content:center}
+.modal-overlay.open{display:flex}
+.modal-box{background:var(--surface);border:1px solid var(--border2);border-radius:var(--r);padding:1.5rem;width:100%;max-width:440px;display:flex;flex-direction:column;gap:1rem}
+.login-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;padding:.7rem 1.1rem;background:#fff;color:#1f1f1f;border:none;border-radius:var(--r-sm);font-family:inherit;font-size:.87rem;font-weight:500;cursor:pointer}
+.login-btn:hover{background:#f5f5f5}
+</style>
+</head>
+<body>
+
+<div class="shell">
+
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-dot">S</div>
+      <div class="logo-text">Admin Hub<small>slicce.co</small></div>
+    </div>
+
+    <div class="nav-group-label">Content</div>
+    <button class="nav-btn active" data-panel="articles" onclick="showPanel('articles',this)"><span class="nav-icon">▤</span> Articles <span class="nav-dot" id="dot-articles"></span></button>
+    <button class="nav-btn" data-panel="blog" onclick="showPanel('blog',this)"><span class="nav-icon">✎</span> Blog <span class="nav-dot" id="dot-blog"></span></button>
+    <button class="nav-btn" data-panel="catalog" onclick="showPanel('catalog',this)"><span class="nav-icon">▦</span> Catalog <span class="nav-dot" id="dot-catalog"></span></button>
+
+    <div class="nav-group-label">System</div>
+    <button class="nav-btn" data-panel="settings" onclick="showPanel('settings',this)"><span class="nav-icon">⚙</span> Settings</button>
+
+    <div class="sidebar-foot">
+      <div style="font-size:.72rem;color:var(--muted);padding:.5rem .75rem">Data stored on GitHub</div>
+    </div>
+  </aside>
+
+  <div class="main">
+    <div class="topbar">
+      <h1 id="topbar-title">Articles</h1>
+      <div class="topbar-actions" id="topbar-actions"></div>
+    </div>
+
+    <div class="content">
+
+      <!-- ══════════════════ ARTICLES ══════════════════ -->
+      <div class="panel active" id="panel-articles">
+        <div class="connect-banner" id="articles-connect-banner" style="display:none">
+          <div class="connect-text"><strong>Not connected.</strong> Add your GitHub repo details in Settings.</div>
+          <button class="btn btn-primary btn-sm" onclick="showPanel('settings', document.querySelector('[data-panel=\'settings\']'))">Go to Settings</button>
+        </div>
+        <div id="articles-app" style="display:none">
+          <div class="stats-row">
+            <div class="stat"><div class="stat-val" id="art-total">—</div><div class="stat-label">Total articles</div></div>
+            <div class="stat"><div class="stat-val" id="art-featured">—</div><div class="stat-label">Featured</div></div>
+            <div class="stat"><div class="stat-val" id="art-cats">—</div><div class="stat-label">Categories</div></div>
+            <div class="stat"><div class="stat-val" id="art-layout">—</div><div class="stat-label">Hero layout</div></div>
+          </div>
+          <div class="item-list" id="art-list"><div class="empty-state">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ ARTICLES EDITOR ══════════════════ -->
+      <div class="panel" id="panel-articles-editor">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-head-title" id="art-editor-heading">New article</span>
+            <div style="display:flex;gap:.4rem">
+              <button class="btn btn-ghost btn-sm" onclick="showPanel('articles', document.querySelector('[data-panel=\'articles\']'))">Cancel</button>
+              <button class="btn btn-danger btn-sm" id="art-btn-delete" style="display:none" onclick="deleteArticle()">🗑 Delete</button>
+              <button class="btn btn-primary btn-sm" onclick="saveArticle()" id="art-btn-save">Save to Sheet</button>
+            </div>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:.9rem">
+            <div class="form-grid">
+              <div class="field" style="grid-column:1/-1"><label>Title *</label><input type="text" id="af-titre" placeholder="Article title…"></div>
+              <div class="field">
+                <label>Date</label>
+                <input type="date" id="af-date-picker" onchange="artSyncDate(this.value)" style="color-scheme:dark">
+                <input type="hidden" id="af-date">
+                <span class="field-hint" id="af-date-preview" style="color:var(--green)"></span>
+              </div>
+              <div class="field"><label>Categories</label><input type="text" id="af-categorie" placeholder="5G, MTC"></div>
+              <div class="field" style="grid-column:1/-1"><label>Excerpt</label><textarea id="af-extrait" rows="2"></textarea></div>
+              <div class="field">
+                <label>Cover image URL</label>
+                <input type="url" id="af-image" oninput="previewGeneric('af-image','cover-preview','cover-img')">
+                <div id="cover-preview"><img id="cover-img" src="" alt=""></div>
+              </div>
+              <div class="field"><label>External link</label><input type="url" id="af-lien"></div>
+              <div class="field"><label>Featured</label><select id="af-featured"><option value="">No</option><option value="oui">Yes — featured hero</option></select></div>
+              <div class="field"><label>Hero layout</label><select id="af-layout"><option value="square">Square</option><option value="portrait">Portrait</option><option value="landscape">Landscape</option></select></div>
+            </div>
+            <hr class="div">
+            <div class="section-label">Content</div>
+            <div class="wysiwyg-toolbar">
+              <button class="tb-btn" onclick="wfmt('af-body','bold')" title="Bold"><b>B</b></button>
+              <button class="tb-btn" onclick="wfmt('af-body','italic')" title="Italic"><i>I</i></button>
+              <button class="tb-btn" onclick="wfmt('af-body','underline')" title="Underline"><u>U</u></button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="wblock('af-body','h2')">H2</button>
+              <button class="tb-btn" onclick="wblock('af-body','h3')">H3</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="wfmt('af-body','insertUnorderedList')">• List</button>
+              <button class="tb-btn" onclick="wfmt('af-body','insertOrderedList')">1. List</button>
+              <button class="tb-btn" onclick="wblock('af-body','blockquote')">❝ Quote</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="winsertLink('af-body')">🔗 Link</button>
+              <button class="tb-btn" onclick="openImageInsert('af-body', true)">🖼 Image</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="wfmt('af-body','removeFormat')">Clear</button>
+            </div>
+            <div id="af-body" class="wysiwyg-body" contenteditable="true" data-placeholder="Write your article…"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ BLOG ══════════════════ -->
+      <div class="panel" id="panel-blog">
+        <div class="connect-banner" id="blog-connect-banner" style="display:none">
+          <div class="connect-text"><strong>Not connected.</strong> Add your GitHub repo details in Settings.</div>
+          <button class="btn btn-primary btn-sm" onclick="showPanel('settings', document.querySelector('[data-panel=\'settings\']'))">Go to Settings</button>
+        </div>
+        <div id="blog-app" style="display:none">
+          <div class="stats-row">
+            <div class="stat"><div class="stat-val" id="blog-total">—</div><div class="stat-label">Total posts</div></div>
+            <div class="stat"><div class="stat-val" id="blog-featured">—</div><div class="stat-label">Featured</div></div>
+            <div class="stat"><div class="stat-val" id="blog-cats">—</div><div class="stat-label">Categories</div></div>
+            <div class="stat"><div class="stat-val" id="blog-authors">—</div><div class="stat-label">Authors</div></div>
+          </div>
+          <div class="item-list" id="blog-list"><div class="empty-state">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ BLOG EDITOR (WYSIWYG) ══════════════════ -->
+      <div class="panel" id="panel-blog-editor">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-head-title" id="blog-editor-heading">New post</span>
+            <div style="display:flex;gap:.4rem">
+              <button class="btn btn-ghost btn-sm" onclick="showPanel('blog', document.querySelector('[data-panel=\'blog\']'))">Cancel</button>
+              <button class="btn btn-danger btn-sm" id="blog-btn-delete" style="display:none" onclick="deletePost()">🗑 Delete</button>
+              <button class="btn btn-primary btn-sm" onclick="savePost()" id="blog-btn-save">Save to GitHub</button>
+            </div>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:.9rem">
+            <div class="form-grid">
+              <div class="field" style="grid-column:1/-1"><label>Title *</label><input type="text" id="bf-title" placeholder="Post title…"></div>
+              <div class="field">
+                <label>Publish date</label>
+                <input type="date" id="bf-date-picker" onchange="blogSyncDate(this.value)" style="color-scheme:dark">
+                <input type="hidden" id="bf-date">
+              </div>
+              <div class="field"><label>Slug</label><input type="text" id="bf-slug" placeholder="auto-generated-from-title"></div>
+              <div class="field"><label>Category</label><select id="bf-category"></select></div>
+              <div class="field"><label>Author</label><select id="bf-author"></select></div>
+              <div class="field" style="grid-column:1/-1"><label>Intro / Excerpt</label><textarea id="bf-intro" rows="2"></textarea></div>
+              <div class="field">
+                <label>Cover image URL</label>
+                <input type="url" id="bf-image" oninput="previewGeneric('bf-image','bf-image-preview','bf-image-img')">
+                <div id="bf-image-preview"><img id="bf-image-img" src="" alt=""></div>
+              </div>
+              <div class="field"><label>Tags <span style="font-weight:400;text-transform:none">(comma-separated)</span></label><input type="text" id="bf-tags" placeholder="5g, api, launch"></div>
+              <div class="field" style="display:flex;align-items:center;gap:.5rem;flex-direction:row">
+                <input type="checkbox" id="bf-featured" style="width:auto">
+                <label style="text-transform:none;font-weight:400;font-size:.85rem">Featured post (shown as hero)</label>
+              </div>
+            </div>
+            <hr class="div">
+            <div class="section-label">Body</div>
+            <div class="wysiwyg-toolbar">
+              <button class="tb-btn" onclick="bfmt('bold')" title="Bold"><b>B</b></button>
+              <button class="tb-btn" onclick="bfmt('italic')" title="Italic"><i>I</i></button>
+              <button class="tb-btn" onclick="bfmt('underline')" title="Underline"><u>U</u></button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="bblock('h2')">H2</button>
+              <button class="tb-btn" onclick="bblock('h3')">H3</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="bfmt('insertUnorderedList')">• List</button>
+              <button class="tb-btn" onclick="bfmt('insertOrderedList')">1. List</button>
+              <button class="tb-btn" onclick="bblock('blockquote')">❝ Quote</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="binsertLink()">🔗 Link</button>
+              <button class="tb-btn" onclick="openImageInsert('post-body', true)">🖼 Image</button>
+              <div class="tb-sep"></div>
+              <button class="tb-btn" onclick="bfmt('removeFormat')">Clear</button>
+            </div>
+            <div id="post-body" contenteditable="true" data-placeholder="Write your post…"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ CATALOG ══════════════════ -->
+      <div class="panel" id="panel-catalog">
+        <div class="connect-banner" id="catalog-connect-banner" style="display:none">
+          <div class="connect-text"><strong>Not connected.</strong> Add your GitHub repo details in Settings.</div>
+          <button class="btn btn-primary btn-sm" onclick="showPanel('settings', document.querySelector('[data-panel=\'settings\']'))">Go to Settings</button>
+        </div>
+        <div id="catalog-app" style="display:none">
+          <div class="stats-row">
+            <div class="stat"><div class="stat-val" id="cat-total">—</div><div class="stat-label">Total products</div></div>
+            <div class="stat"><div class="stat-val" id="cat-cats">—</div><div class="stat-label">Categories</div></div>
+            <div class="stat"><div class="stat-val" id="cat-families">—</div><div class="stat-label">Families</div></div>
+            <div class="stat"><div class="stat-val" id="cat-cols">—</div><div class="stat-label">Sheet columns</div></div>
+          </div>
+          <div class="item-list" id="cat-list"><div class="empty-state">Loading…</div></div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ CATALOG EDITOR ══════════════════ -->
+      <div class="panel" id="panel-catalog-editor">
+        <div class="card">
+          <div class="card-head">
+            <span class="card-head-title" id="cat-editor-heading">New product</span>
+            <div style="display:flex;gap:.4rem">
+              <button class="btn btn-ghost btn-sm" onclick="showPanel('catalog', document.querySelector('[data-panel=\'catalog\']'))">Cancel</button>
+              <button class="btn btn-danger btn-sm" id="cat-btn-delete" style="display:none" onclick="deleteProduct()">🗑 Delete</button>
+              <button class="btn btn-primary btn-sm" onclick="saveProduct()">Save to Sheet</button>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="form-grid" id="cat-form-fields"><!-- dynamically generated from sheet headers --></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ══════════════════ SETTINGS ══════════════════ -->
+      <div class="panel" id="panel-settings">
+        <div style="display:flex;flex-direction:column;gap:1.25rem;max-width:640px">
+
+          <div class="card">
+            <div class="card-head"><span class="card-head-title">GitHub repository</span></div>
+            <div class="card-body" style="display:flex;flex-direction:column;gap:1rem">
+              <p style="font-size:.8rem;color:var(--muted)">All data (Articles, Blog, Catalog) is stored as JSON files in a single GitHub repo. Create a <a href="https://github.com/settings/tokens?type=beta" target="_blank" style="color:var(--green)">fine-grained personal access token</a> scoped to this one repo, with <strong style="color:var(--text)">Contents: Read and write</strong> permission.</p>
+              <div class="field"><label>Repo owner</label><input type="text" id="s-ghOwner" placeholder="franckjamy"></div>
+              <div class="field"><label>Repo name</label><input type="text" id="s-ghRepo" placeholder="slicce-data"></div>
+              <div class="field"><label>Branch</label><input type="text" id="s-ghBranch" value="main"></div>
+              <div class="field"><label>Personal Access Token</label><input type="password" id="s-ghToken" placeholder="github_pat_…"></div>
+              <div class="field-hint" style="background:rgba(255,180,0,.08);border:1px solid rgba(255,180,0,.2);border-radius:6px;padding:.6rem .8rem;color:#e0a83a">⚠ This token is stored only in your browser and grants write access to that repo. Don't share this admin page's URL or your browser profile with anyone you don't trust. You can revoke the token anytime from GitHub settings.</div>
+              <hr class="div">
+              <div class="section-label">File paths (one JSON file per module)</div>
+              <div class="field"><label>Articles file</label><input type="text" id="s-ghArticlesPath" value="articles-data.json"></div>
+              <div class="field"><label>Blog file</label><input type="text" id="s-ghBlogPath" value="blog-data.json"></div>
+              <div class="field"><label>Catalog file</label><input type="text" id="s-ghCatalogPath" value="catalog-data.json"></div>
+              <button class="btn btn-primary" onclick="saveGithubSettings()">Save settings</button>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- Image insert modal (shared) -->
+<div class="modal-overlay" id="img-modal">
+  <div class="modal-box">
+    <div style="font-weight:600;font-size:.95rem">Insert image</div>
+    <div class="field"><label>Image URL</label><input type="url" id="img-url" placeholder="https://files.slicce.co/my-image.jpg"></div>
+    <div class="field"><label>Alt text</label><input type="text" id="img-alt" placeholder="Image description…"></div>
+    <div id="img-preview" style="display:none;text-align:center"><img id="img-preview-img" src="" alt="" style="max-height:160px;border-radius:6px;border:1px solid var(--border);object-fit:contain"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeImageInsert()">Cancel</button>
+      <button class="btn btn-primary" onclick="confirmImageInsert()">Insert</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+<script>
+// ══════════════════════════════════════════════════════════════════════════
+// CONFIG / STATE
+// ══════════════════════════════════════════════════════════════════════════
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+
+const CFG = {
+  get ghOwner()      { return localStorage.getItem('hub_gh_owner') || '' },
+  get ghRepo()       { return localStorage.getItem('hub_gh_repo') || '' },
+  get ghBranch()     { return localStorage.getItem('hub_gh_branch') || 'main' },
+  get ghToken()      { return localStorage.getItem('hub_gh_token') || '' },
+  get articlesPath() { return localStorage.getItem('hub_gh_articles_path') || 'articles-data.json' },
+  get blogPath()     { return localStorage.getItem('hub_gh_blog_path') || 'blog-data.json' },
+  get catalogPath()  { return localStorage.getItem('hub_gh_catalog_path') || 'catalog-data.json' },
+};
+
+function ghReady() { return !!(CFG.ghOwner && CFG.ghRepo && CFG.ghToken); }
+
+let articlesDB = { articles: [] };
+let articlesSha = null;
+let articleEditingId = null;
+
+let blogDB = { posts: [], categories: [], authors: [] };
+let blogSha = null;
+let blogEditingId = null;
+
+let catalogDB = { products: [] };
+let catalogSha = null;
+let catalogEditingId = null;
+
+let imgTargetField = null;
+let imgTargetIsWysiwyg = false;
+
+// ══════════════════════════════════════════════════════════════════════════
+// INIT
+// ══════════════════════════════════════════════════════════════════════════
+window.onload = () => {
+  document.getElementById('s-ghOwner').value       = CFG.ghOwner;
+  document.getElementById('s-ghRepo').value        = CFG.ghRepo;
+  document.getElementById('s-ghBranch').value      = CFG.ghBranch;
+  document.getElementById('s-ghToken').value       = CFG.ghToken;
+  document.getElementById('s-ghArticlesPath').value= CFG.articlesPath;
+  document.getElementById('s-ghBlogPath').value    = CFG.blogPath;
+  document.getElementById('s-ghCatalogPath').value = CFG.catalogPath;
+
+  refreshConnectionStates();
+  if (ghReady()) { loadArticles(); loadBlog(); loadCatalog(); }
+};
+
+function refreshConnectionStates() {
+  const ready = ghReady();
+  ['articles','blog','catalog'].forEach(mod => {
+    document.getElementById('dot-'+mod).className = 'nav-dot ' + (ready ? 'ok' : 'off');
+    document.getElementById(mod+'-connect-banner').style.display = ready ? 'none' : 'flex';
+    document.getElementById(mod+'-app').style.display = ready ? 'block' : 'none';
+  });
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// NAVIGATION
+// ══════════════════════════════════════════════════════════════════════════
+function showPanel(id, navBtn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-btn[data-panel]').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (navBtn) navBtn.classList.add('active');
+  const titles = { articles:'Articles', 'articles-editor':'Article editor', blog:'Blog', 'blog-editor':'Post editor', catalog:'Catalog', 'catalog-editor':'Product editor', settings:'Settings' };
+  document.getElementById('topbar-title').textContent = titles[id] || id;
+
+  const actions = document.getElementById('topbar-actions');
+  actions.innerHTML = '';
+  if (id === 'articles') {
+    actions.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="loadArticles()">↻ Refresh</button><button class="btn btn-primary btn-sm" onclick="newArticle()">+ New article</button>';
+  } else if (id === 'blog') {
+    actions.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="loadBlog()">↻ Refresh</button><button class="btn btn-primary btn-sm" onclick="newPost()">+ New post</button>';
+  } else if (id === 'catalog') {
+    actions.innerHTML = '<button class="btn btn-ghost btn-sm" onclick="loadCatalog()">↻ Refresh</button><button class="btn btn-primary btn-sm" onclick="newProduct()">+ New product</button>';
+  }
+}
+
+function toast(msg, isErr) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.className = 'toast' + (isErr ? ' error' : '');
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), isErr ? 4000 : 2500);
+}
+
+function esc(s){ return (s||'').toString().replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ══════════════════════════════════════════════════════════════════════════
+// ARTICLES MODULE (GitHub-backed)
+// ══════════════════════════════════════════════════════════════════════════
+async function loadArticles() {
+  if (!ghReady()) return;
+  document.getElementById('art-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
+  try {
+    const result = await ghGetFile(CFG.articlesPath);
+    if (result === null) {
+      articlesDB = { articles: [] };
+      articlesSha = null;
+      toast('No articles file found yet — it will be created on first save.');
+    } else {
+      articlesDB = result.json;
+      articlesSha = result.sha;
+    }
+    renderArticleList();
+    updateArticleStats();
+  } catch(e) {
+    document.getElementById('art-list').innerHTML = '<div style="color:var(--danger);font-size:.875rem;padding:1rem">' + esc(e.message) + '</div>';
+  }
+}
+
+function updateArticleStats() {
+  const arts = articlesDB.articles || [];
+  document.getElementById('art-total').textContent = arts.length;
+  document.getElementById('art-featured').textContent = arts.filter(a => (a.featured||'').toLowerCase()==='oui').length;
+  const cats = new Set(arts.flatMap(a => (a.categorie||'').split(',').map(c=>c.trim()).filter(Boolean)));
+  document.getElementById('art-cats').textContent = cats.size;
+  const feat = arts.find(a=>(a.featured||'').toLowerCase()==='oui');
+  document.getElementById('art-layout').textContent = (feat && feat.layout) || 'square';
+}
+
+function renderArticleList() {
+  const list = document.getElementById('art-list');
+  const arts = articlesDB.articles || [];
+  if (!arts.length) { list.innerHTML = '<div class="empty-state">No articles yet.</div>'; return; }
+  list.innerHTML = [...arts].sort((a,b)=> new Date(b.date||0) - new Date(a.date||0)).map(a => {
+    const isFeat = (a.featured||'').toLowerCase()==='oui';
+    const cats = (a.categorie||'').split(',').map(c=>c.trim()).filter(Boolean);
+    const img = a.image ? '<img class="item-thumb" src="'+esc(a.image)+'" onerror="this.style.display=\'none\'">' : '<div class="item-thumb-empty">📄</div>';
+    return '<div class="item-row">' + img +
+      '<div><div class="item-title">'+esc(a.titre||'Untitled')+'</div><div class="item-meta">' +
+      (isFeat ? '<span class="tag tag-featured">★ Featured</span>' : '') +
+      cats.map(c=>'<span class="tag tag-cat">'+esc(c)+'</span>').join('') +
+      (a.date ? '<span class="item-date">'+esc(a.date)+'</span>' : '') +
+      '</div></div>' +
+      '<div class="item-actions"><button class="btn btn-ghost btn-sm btn-icon" onclick="editArticle(\''+a.id+'\')">✎</button></div></div>';
+  }).join('');
+}
+
+function newArticle() {
+  articleEditingId = null;
+  fillArticleForm({});
+  document.getElementById('art-editor-heading').textContent = 'New article';
+  document.getElementById('art-btn-delete').style.display = 'none';
+  document.getElementById('art-btn-save').textContent = 'Save to GitHub';
+  showPanel('articles-editor');
+}
+function editArticle(id) {
+  const found = (articlesDB.articles||[]).find(a => a.id === id);
+  if (!found) return;
+  articleEditingId = id;
+  fillArticleForm(found);
+  document.getElementById('art-editor-heading').textContent = 'Edit: ' + (found.titre||'').substring(0,50);
+  document.getElementById('art-btn-delete').style.display = 'inline-flex';
+  document.getElementById('art-btn-save').textContent = '✓ Save changes';
+  showPanel('articles-editor');
+}
+function fillArticleForm(d) {
+  document.getElementById('af-titre').value = d.titre || '';
+  const rawDate = d.date || '';
+  document.getElementById('af-date').value = rawDate;
+  document.getElementById('af-date-picker').value = englishDateToISO(rawDate);
+  document.getElementById('af-date-preview').textContent = rawDate ? '→ '+rawDate : '';
+  document.getElementById('af-extrait').value = d.extrait || '';
+  document.getElementById('af-image').value = d.image || '';
+  document.getElementById('af-lien').value = d.lien || '';
+  document.getElementById('af-categorie').value = d.categorie || '';
+  document.getElementById('af-featured').value = (d.featured||'').toLowerCase()==='oui' ? 'oui' : '';
+  document.getElementById('af-layout').value = d.layout || 'square';
+  document.getElementById('af-body').innerHTML = d.contenu || '';
+  previewGeneric('af-image','cover-preview','cover-img');
+}
+async function saveArticle() {
+  const titre = document.getElementById('af-titre').value.trim();
+  if (!titre) { toast('Title is required', true); return; }
+  const id = articleEditingId || ('art-' + Date.now());
+  const article = {
+    id,
+    titre,
+    date: document.getElementById('af-date').value,
+    extrait: document.getElementById('af-extrait').value,
+    image: document.getElementById('af-image').value,
+    lien: document.getElementById('af-lien').value,
+    categorie: document.getElementById('af-categorie').value,
+    featured: document.getElementById('af-featured').value,
+    layout: document.getElementById('af-layout').value,
+    contenu: document.getElementById('af-body').innerHTML
+  };
+  if ((article.featured||'').toLowerCase() === 'oui') {
+    (articlesDB.articles||[]).forEach(a => { if (a.id !== id) a.featured = ''; });
+  }
+  const idx = (articlesDB.articles||[]).findIndex(a => a.id === id);
+  if (idx >= 0) articlesDB.articles[idx] = article;
+  else (articlesDB.articles = articlesDB.articles||[]).unshift(article);
+
+  const btn = document.getElementById('art-btn-save');
+  btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
+  try {
+    const result = await ghPutFile(CFG.articlesPath, articlesDB, articlesSha, 'Update article: ' + titre);
+    articlesSha = result.content.sha;
+    toast('✓ Article saved to GitHub');
+    renderArticleList(); updateArticleStats();
+    showPanel('articles', document.querySelector('[data-panel="articles"]'));
+  } catch(e) { toast(e.message, true); }
+  btn.disabled = false; btn.textContent = articleEditingId ? '✓ Save changes' : 'Save to GitHub';
+}
+async function deleteArticle() {
+  if (!articleEditingId || !confirm('Delete this article?')) return;
+  articlesDB.articles = (articlesDB.articles||[]).filter(a => a.id !== articleEditingId);
+  try {
+    const result = await ghPutFile(CFG.articlesPath, articlesDB, articlesSha, 'Delete article: ' + articleEditingId);
+    articlesSha = result.content.sha;
+    toast('Article deleted');
+    renderArticleList(); updateArticleStats();
+    showPanel('articles', document.querySelector('[data-panel="articles"]'));
+  } catch(e) { toast(e.message, true); }
+}
+function artSyncDate(iso) {
+  if (!iso) { document.getElementById('af-date').value=''; document.getElementById('af-date-preview').textContent=''; return; }
+  const [y,m,d] = iso.split('-').map(Number);
+  const en = MONTHS[m-1] + ' ' + d + ', ' + y;
+  document.getElementById('af-date').value = en;
+  document.getElementById('af-date-preview').textContent = '→ ' + en;
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// BLOG MODULE (GitHub-backed, WYSIWYG editor)
+// ══════════════════════════════════════════════════════════════════════════
+async function ghGetFile(path) {
+  const { ghOwner:owner, ghRepo:repo, ghBranch:branch, ghToken:token } = CFG;
+  const url = 'https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path+'?ref='+branch;
+  const r = await fetch(url, { headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json' } });
+  if (r.status === 404) return null; // file doesn't exist yet
+  if (!r.ok) throw new Error('GitHub error: ' + r.status);
+  const data = await r.json();
+  const content = decodeURIComponent(escape(atob(data.content.replace(/\n/g,''))));
+  return { json: JSON.parse(content), sha: data.sha };
+}
+async function ghPutFile(path, jsonObj, sha, message) {
+  const { ghOwner:owner, ghRepo:repo, ghBranch:branch, ghToken:token } = CFG;
+  const url = 'https://api.github.com/repos/'+owner+'/'+repo+'/contents/'+path;
+  const content = btoa(unescape(encodeURIComponent(JSON.stringify(jsonObj, null, 2))));
+  const body = { message: message || 'Update data', content, branch };
+  if (sha) body.sha = sha;
+  const r = await fetch(url, {
+    method: 'PUT',
+    headers: { Authorization: 'token ' + token, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+    body: JSON.stringify(body)
+  });
+  if (!r.ok) { const e = await r.json(); throw new Error(e.message || r.status); }
+  return r.json();
+}
+
+async function loadBlog() {
+  if (!CFG.ghOwner || !CFG.ghRepo || !CFG.ghToken) return;
+  document.getElementById('blog-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
+  try {
+    const result = await ghGetFile(CFG.blogPath);
+    if (result === null) {
+      blogDB = { posts: [], categories: ['5G','Cloud','Telecom','API','Network'], authors: [{id:'slicce',name:'Slicce',role:'Company'}] };
+      blogSha = null;
+      toast('No blog file found yet — it will be created on first save.');
+    } else {
+      blogDB = result.json;
+      blogSha = result.sha;
+    }
+    renderBlogList();
+    updateBlogStats();
+  } catch(e) {
+    document.getElementById('blog-list').innerHTML = '<div style="color:var(--danger);font-size:.875rem;padding:1rem">' + esc(e.message) + '</div>';
+  }
+}
+
+function updateBlogStats() {
+  document.getElementById('blog-total').textContent = (blogDB.posts||[]).length;
+  document.getElementById('blog-featured').textContent = (blogDB.posts||[]).filter(p=>p.featured).length;
+  document.getElementById('blog-cats').textContent = (blogDB.categories||[]).length;
+  document.getElementById('blog-authors').textContent = (blogDB.authors||[]).length;
+}
+
+function renderBlogList() {
+  const list = document.getElementById('blog-list');
+  const posts = [...(blogDB.posts||[])].sort((a,b)=> new Date(b.publishDate||0) - new Date(a.publishDate||0));
+  if (!posts.length) { list.innerHTML = '<div class="empty-state">No posts yet.</div>'; return; }
+  list.innerHTML = posts.map(p => {
+    const img = p.image ? '<img class="item-thumb" src="'+esc(p.image)+'" onerror="this.style.display=\'none\'">' : '<div class="item-thumb-empty">📝</div>';
+    return '<div class="item-row">' + img +
+      '<div><div class="item-title">'+esc(p.title||'Untitled')+'</div><div class="item-meta">' +
+      (p.featured ? '<span class="tag tag-featured">★ Featured</span>' : '') +
+      (p.category ? '<span class="tag tag-cat">'+esc(p.category)+'</span>' : '') +
+      (p.publishDate ? '<span class="item-date">'+formatDateDisplay(p.publishDate)+'</span>' : '') +
+      '</div></div>' +
+      '<div class="item-actions"><button class="btn btn-ghost btn-sm btn-icon" onclick="editPost(\''+p.id+'\')">✎</button></div></div>';
+  }).join('');
+}
+
+function populateBlogSelects() {
+  const catSel = document.getElementById('bf-category');
+  const authSel = document.getElementById('bf-author');
+  catSel.innerHTML = (blogDB.categories||[]).map(c => '<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  authSel.innerHTML = (blogDB.authors||[]).map(a => '<option value="'+esc(a.id)+'">'+esc(a.name)+'</option>').join('');
+}
+
+function newPost() {
+  populateBlogSelects();
+  blogEditingId = null;
+  fillPostForm({});
+  document.getElementById('blog-editor-heading').textContent = 'New post';
+  document.getElementById('blog-btn-delete').style.display = 'none';
+  showPanel('blog-editor');
+}
+function editPost(id) {
+  const post = (blogDB.posts||[]).find(p => p.id === id);
+  if (!post) return;
+  populateBlogSelects();
+  blogEditingId = id;
+  fillPostForm(post);
+  document.getElementById('blog-editor-heading').textContent = 'Edit: ' + (post.title||'').substring(0,50);
+  document.getElementById('blog-btn-delete').style.display = 'inline-flex';
+  showPanel('blog-editor');
+}
+function fillPostForm(p) {
+  document.getElementById('bf-title').value = p.title || '';
+  document.getElementById('bf-slug').value = p.slug || '';
+  document.getElementById('bf-intro').value = p.intro || '';
+  document.getElementById('bf-image').value = p.image || '';
+  document.getElementById('bf-tags').value = (p.tags||[]).join(', ');
+  document.getElementById('bf-featured').checked = !!p.featured;
+  document.getElementById('post-body').innerHTML = p.body || '';
+  if (p.category) document.getElementById('bf-category').value = p.category;
+  if (p.author) document.getElementById('bf-author').value = p.author;
+  const dateStr = p.publishDate ? p.publishDate.slice(0,10) : '';
+  document.getElementById('bf-date-picker').value = dateStr;
+  document.getElementById('bf-date').value = p.publishDate || '';
+  previewGeneric('bf-image','bf-image-preview','bf-image-img');
+}
+function blogSyncDate(iso) {
+  document.getElementById('bf-date').value = iso ? new Date(iso+'T00:00:00').toISOString() : '';
+}
+function slugify(s) {
+  return (s||'').toLowerCase().trim().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'');
+}
+
+async function savePost() {
+  const title = document.getElementById('bf-title').value.trim();
+  if (!title) { toast('Title is required', true); return; }
+  const id = blogEditingId || ('post-' + Date.now());
+  const now = new Date().toISOString();
+  const featured = document.getElementById('bf-featured').checked;
+  const post = {
+    id,
+    title,
+    intro: document.getElementById('bf-intro').value.trim(),
+    body: document.getElementById('post-body').innerHTML,
+    image: document.getElementById('bf-image').value.trim(),
+    author: document.getElementById('bf-author').value,
+    category: document.getElementById('bf-category').value,
+    tags: document.getElementById('bf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    featured,
+    slug: document.getElementById('bf-slug').value.trim() || slugify(title),
+    publishDate: document.getElementById('bf-date').value || now,
+    createdAt: blogEditingId ? ((blogDB.posts||[]).find(p=>p.id===id)||{}).createdAt || now : now
+  };
+
+  if (featured) (blogDB.posts||[]).forEach(p => { p.featured = false; });
+
+  const idx = (blogDB.posts||[]).findIndex(p => p.id === id);
+  if (idx >= 0) blogDB.posts[idx] = post;
+  else (blogDB.posts = blogDB.posts||[]).unshift(post);
+
+  const btn = document.getElementById('blog-btn-save');
+  btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
+  try {
+    const result = await ghPutFile(CFG.blogPath, blogDB, blogSha, 'Update post: ' + title);
+    blogSha = result.content.sha;
+    toast('✓ Post saved to GitHub');
+    renderBlogList(); updateBlogStats();
+    showPanel('blog', document.querySelector('[data-panel="blog"]'));
+  } catch(e) { toast(e.message, true); }
+  btn.disabled = false; btn.textContent = 'Save to GitHub';
+}
+
+async function deletePost() {
+  if (!blogEditingId || !confirm('Delete this post?')) return;
+  blogDB.posts = (blogDB.posts||[]).filter(p => p.id !== blogEditingId);
+  try {
+    const result = await ghPutFile(CFG.blogPath, blogDB, blogSha, 'Delete post: ' + blogEditingId);
+    blogSha = result.content.sha;
+    toast('Post deleted');
+    renderBlogList(); updateBlogStats();
+    showPanel('blog', document.querySelector('[data-panel="blog"]'));
+  } catch(e) { toast(e.message, true); }
+}
+
+// WYSIWYG commands (generic — works for any contenteditable target)
+function wfmt(targetId, cmd, val) { document.getElementById(targetId).focus(); document.execCommand(cmd, false, val||null); }
+function wblock(targetId, tag) { document.getElementById(targetId).focus(); document.execCommand('formatBlock', false, tag); }
+function winsertLink(targetId) { const url = prompt('Enter URL:'); if (url) wfmt(targetId, 'createLink', url); }
+
+// Blog-specific aliases (kept for the existing Blog toolbar wiring)
+function bfmt(cmd, val) { wfmt('post-body', cmd, val); }
+function bblock(tag) { wblock('post-body', tag); }
+function binsertLink() { winsertLink('post-body'); }
+
+function formatDateDisplay(iso) {
+  try {
+    const d = new Date(iso);
+    return MONTHS[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear();
+  } catch(e) { return iso; }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// CATALOG MODULE (GitHub-backed) — fixed schema matching the public widget
+// ══════════════════════════════════════════════════════════════════════════
+const CAT_FIELDS = [
+  { key:'name',        label:'Product name',      type:'text' },
+  { key:'image',       label:'Image URL',         type:'image' },
+  { key:'category',    label:'Category',          type:'text' },
+  { key:'family',      label:'Family',            type:'text' },
+  { key:'networks',    label:'Networks',          type:'text', hint:'comma-separated, e.g. 3G, 4G, 5G' },
+  { key:'description', label:'Description',       type:'wysiwyg' },
+  { key:'url',         label:'Product page URL',  type:'text' },
+];
+
+async function loadCatalog() {
+  if (!ghReady()) return;
+  document.getElementById('cat-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
+  try {
+    const result = await ghGetFile(CFG.catalogPath);
+    if (result === null) {
+      catalogDB = { products: [] };
+      catalogSha = null;
+      toast('No catalog file found yet — it will be created on first save.');
+    } else {
+      catalogDB = result.json;
+      catalogSha = result.sha;
+    }
+    renderCatalogList();
+    updateCatalogStats();
+  } catch(e) {
+    document.getElementById('cat-list').innerHTML = '<div style="color:var(--danger);font-size:.875rem;padding:1rem">' + esc(e.message) + '</div>';
+  }
+}
+
+function updateCatalogStats() {
+  const prods = catalogDB.products || [];
+  document.getElementById('cat-total').textContent = prods.length;
+  document.getElementById('cat-cats').textContent = new Set(prods.map(p=>p.category).filter(Boolean)).size;
+  document.getElementById('cat-families').textContent = new Set(prods.map(p=>p.family).filter(Boolean)).size;
+  document.getElementById('cat-cols').textContent = CAT_FIELDS.length;
+}
+
+function renderCatalogList() {
+  const list = document.getElementById('cat-list');
+  const prods = catalogDB.products || [];
+  if (!prods.length) { list.innerHTML = '<div class="empty-state">No products yet.</div>'; return; }
+  list.innerHTML = prods.map(p => {
+    const img = p.image ? '<img class="item-thumb" src="'+esc(p.image)+'" onerror="this.style.display=\'none\'">' : '<div class="item-thumb-empty">📦</div>';
+    return '<div class="item-row">' + img +
+      '<div><div class="item-title">'+esc(p.name||'Untitled')+'</div><div class="item-meta">' +
+      (p.category ? '<span class="tag tag-cat">'+esc(p.category)+'</span>' : '') +
+      (p.family ? '<span class="tag tag-cat">'+esc(p.family)+'</span>' : '') +
+      '</div></div>' +
+      '<div class="item-actions"><button class="btn btn-ghost btn-sm btn-icon" onclick="editProduct(\''+p.id+'\')">✎</button></div></div>';
+  }).join('');
+}
+
+function buildCatalogForm(data) {
+  const container = document.getElementById('cat-form-fields');
+  container.innerHTML = CAT_FIELDS.map(f => {
+    const id = 'cf-' + f.key;
+    const raw = data[f.key] || '';
+    let field;
+    if (f.type === 'wysiwyg') {
+      field = '<div class="wysiwyg-toolbar wysiwyg-toolbar-sm">' +
+        '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'bold\')"><b>B</b></button>' +
+        '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'italic\')"><i>I</i></button>' +
+        '<div class="tb-sep"></div>' +
+        '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'insertUnorderedList\')">• List</button>' +
+        '<button type="button" class="tb-btn" onclick="winsertLink(\''+id+'\')">🔗</button>' +
+        '<button type="button" class="tb-btn" onclick="openImageInsert(\''+id+'\', true)">🖼</button>' +
+        '</div>' +
+        '<div id="'+id+'" class="wysiwyg-body wysiwyg-body-small" contenteditable="true" data-placeholder="Write a description…">'+raw+'</div>';
+    } else if (f.type === 'image') {
+      field = '<input type="url" id="'+id+'" value="'+esc(raw)+'" oninput="previewGeneric(\''+id+'\',\'c-image-preview\',\'c-image-img\')">' +
+              '<div id="c-image-preview"><img id="c-image-img" src="" alt=""></div>';
+    } else {
+      field = '<input type="text" id="'+id+'" value="'+esc(raw)+'">' + (f.hint ? '<span class="field-hint">'+f.hint+'</span>' : '');
+    }
+    return '<div class="field" style="'+(f.type==='wysiwyg'?'grid-column:1/-1':'')+'"><label>'+esc(f.label)+'</label>'+field+'</div>';
+  }).join('');
+  if (data.image) setTimeout(() => previewGeneric('cf-image','c-image-preview','c-image-img'), 50);
+}
+
+function newProduct() {
+  catalogEditingId = null;
+  buildCatalogForm({});
+  document.getElementById('cat-editor-heading').textContent = 'New product';
+  document.getElementById('cat-btn-delete').style.display = 'none';
+  showPanel('catalog-editor');
+}
+function editProduct(id) {
+  const found = (catalogDB.products||[]).find(p => p.id === id);
+  if (!found) return;
+  catalogEditingId = id;
+  buildCatalogForm(found);
+  document.getElementById('cat-editor-heading').textContent = 'Edit: ' + (found.name||'').substring(0,50);
+  document.getElementById('cat-btn-delete').style.display = 'inline-flex';
+  showPanel('catalog-editor');
+}
+async function saveProduct() {
+  const name = document.getElementById('cf-name').value.trim();
+  if (!name) { toast('Product name is required', true); return; }
+  const id = catalogEditingId || ('prod-' + Date.now());
+  const product = { id };
+  CAT_FIELDS.forEach(f => {
+    const el = document.getElementById('cf-' + f.key);
+    product[f.key] = f.type === 'wysiwyg' ? el.innerHTML : el.value;
+  });
+  const idx = (catalogDB.products||[]).findIndex(p => p.id === id);
+  if (idx >= 0) catalogDB.products[idx] = product;
+  else (catalogDB.products = catalogDB.products||[]).push(product);
+
+  try {
+    const result = await ghPutFile(CFG.catalogPath, catalogDB, catalogSha, 'Update product: ' + name);
+    catalogSha = result.content.sha;
+    toast('✓ Product saved to GitHub');
+    renderCatalogList(); updateCatalogStats();
+    showPanel('catalog', document.querySelector('[data-panel="catalog"]'));
+  } catch(e) { toast(e.message, true); }
+}
+async function deleteProduct() {
+  if (!catalogEditingId || !confirm('Delete this product?')) return;
+  catalogDB.products = (catalogDB.products||[]).filter(p => p.id !== catalogEditingId);
+  try {
+    const result = await ghPutFile(CFG.catalogPath, catalogDB, catalogSha, 'Delete product: ' + catalogEditingId);
+    catalogSha = result.content.sha;
+    toast('Product deleted');
+    renderCatalogList(); updateCatalogStats();
+    showPanel('catalog', document.querySelector('[data-panel="catalog"]'));
+  } catch(e) { toast(e.message, true); }
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SHARED HELPERS: date, markdown editor, image insert
+// ══════════════════════════════════════════════════════════════════════════
+function englishDateToISO(str) {
+  if (!str) return '';
+  const m1 = str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
+  if (m1) { const mo = MONTHS.findIndex(m=>m.toLowerCase()===m1[1].toLowerCase())+1; if (mo) return m1[3]+'-'+String(mo).padStart(2,'0')+'-'+String(m1[2]).padStart(2,'0'); }
+  const m2 = str.match(/^(\d{1,2})\s+([A-Za-z]+)\s+(\d{4})$/);
+  if (m2) { const mo = MONTHS.findIndex(m=>m.toLowerCase()===m2[2].toLowerCase())+1; if (mo) return m2[3]+'-'+String(mo).padStart(2,'0')+'-'+String(m2[1]).padStart(2,'0'); }
+  return '';
+}
+
+function previewGeneric(inputId, wrapId, imgId) {
+  const v = document.getElementById(inputId).value.trim();
+  const wrap = document.getElementById(wrapId);
+  const img = document.getElementById(imgId);
+  if (v && v.startsWith('http')) { img.src = v; wrap.style.display = 'block'; }
+  else wrap.style.display = 'none';
+}
+
+function renderMdPreview(taId, previewId) {
+  const val = document.getElementById(taId).value;
+  document.getElementById(previewId).innerHTML = val ? marked.parse(val) : '<span style="color:var(--muted);font-size:.82rem">Preview…</span>';
+}
+function mdi(taId, before, after) {
+  const ta = document.getElementById(taId);
+  const s = ta.selectionStart, e = ta.selectionEnd;
+  ta.value = ta.value.substring(0,s) + before + ta.value.substring(s,e) + after + ta.value.substring(e);
+  ta.selectionStart = s+before.length; ta.selectionEnd = e+before.length;
+  ta.focus();
+
+}
+function mdl(taId, prefix) {
+  const ta = document.getElementById(taId);
+  const s = ta.selectionStart;
+  const ls = ta.value.lastIndexOf(String.fromCharCode(10), s-1) + 1;
+  ta.value = ta.value.substring(0,ls) + prefix + ta.value.substring(ls);
+  ta.selectionStart = ta.selectionEnd = ls + prefix.length;
+  ta.focus();
+
+}
+
+function openImageInsert(targetField, isWysiwyg) {
+  imgTargetField = targetField;
+  imgTargetIsWysiwyg = !!isWysiwyg;
+  document.getElementById('img-url').value = '';
+  document.getElementById('img-alt').value = '';
+  document.getElementById('img-preview').style.display = 'none';
+  document.getElementById('img-modal').classList.add('open');
+  document.getElementById('img-url').oninput = function() {
+    const v = this.value.trim();
+    if (v.startsWith('http')) { document.getElementById('img-preview-img').src = v; document.getElementById('img-preview').style.display = 'block'; }
+    else document.getElementById('img-preview').style.display = 'none';
+  };
+}
+function closeImageInsert() { document.getElementById('img-modal').classList.remove('open'); }
+function confirmImageInsert() {
+  const url = document.getElementById('img-url').value.trim();
+  const alt = document.getElementById('img-alt').value.trim() || 'image';
+  if (!url) return;
+  if (imgTargetIsWysiwyg) {
+    document.getElementById(imgTargetField).focus();
+    document.execCommand('insertImage', false, url);
+  } else {
+    const NL = String.fromCharCode(10);
+    const md = NL + '![' + alt + '](' + url + ')' + NL;
+    const ta = document.getElementById(imgTargetField);
+    const pos = ta.selectionStart || ta.value.length;
+    ta.value = ta.value.substring(0,pos) + md + ta.value.substring(pos);
+    ta.selectionStart = ta.selectionEnd = pos + md.length;
+    ta.focus();
+  }
+  closeImageInsert();
+  toast('✓ Image inserted');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+// SETTINGS
+// ══════════════════════════════════════════════════════════════════════════
+function saveGithubSettings() {
+  localStorage.setItem('hub_gh_owner', document.getElementById('s-ghOwner').value.trim());
+  localStorage.setItem('hub_gh_repo', document.getElementById('s-ghRepo').value.trim());
+  localStorage.setItem('hub_gh_branch', document.getElementById('s-ghBranch').value.trim() || 'main');
+  localStorage.setItem('hub_gh_token', document.getElementById('s-ghToken').value.trim());
+  localStorage.setItem('hub_gh_articles_path', document.getElementById('s-ghArticlesPath').value.trim() || 'articles-data.json');
+  localStorage.setItem('hub_gh_blog_path', document.getElementById('s-ghBlogPath').value.trim() || 'blog-data.json');
+  localStorage.setItem('hub_gh_catalog_path', document.getElementById('s-ghCatalogPath').value.trim() || 'catalog-data.json');
+  refreshConnectionStates();
+  toast('✓ Settings saved');
+  if (ghReady()) { loadArticles(); loadBlog(); loadCatalog(); }
+}
+</script>
+</body>
+</html>
