@@ -46,7 +46,7 @@ function bold(text: string) {
       {
         heroIcon && (
           <div class="product-hero__icon" data-reveal="right">
-            <img src={heroIcon} alt="" width="200" height="200" loading="lazy" />
+            <img src={heroIcon} alt="" width="200" height="160" loading="lazy" />
           </div>
         )
       }
@@ -55,7 +55,7 @@ function bold(text: string) {
 
   <section class="section product-features">
     <div class="container">
-      <h2 data-reveal>Features &amp; Benefits</h2>
+      <h2 class="product-section-title" data-reveal>Features &amp; Benefits</h2>
       <div class="product-features__list">
         {
           features.map((f) => (
@@ -91,7 +91,7 @@ function bold(text: string) {
 
   <section class="section product-specs">
     <div class="container">
-      <h2 data-reveal>Technical specifications</h2>
+      <h2 class="product-section-title" data-reveal>Technical specifications</h2>
       <div class="product-specs__grid" data-reveal-group="scale">
         {
           specs.map((s) => (
@@ -159,7 +159,12 @@ function bold(text: string) {
     font-weight: 800;
     font-size: 56px;
     color: var(--color-green);
+    white-space: pre-line;
     margin-bottom: var(--space-6);
+  }
+
+  .product-section-title {
+    text-align: center;
   }
 
   .product-hero__text p {

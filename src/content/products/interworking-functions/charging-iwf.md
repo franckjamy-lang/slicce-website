@@ -1,8 +1,11 @@
 ---
-title: Charging Interworking Function
+title: |-
+  Charging Interworking
+  Function
 shortName: CHF-IWF
 category: interworking-functions
 order: 1
+heroIcon: /images/products/chf-iwf_bannerpod.png
 heroDescription: >-
   The Charging Interworking Function (CHF-IWF) is a powerful enabler for fast
   and easy mediation of real-time control of calls in fixed and mobile
