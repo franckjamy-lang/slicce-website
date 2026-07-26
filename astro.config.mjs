@@ -6,4 +6,10 @@ export default defineConfig({
   // Nécessaire pour générer des URLs absolues correctes (sitemap.xml,
   // Open Graph, JSON-LD canonique) — ajoutés à l'étape 7.
   site: 'https://www.slicce.co',
+  // La barre d'outils Astro (inspection/audit/réglages) n'apparaît qu'en
+  // développement local — jamais sur le site publié (astro build ne
+  // l'inclut pas) — désactivée ici pour ne plus la voir pendant le dev.
+  devToolbar: {
+    enabled: false,
+  },
 });
