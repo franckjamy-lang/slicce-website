@@ -7,9 +7,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Sora:wght@400;600;700&family=DM+Sans:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
 <style>
 :root {
-  --green:#00ff78;--green-d:#00cc62;--bg:#0d0d0d;--surface:#141414;
-  --surface2:#1c1c1c;--border:rgba(255,255,255,.08);--border2:rgba(255,255,255,.14);
-  --text:#f0f0f0;--muted:#777;--danger:#ff4d4d;--r:10px;--r-sm:6px;
+  --green:#00ff78;--green-text:#00a855;--green-d:#009a4d;--bg:#ffffff;--surface:#f7f8fa;
+  --surface2:#eef0f3;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.14);
+  --text:#0d0d0d;--muted:#6b7280;--danger:#dc2626;--r:10px;--r-sm:6px;
 }
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
@@ -18,13 +18,14 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 /* SIDEBAR */
 .sidebar{background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:1.5rem 1rem;gap:.2rem;position:sticky;top:0;height:100vh;overflow-y:auto}
 .logo{display:flex;align-items:center;gap:9px;padding:.5rem .75rem 1.25rem}
-.logo-dot{width:28px;height:28px;background:var(--green);border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#000;flex-shrink:0}
+.logo-dot{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;background:var(--text);padding:4px}
+.logo-dot img{width:100%;height:100%;object-fit:contain}
 .logo-text{font-family:"Sora",sans-serif;font-size:.88rem;font-weight:700;line-height:1.2}
 .logo-text small{display:block;font-size:.65rem;color:var(--muted);font-weight:400}
 .nav-group-label{font-size:.68rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);padding:.75rem .75rem .35rem}
 .nav-btn{display:flex;align-items:center;gap:10px;padding:.58rem .75rem;border-radius:var(--r-sm);border:none;background:none;color:var(--muted);font-family:inherit;font-size:.84rem;cursor:pointer;transition:all .15s;text-align:left;width:100%}
 .nav-btn:hover{background:var(--surface2);color:var(--text)}
-.nav-btn.active{background:rgba(0,255,120,.1);color:var(--green)}
+.nav-btn.active{background:rgba(0,184,85,.1);color:var(--green-text)}
 .nav-icon{font-size:14px;width:18px;text-align:center}
 .nav-dot{width:6px;height:6px;border-radius:50%;margin-left:auto;flex-shrink:0}
 .nav-dot.ok{background:var(--green)}
@@ -46,8 +47,8 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 /* BUTTONS */
 .btn{display:inline-flex;align-items:center;gap:6px;font-family:inherit;font-size:.84rem;font-weight:500;padding:.48rem .95rem;border-radius:var(--r-sm);cursor:pointer;border:none;transition:all .15s;white-space:nowrap}
 .btn-primary{background:var(--green);color:#000}.btn-primary:hover{background:var(--green-d)}
-.btn-ghost{background:none;color:var(--muted);border:1px solid var(--border2)}.btn-ghost:hover{color:var(--text);border-color:rgba(255,255,255,.3)}
-.btn-danger{background:rgba(255,77,77,.1);color:var(--danger);border:1px solid rgba(255,77,77,.2)}.btn-danger:hover{background:rgba(255,77,77,.2)}
+.btn-ghost{background:none;color:var(--muted);border:1px solid var(--border2)}.btn-ghost:hover{color:var(--text);border-color:rgba(0,0,0,.3)}
+.btn-danger{background:rgba(220,38,38,.08);color:var(--danger);border:1px solid rgba(220,38,38,.2)}.btn-danger:hover{background:rgba(220,38,38,.15)}
 .btn-sm{padding:.32rem .7rem;font-size:.78rem}.btn-icon{padding:.42rem .58rem}
 
 /* CARD */
@@ -59,7 +60,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 /* STATS */
 .stats-row{display:grid;grid-template-columns:repeat(4,1fr);gap:.75rem;margin-bottom:1.5rem}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--r);padding:.9rem 1.1rem}
-.stat-val{font-family:"Sora",sans-serif;font-size:1.5rem;font-weight:700;color:var(--green)}
+.stat-val{font-family:"Sora",sans-serif;font-size:1.5rem;font-weight:700;color:var(--green-text)}
 .stat-label{font-size:.72rem;color:var(--muted);margin-top:2px}
 
 /* LIST ROWS */
@@ -72,7 +73,7 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .item-meta{display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .item-date{font-size:.72rem;color:var(--muted)}
 .tag{display:inline-block;font-size:.63rem;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:1px 7px;border-radius:20px}
-.tag-featured{background:rgba(0,255,120,.14);color:var(--green);border:1px solid rgba(0,255,120,.25)}
+.tag-featured{background:rgba(0,184,85,.12);color:var(--green-text);border:1px solid rgba(0,184,85,.25)}
 .tag-cat{background:var(--surface2);color:var(--muted);border:1px solid var(--border2)}
 .item-actions{display:flex;gap:.35rem;flex-shrink:0}
 .empty-state{text-align:center;padding:3rem 1rem;color:var(--muted);font-size:.875rem}
@@ -99,7 +100,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .wysiwyg-body h2,#post-body h2{font-family:"Sora",sans-serif;font-size:1.1rem;font-weight:700;margin:1rem 0 .5rem}
 .wysiwyg-body h3,#post-body h3{font-size:1rem;font-weight:600;margin:.85rem 0 .4rem}
 .wysiwyg-body p,#post-body p{margin:0 0 .7rem}
-.wysiwyg-body blockquote,#post-body blockquote{border-left:3px solid var(--green);padding:.5rem 1rem;margin:.6rem 0;background:rgba(0,255,120,.04);color:var(--muted);font-style:italic}
+.wysiwyg-body blockquote,#post-body blockquote{border-left:3px solid var(--green-text);padding:.5rem 1rem;margin:.6rem 0;background:rgba(0,184,85,.05);color:var(--muted);font-style:italic}
 .wysiwyg-body ul,.wysiwyg-body ol,#post-body ul,#post-body ol{margin:0 0 .7rem 1.3rem}
 .wysiwyg-body a,#post-body a{color:var(--green)}
 .wysiwyg-body img,#post-body img{max-width:100%;border-radius:6px;margin:.5rem 0}
@@ -110,16 +111,16 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
 /* CONNECT BANNER */
 .connect-banner{background:rgba(255,77,77,.06);border:1px solid rgba(255,77,77,.2);border-radius:var(--r);padding:1.25rem;margin-bottom:1.5rem;display:flex;align-items:center;justify-content:space-between;gap:1rem}
-.connect-banner.ok{background:rgba(0,255,120,.06);border-color:rgba(0,255,120,.2)}
+.connect-banner.ok{background:rgba(0,184,85,.06);border-color:rgba(0,184,85,.2)}
 .connect-text{font-size:.85rem;color:var(--text)}
 .connect-text strong{color:var(--danger)}
-.connect-banner.ok .connect-text strong{color:var(--green)}
+.connect-banner.ok .connect-text strong{color:var(--green-text)}
 
 /* TOAST */
 .toast{position:fixed;bottom:1.5rem;right:1.5rem;z-index:9999;background:var(--green);color:#000;font-weight:600;font-size:.84rem;padding:.55rem 1.15rem;border-radius:var(--r-sm);transform:translateY(8px);opacity:0;transition:all .2s;pointer-events:none}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.error{background:var(--danger);color:#fff}
-.spinner{width:16px;height:16px;border:2px solid rgba(0,255,120,.2);border-top-color:var(--green);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
+.spinner{width:16px;height:16px;border:2px solid rgba(0,184,85,.2);border-top-color:var(--green-text);border-radius:50%;animation:spin .7s linear infinite;display:inline-block}
 @keyframes spin{to{transform:rotate(360deg)}}
 #cover-preview,#c-image-preview{display:none;margin-top:.5rem}
 #cover-img,#c-image-preview img{height:72px;border-radius:5px;object-fit:cover;border:1px solid var(--border)}
@@ -138,7 +139,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 
   <aside class="sidebar">
     <div class="logo">
-      <div class="logo-dot">S</div>
+      <div class="logo-dot"><img src="/images/brand/slicce-logo-white.svg" alt="Slicce"></div>
       <div class="logo-text">Admin Hub<small>slicce.co</small></div>
     </div>
 
@@ -188,7 +189,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
             <div style="display:flex;gap:.4rem">
               <button class="btn btn-ghost btn-sm" onclick="showPanel('articles', document.querySelector('[data-panel=\'articles\']'))">Cancel</button>
               <button class="btn btn-danger btn-sm" id="art-btn-delete" style="display:none" onclick="deleteArticle()">🗑 Delete</button>
-              <button class="btn btn-primary btn-sm" onclick="saveArticle()" id="art-btn-save">Save to Sheet</button>
+              <button class="btn btn-primary btn-sm" onclick="saveArticle()" id="art-btn-save">Save to GitHub</button>
             </div>
           </div>
           <div class="card-body" style="display:flex;flex-direction:column;gap:.9rem">
@@ -196,7 +197,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
               <div class="field" style="grid-column:1/-1"><label>Title *</label><input type="text" id="af-titre" placeholder="Article title…"></div>
               <div class="field">
                 <label>Date</label>
-                <input type="date" id="af-date-picker" onchange="artSyncDate(this.value)" style="color-scheme:dark">
+                <input type="date" id="af-date-picker" onchange="artSyncDate(this.value)" style="color-scheme:light">
                 <input type="hidden" id="af-date">
                 <span class="field-hint" id="af-date-preview" style="color:var(--green)"></span>
               </div>
@@ -268,7 +269,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
               <div class="field" style="grid-column:1/-1"><label>Title *</label><input type="text" id="bf-title" placeholder="Post title…"></div>
               <div class="field">
                 <label>Publish date</label>
-                <input type="date" id="bf-date-picker" onchange="blogSyncDate(this.value)" style="color-scheme:dark">
+                <input type="date" id="bf-date-picker" onchange="blogSyncDate(this.value)" style="color-scheme:light">
                 <input type="hidden" id="bf-date">
               </div>
               <div class="field"><label>Slug</label><input type="text" id="bf-slug" placeholder="auto-generated-from-title"></div>
@@ -321,7 +322,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
             <div class="stat"><div class="stat-val" id="cat-total">—</div><div class="stat-label">Total products</div></div>
             <div class="stat"><div class="stat-val" id="cat-cats">—</div><div class="stat-label">Categories</div></div>
             <div class="stat"><div class="stat-val" id="cat-families">—</div><div class="stat-label">Families</div></div>
-            <div class="stat"><div class="stat-val" id="cat-cols">—</div><div class="stat-label">Sheet columns</div></div>
+            <div class="stat"><div class="stat-val" id="cat-cols">—</div><div class="stat-label">Product fields</div></div>
           </div>
           <div class="item-list" id="cat-list"><div class="empty-state">Loading…</div></div>
         </div>
@@ -335,7 +336,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
             <div style="display:flex;gap:.4rem">
               <button class="btn btn-ghost btn-sm" onclick="showPanel('catalog', document.querySelector('[data-panel=\'catalog\']'))">Cancel</button>
               <button class="btn btn-danger btn-sm" id="cat-btn-delete" style="display:none" onclick="deleteProduct()">🗑 Delete</button>
-              <button class="btn btn-primary btn-sm" onclick="saveProduct()">Save to Sheet</button>
+              <button class="btn btn-primary btn-sm" onclick="saveProduct()">Save to GitHub</button>
             </div>
           </div>
           <div class="card-body">
