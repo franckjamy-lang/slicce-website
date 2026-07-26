@@ -116,13 +116,21 @@ function bold(text: string) {
             <h2>
               Check out some {shortName} use cases
             </h2>
-            <ul class="product-usecases__list">
-              {useCases.map((u) => (
-                <li>
-                  <a href={u.href}>{u.label}</a>
-                </li>
-              ))}
-            </ul>
+            {
+              useCases.length === 1 ? (
+                <a href={useCases[0].href} class="btn btn--primary-bold">
+                  Go to the use case page &gt;
+                </a>
+              ) : (
+                <div class="product-usecases__list">
+                  {useCases.map((u) => (
+                    <a href={u.href} class="btn btn--primary-bold">
+                      Go to {u.label} &gt;
+                    </a>
+                  ))}
+                </div>
+              )
+            }
           </div>
           {useCasesIcon && (
             <div class="product-usecases__icon" data-reveal="right">
@@ -134,7 +142,7 @@ function bold(text: string) {
     )
   }
 
-  <GetStartedSection />
+  <GetStartedSection icon="/images/products/slicce-icon-cloud.png" />
 </BaseLayout>
 
 <style>
@@ -276,20 +284,9 @@ function bold(text: string) {
   }
 
   .product-usecases__list {
-    list-style: none;
-    margin: 0;
-    padding: 0;
     display: flex;
-    flex-direction: column;
-    gap: var(--space-2);
-  }
-
-  .product-usecases__list a {
-    font-family: var(--font-sans);
-    font-size: 14.667px;
-    font-weight: 600;
-    text-decoration: underline;
-    color: var(--color-ink);
+    flex-wrap: wrap;
+    gap: var(--space-4);
   }
 
   .product-usecases__icon {

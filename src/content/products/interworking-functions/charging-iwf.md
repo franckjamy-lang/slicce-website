@@ -76,6 +76,7 @@ specs:
       - RFC 4006 - Diameter Credit-Control Application
       - RFC 3588 / 6733 - Diameter base Protocol
       - 3GPP TS 32.299 - Telecommunication management; Charging management; Diameter charging applications.
+useCasesIcon: /images/products/computer2.png
 useCases:
   - label: Charging Interworking
     href: /use-cases/charging-interworking

@@ -1,103 +1,22 @@
 ---
-// Diagramme de la pile protocolaire CHF-IWF, reconstruit en HTML/CSS
-// d'après une capture d'écran du site live (l'original est un embed qui ne
-// se récupère pas via fetch automatisé — voir échange avec Franck).
+// Diagramme de la pile protocolaire CHF-IWF — image fournie par Franck
+// (export du schéma réel), remplace la reconstruction HTML/CSS précédente.
 ---
 
 <div class="iwf-diagram" data-reveal="scale">
-  <div class="iwf-diagram__grid">
-    <div class="iwf-diagram__cell iwf-diagram__cell--header">CHF-IWF Conversion &amp; Mediation Engine</div>
-
-    <div class="iwf-diagram__arrow" style="grid-area: arrow-cap;">↕</div>
-    <div class="iwf-diagram__arrow" style="grid-area: arrow-inap;">↕</div>
-    <div class="iwf-diagram__arrow" style="grid-area: arrow-diameter;">↕</div>
-    <div class="iwf-diagram__arrow" style="grid-area: arrow-http2;">↕</div>
-
-    <div class="iwf-diagram__cell" style="grid-area: cap;">CAP</div>
-    <div class="iwf-diagram__cell" style="grid-area: inap;">INAP</div>
-    <div class="iwf-diagram__cell" style="grid-area: diameter;">DIAMETER</div>
-    <div class="iwf-diagram__cell" style="grid-area: http2;">HTTP2</div>
-
-    <div class="iwf-diagram__cell" style="grid-area: tcap;">TCAP</div>
-    <div class="iwf-diagram__cell" style="grid-area: sccp;">SCCP</div>
-
-    <div class="iwf-diagram__cell" style="grid-area: mtp3;">MTP3</div>
-    <div class="iwf-diagram__cell" style="grid-area: m2pa;">M2PA</div>
-    <div class="iwf-diagram__cell" style="grid-area: m3ua;">M3UA</div>
-
-    <div class="iwf-diagram__cell" style="grid-area: sctp;">SCTP</div>
-    <div class="iwf-diagram__cell" style="grid-area: tcp;">TCP</div>
-
-    <div class="iwf-diagram__cell" style="grid-area: ethernet;">Ethernet</div>
-  </div>
+  <img src="/images/products/chf-iwf-stack-drawio.png" alt="CHF-IWF conversion &amp; mediation engine protocol stack diagram" width="672" height="532" loading="lazy" />
 </div>
 
 <style>
   .iwf-diagram {
     display: flex;
     justify-content: center;
-    padding-block: var(--space-16);
+    padding-block: var(--space-6);
   }
 
-  .iwf-diagram__grid {
-    display: grid;
+  .iwf-diagram img {
     width: 100%;
-    max-width: 660px;
-    grid-template-columns: 1fr 1fr 1.3fr 1.3fr;
-    grid-template-rows: auto 28px repeat(4, auto) auto auto;
-    grid-template-areas:
-      'header       header       header        header'
-      'arrow-cap    arrow-inap   arrow-diameter arrow-http2'
-      'cap          inap         diameter       http2'
-      'tcap         tcap         diameter       http2'
-      'sccp         sccp         diameter       http2'
-      'mtp3         m3ua         diameter       http2'
-      'm2pa         m3ua         diameter       http2'
-      'sctp         sctp         tcp            tcp'
-      'ethernet     ethernet     ethernet       ethernet';
-    gap: 6px;
-    padding: 10px;
-    border: 1.5px dashed var(--color-ink);
-  }
-
-  .iwf-diagram__cell {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    border: 1.5px solid var(--color-ink);
-    background: var(--color-gray-100);
-    font-family: 'Courier New', Consolas, monospace;
-    font-size: 13px;
-    color: var(--color-ink);
-    padding: var(--space-2);
-    min-height: 44px;
-  }
-
-  .iwf-diagram__cell--header {
-    grid-area: header;
-    border-style: dashed;
-    background: var(--color-green);
-    font-weight: 700;
-    min-height: 36px;
-  }
-
-  .iwf-diagram__arrow {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    line-height: 1;
-    color: var(--color-ink);
-  }
-
-  @media (max-width: 560px) {
-    .iwf-diagram__grid {
-      max-width: 100%;
-    }
-
-    .iwf-diagram__cell {
-      font-size: 11px;
-    }
+    max-width: 500px;
+    height: auto;
   }
 </style>

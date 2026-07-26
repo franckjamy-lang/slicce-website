@@ -1,6 +1,13 @@
 ---
 import Icon from '../Icon.astro';
 import { siteInfo } from '../../data/navigation';
+
+interface Props {
+  // Icône par défaut = celle de la home (fusée). Les pages produit passent
+  // leur propre visuel (nuage), différent de la home.
+  icon?: string;
+}
+const { icon } = Astro.props;
 ---
 
 <section class="section get-started">
@@ -13,7 +20,7 @@ import { siteInfo } from '../../data/navigation';
       </a>
     </div>
     <div class="get-started__icon" data-reveal="right">
-      <Icon name="rocket-heptagon" size={200} />
+      {icon ? <img src={icon} alt="" width="200" style="height:auto;width:200px;" loading="lazy" /> : <Icon name="rocket-heptagon" size={200} />}
     </div>
   </div>
 </section>
