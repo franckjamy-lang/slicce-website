@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
 import CatalogWidget from '../../components/widgets/CatalogWidget.astro';
 ---
 
@@ -7,29 +8,11 @@ import CatalogWidget from '../../components/widgets/CatalogWidget.astro';
   title="Product Catalog"
   description="Browse Slicce's full catalog of cloud-native telecom products: 5G core functions, CAPIF, NEF, interworking, IMS and API exposure solutions."
 >
-  <section class="section catalog-intro">
-    <div class="container">
-      <h1 data-reveal>Product Catalog</h1>
-      <p class="catalog-intro__lead" data-reveal>
-        Browse the full catalog of Slicce cloud-native telecom products — 5G core functions, CAPIF,
-        interworking, load balancers and API exposure solutions.
-      </p>
-    </div>
-  </section>
+  <PageBanner
+    title="Products Catalog"
+    description="Browse the full catalog of Slicce cloud-native telecom products — 5G core functions, CAPIF, interworking, load balancers and API exposure solutions."
+  />
   <div class="container">
     <CatalogWidget />
   </div>
 </BaseLayout>
-
-<style>
-  .catalog-intro {
-    text-align: center;
-    padding-bottom: var(--space-8);
-  }
-
-  .catalog-intro__lead {
-    max-width: 640px;
-    margin-inline: auto;
-    color: var(--text-muted);
-  }
-</style>

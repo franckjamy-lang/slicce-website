@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBanner from '../components/PageBanner.astro';
 import BlogWidget from '../components/widgets/BlogWidget.astro';
 ---
 
@@ -7,26 +8,9 @@ import BlogWidget from '../components/widgets/BlogWidget.astro';
   title="Blog"
   description="Insights on 5G, cloud-native telecom and network APIs from the Slicce team."
 >
-  <section class="section blog-intro">
-    <div class="container">
-      <h1 data-reveal>Blog</h1>
-      <p class="blog-intro__lead" data-reveal>
-        Insights on 5G, cloud-native telecom and network APIs from the Slicce team.
-      </p>
-    </div>
-  </section>
+  <PageBanner
+    title="Blog"
+    description="Insights on 5G, cloud-native telecom and network APIs from the Slicce team."
+  />
   <BlogWidget />
 </BaseLayout>
-
-<style>
-  .blog-intro {
-    text-align: center;
-    padding-bottom: var(--space-8);
-  }
-
-  .blog-intro__lead {
-    max-width: 640px;
-    margin-inline: auto;
-    color: var(--text-muted);
-  }
-</style>
