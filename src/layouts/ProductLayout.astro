@@ -43,14 +43,14 @@ function bold(text: string) {
         <h1>{title}</h1>
         <p>{heroDescription}</p>
       </div>
-      {
-        heroIcon && (
-          <div class="product-hero__icon" data-reveal="right">
-            <img src={heroIcon} alt="" width="320" height="256" loading="lazy" />
-          </div>
-        )
-      }
     </div>
+    {
+      heroIcon && (
+        <div class="product-hero__icon" data-reveal="right">
+          <img src={heroIcon} alt="" width="420" height="336" loading="lazy" />
+        </div>
+      )
+    }
   </section>
 
   <section class="section product-features">
@@ -166,7 +166,7 @@ function bold(text: string) {
     font-weight: 800;
     font-size: 56px;
     color: var(--color-green);
-    white-space: pre-line;
+    white-space: nowrap;
     margin-bottom: var(--space-6);
   }
 
@@ -184,9 +184,8 @@ function bold(text: string) {
 
   .product-hero__icon {
     position: absolute;
-    right: -30px;
-    top: 50%;
-    transform: translateY(-50%);
+    right: -140px;
+    bottom: 0;
   }
 
   .product-divider {

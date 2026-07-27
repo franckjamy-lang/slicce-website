@@ -1,7 +1,5 @@
 ---
-title: |-
-  Charging Interworking
-  Function
+title: Charging Interworking Function
 shortName: CHF-IWF
 category: interworking-functions
 order: 1
