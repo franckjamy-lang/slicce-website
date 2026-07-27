@@ -253,7 +253,11 @@ function bold(text: string) {
   .product-specs__grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: var(--space-12) var(--space-8);
+    gap: var(--space-8);
+  }
+
+  .product-specs__item {
+    min-height: 150px;
   }
 
   .product-specs__item h3 {
