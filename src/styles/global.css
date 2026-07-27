@@ -10,6 +10,13 @@
 
 html {
   -webkit-text-size-adjust: 100%;
+  /* Filet de sécurité : sur mobile (iOS/Android), le hero avec parallax
+     (transform + will-change sur une image ayant des attributs width/height
+     natifs plus larges que l'écran) peut faire apparaître un défilement
+     horizontal fantôme au premier rendu, qui se corrige seul au premier
+     scroll. On bloque ce débordement à la racine plutôt que de dépendre de
+     chaque section pour le contenir. */
+  overflow-x: hidden;
 }
 
 body {
@@ -19,6 +26,7 @@ body {
   line-height: 1.6;
   color: var(--text-body);
   background: var(--bg-page);
+  overflow-x: hidden;
 }
 
 img,
