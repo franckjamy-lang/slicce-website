@@ -18,7 +18,8 @@
   --color-ink: #1c1c1c;             /* texte foncé sur fond clair */
   --color-white: #ffffff;
   --color-off-white: #f9f9f9;       /* fond clair alternatif */
-  --color-section-gray: #dcdcdc;    /* fond gris section "Ready to get started?" */
+  --color-section-gray: #d9d9d9;    /* fond gris clair (ex: "Check out some use cases") */
+  --color-section-gray-dark: #636363; /* fond gris foncé section "Ready to get started?" */
 
   --color-gray-100: #e7e7ec;
   --color-gray-300: #c7c7cf;
