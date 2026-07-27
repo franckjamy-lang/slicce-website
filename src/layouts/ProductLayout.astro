@@ -289,7 +289,7 @@ function bold(text: string) {
 
   .product-usecases__inner {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: var(--space-12);
   }
@@ -310,6 +310,7 @@ function bold(text: string) {
 
   .product-usecases__icon {
     flex-shrink: 0;
+    align-self: flex-end;
   }
 
   /* En dessous de cette largeur, l'icône (positionnée en pixels absolus)
