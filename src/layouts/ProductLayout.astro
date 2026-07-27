@@ -10,6 +10,7 @@ interface Feature {
 interface Spec {
   label: string;
   values: string[];
+  wide?: boolean;
 }
 interface UseCase {
   label: string;
@@ -95,7 +96,7 @@ function bold(text: string) {
       <div class="product-specs__grid" data-reveal-group="scale">
         {
           specs.map((s) => (
-            <div class="product-specs__item">
+            <div class="product-specs__item" data-wide={s.wide ? true : undefined}>
               <h3>{s.label}</h3>
               <span class="product-divider" />
               {s.values.map((v) => (
@@ -259,6 +260,10 @@ function bold(text: string) {
 
   .product-specs__item {
     min-height: 150px;
+  }
+
+  .product-specs__item[data-wide] {
+    grid-column: span 2;
   }
 
   .product-specs__item h3 {

@@ -68,12 +68,14 @@ specs:
       - RFC9113
       - RFC7541
   - label: CAP
+    wide: true
     values:
       - GSM 09.78 (ETSI TS101 046 - V5.6.0) CAMEL Phase 1
       - GSM 09.78 (ETSI TS101 046 - V6.3.0) CAMEL Phase 2
       - GSM 09.78 (ETSI TS129 078 - V4.6.0) CAMEL Phase 3
       - 3GPP TS 29.078 V7.3.0 R7, 3GPP TS 29.278 V7.0.0 R7 (IMS) CAMEL Phase 4
   - label: DIAMETER
+    wide: true
     values:
       - RFC 4006 - Diameter Credit-Control Application
       - RFC 3588 / 6733 - Diameter base Protocol
