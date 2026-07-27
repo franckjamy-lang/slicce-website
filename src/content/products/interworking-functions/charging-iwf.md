@@ -42,7 +42,9 @@ specs:
       - RFC3309
   - label: MTP
     values:
-      - ITU-T Q.700 through Q.707, Q.781, Q.782, Q.791
+      - |-
+        ITU-T Q.700 through Q.707,
+        Q.781, Q.782, Q.791
   - label: M2PA
     values:
       - RFC4165
@@ -54,7 +56,9 @@ specs:
       - ITU-T Q.711 through Q.a714 Connectionless Class 0 & 1
   - label: TCAP
     values:
-      - ITU-T Q.700 through Q.707, Q.781, Q.782, Q.791
+      - |-
+        ITU-T Q.700 through Q.707,
+        Q.781, Q.782, Q.791
   - label: INAP
     values:
       - ETSI ETS 300 374-1
