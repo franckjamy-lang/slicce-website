@@ -46,7 +46,7 @@ function bold(text: string) {
       {
         heroIcon && (
           <div class="product-hero__icon" data-reveal="right">
-            <img src={heroIcon} alt="" width="200" height="160" loading="lazy" />
+            <img src={heroIcon} alt="" width="320" height="256" loading="lazy" />
           </div>
         )
       }
@@ -147,15 +147,14 @@ function bold(text: string) {
 
 <style>
   .product-hero {
+    position: relative;
     background: var(--color-black-soft);
     overflow: hidden;
   }
 
   .product-hero__inner {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--space-12);
+    position: relative;
+    padding-block: var(--space-8);
   }
 
   .product-hero__text {
@@ -184,7 +183,10 @@ function bold(text: string) {
   }
 
   .product-hero__icon {
-    flex-shrink: 0;
+    position: absolute;
+    right: -30px;
+    top: 50%;
+    transform: translateY(-50%);
   }
 
   .product-divider {
@@ -294,11 +296,14 @@ function bold(text: string) {
   }
 
   @media (max-width: 760px) {
-    .product-hero__inner,
     .product-usecases__inner {
       flex-direction: column;
       align-items: flex-start;
       text-align: left;
+    }
+
+    .product-hero__icon {
+      display: none;
     }
 
     .product-features__row {
