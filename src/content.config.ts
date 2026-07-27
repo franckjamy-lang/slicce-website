@@ -36,6 +36,7 @@ const products = defineCollection({
         z.object({
           label: z.string(),
           values: z.array(z.string()),
+          wide: z.boolean().optional(),
         })
       )
       .default([]),
