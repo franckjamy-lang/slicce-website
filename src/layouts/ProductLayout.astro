@@ -172,16 +172,23 @@ function bold(text: string) {
     margin-bottom: var(--space-6);
   }
 
-
+/*
+  Interligne sous titre Features & Benefits
+*/
   .product-section-title {
     text-align: center;
     margin-bottom: var(--space-16);
   }
-
+/*
+  Interligne sous bloc noir (header)
+*/
   .product-features {
     padding-top: var(--space-12);
   }
 
+/*
+  Texte blanc bloc noir (header)
+*/
   .product-hero__text p {
     font-family: var(--font-heading);
     font-size: 18.667px;
@@ -190,12 +197,17 @@ function bold(text: string) {
     line-height: 1.5;
   }
 
+/*
+  Alignement droite pod bloc noir (header)
+*/
   .product-hero__icon {
     position: absolute;
-    right: -140px;
+    right: -160px;
     bottom: 0;
   }
-
+/*
+  Lignes vertes Technical specifications
+*/
   .product-divider {
     display: block;
     width: 64px;
@@ -205,18 +217,36 @@ function bold(text: string) {
     margin-bottom: var(--space-3);
   }
 
+/*
+  Lignes vertes Features & Benefits
+*/
+  .product-features__label .product-divider {
+    width: 100px;
+    height: 5px;
+  }
+
+/*
+  Marge et Interlignage entre bloc Features & Benefits
+*/
   .product-features__list {
     display: flex;
     flex-direction: column;
-    gap: var(--space-16);
+    gap: var(--space-12);
+    padding-left: var(--space-24);
   }
 
+/*
+  Alignement gauche enumeration Features & Benefits
+*/
   .product-features__row {
     display: grid;
-    grid-template-columns: 300px 1fr;
-    gap: var(--space-12);
+    grid-template-columns: 340px 1fr;
+    column-gap: 120px;
   }
 
+/*
+  Titre enumeration Features & Benefits
+*/
   .product-features__label h3 {
     font-family: var(--font-sans);
     font-weight: 700;
@@ -224,14 +254,21 @@ function bold(text: string) {
     color: var(--color-ink);
   }
 
+/*
+  Texte enumeration Features & Benefits
+*/
   .product-features__row > p {
     font-family: var(--font-sans);
     font-weight: 400;
     font-size: 14.667px;
     color: var(--color-ink);
     line-height: 1.6;
+    max-width: 500px;
   }
 
+/*
+  Texte Bold enumeration Features & Benefits
+*/
   .product-features__row > p :global(strong) {
     font-weight: 700;
   }
@@ -242,6 +279,15 @@ function bold(text: string) {
 
   .product-differentiators__inner {
     max-width: 1100px;
+    margin-bottom: var(--space-24);
+  }
+
+  .product-differentiators {
+    padding-bottom: var(--space-8);
+  }
+
+  .product-specs {
+    padding-top: var(--space-8);
   }
 
   .product-differentiators__inner :global(p) {
@@ -306,6 +352,10 @@ function bold(text: string) {
     display: flex;
     flex-wrap: wrap;
     gap: var(--space-4);
+  }
+
+  .product-usecases__text .btn--primary-bold {
+    font-size: 18px;
   }
 
   .product-usecases__icon {

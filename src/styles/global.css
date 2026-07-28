@@ -15,8 +15,11 @@ html {
      natifs plus larges que l'écran) peut faire apparaître un défilement
      horizontal fantôme au premier rendu, qui se corrige seul au premier
      scroll. On bloque ce débordement à la racine plutôt que de dépendre de
-     chaque section pour le contenir. */
-  overflow-x: hidden;
+     chaque section pour le contenir. Note : on utilise "clip" et non "hidden"
+     car "hidden" force le calcul de overflow-y à "auto", ce qui transforme
+     html/body en conteneur de scroll et casse le "position: sticky" du
+     header (voir Header.astro). */
+  overflow-x: clip;
 }
 
 body {
@@ -26,7 +29,7 @@ body {
   line-height: 1.6;
   color: var(--text-body);
   background: var(--bg-page);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img,
@@ -141,7 +144,8 @@ button {
 .btn--primary-bold {
   background: var(--color-green);
   color: var(--color-ink);
-  border: 3px solid var(--color-ink);
+  border: 2px solid var(--color-ink);
+  border-radius: var(--radius-md);
   padding: 0.5rem 2.75rem;
   font-size: 0.875rem;
   font-weight: 800;
