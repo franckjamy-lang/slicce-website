@@ -26,10 +26,11 @@ interface Props {
   specs: Spec[];
   useCasesIcon?: string;
   useCases: UseCase[];
+  hasDiagram?: boolean;
 }
 
-const { title, shortName, heroDescription, heroIcon, features, specs, useCasesIcon, useCases } = Astro.props;
-const hasDiagram = Astro.slots.has('diagram');
+const { title, shortName, heroDescription, heroIcon, features, specs, useCasesIcon, useCases, hasDiagram = false } =
+  Astro.props;
 
 // Mini-syntaxe **gras** utilisée dans les descriptions de features (contenu de confiance, pas d'entrée utilisateur).
 function bold(text: string) {

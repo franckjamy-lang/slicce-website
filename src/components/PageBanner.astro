@@ -6,8 +6,9 @@
 interface Props {
   title: string;
   description: string;
+  accentTitle?: boolean;
 }
-const { title, description } = Astro.props;
+const { title, description, accentTitle = false } = Astro.props;
 ---
 
 <section class="page-banner">
@@ -16,7 +17,7 @@ const { title, description } = Astro.props;
     <div class="page-banner__fade"></div>
   </div>
   <div class="container page-banner__content">
-    <h1 data-reveal>{title}</h1>
+    <h1 data-reveal class:list={[{ 'is-accent': accentTitle }]}>{title}</h1>
     <p data-reveal>{description}</p>
   </div>
 </section>
@@ -60,6 +61,10 @@ const { title, description } = Astro.props;
     color: var(--text-inverse);
     font-size: 48px;
     margin-bottom: var(--space-3);
+  }
+
+  .page-banner__content h1.is-accent {
+    color: var(--color-green);
   }
 
   .page-banner__content p {
