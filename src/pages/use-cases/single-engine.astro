@@ -1,0 +1,115 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import SectionDots from '../../components/SectionDots.astro';
+import MoreQuestionsCta from '../../components/MoreQuestionsCta.astro';
+---
+
+<BaseLayout
+  title="A voicemail using a single communication engine"
+  description="This use case demonstrates how the CPAAS-AEF can be used to build a voicemail application without having the need to rely on any other communication engine."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="A voicemail using a single communication engine"
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        As all communication engines exposes APIs so they can be programmed to perform specific service logic, this
+        use case demonstrates how the CPAAS-AEF can be used to build a voicemail application without having the need
+        to rely on any other communication engine. CPAAS-AEF exposes enterprise Unified Communication APIs to embed
+        Voice, Messaging and Presence services into business applications. It relies on SIP/RTP and SMPP
+        communication protocols.
+      </p>
+
+      <p>The CPAAS-AEF expose several families of APIs, for this use case, we are going to use:</p>
+      <ul>
+        <li>The SIP call control API for call setup and teardown</li>
+        <li>The Multimedia API for voice playback, recording and DTMF detection</li>
+        <li>The SMPP API for text notifications</li>
+      </ul>
+    </div>
+
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/single-engine-diagram.png"
+        alt="Single Cloud Communication Engine Use Case: a Voicemail application connects to CPAAS-AEF via SIP API, VOICE API and SMPP API; CPAAS-AEF connects to an SMPP Provider and to an IP-PBX or Public switch via SIP/RTP."
+        width="580"
+        height="330"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="container article">
+      <p>
+        As decribed in the diagram above, the voicemail application interacts with the CPAAS-AEF which abstracts the
+        SIP and SMPP telecom interfaces towards the private or public telephone switch.
+      </p>
+
+      <p>
+        The voicemail service is composed from 2 main call flows, one for leaving a message to a subscriber
+        currently not available to take a call, and the other for the subscriber to retrieve the messages left for
+        him. This article does not refers to the way the message themselves are stored and it which format they are
+        stored. Our aim here is to illustrate how a single communication engine can stand for itself without
+        necessarily being a part of a workload.
+      </p>
+    </div>
+
+    <SectionDots count={3} active={2} />
+
+    <div class="container article">
+      <h2>Call Flow for leaving a message</h2>
+      <div class="diagram-placeholder">Call Flow for leaving a message — diagram to be provided</div>
+    </div>
+
+    <SectionDots count={3} active={1} />
+
+    <div class="container article">
+      <h2>Call Flow for retreiving a message</h2>
+      <div class="diagram-placeholder">Call Flow for retreiving a message — diagram to be provided</div>
+
+      <h2>What other engines can be used in a single or standalone mode?</h2>
+      <p>
+        Any API Exposure Functions can be used in a standalone mode and help you to develop an application in your
+        preferred programming language using its swagger file (openAPI document). Full list of API Exposure
+        Functions and their respective documentation can be found <a href="/products/api-exposure-functions">here</a>.
+      </p>
+    </div>
+  </section>
+
+  <MoreQuestionsCta />
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .diagram {
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    margin-block: var(--space-8);
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diagram-placeholder {
+    background: var(--color-section-gray);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-16);
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+</style>

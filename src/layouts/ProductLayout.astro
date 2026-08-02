@@ -2,10 +2,11 @@
 import BaseLayout from './BaseLayout.astro';
 import SectionDots from '../components/SectionDots.astro';
 import GetStartedSection from '../components/home/GetStartedSection.astro';
+import Icon from '../components/Icon.astro';
 
 interface Feature {
   title: string;
-  description: string;
+  description: string | string[];
 }
 interface Spec {
   label: string;
@@ -17,20 +18,39 @@ interface UseCase {
   href: string;
 }
 
+interface MicroserviceGuide {
+  href: string;
+}
+
 interface Props {
   title: string;
   shortName: string;
   heroDescription: string;
+  heroDescriptionSecondary?: string;
   heroIcon?: string;
   features: Feature[];
   specs: Spec[];
   useCasesIcon?: string;
   useCases: UseCase[];
   hasDiagram?: boolean;
+  hasDifferentiators?: boolean;
+  microserviceGuide?: MicroserviceGuide;
 }
 
-const { title, shortName, heroDescription, heroIcon, features, specs, useCasesIcon, useCases, hasDiagram = false } =
-  Astro.props;
+const {
+  title,
+  shortName,
+  heroDescription,
+  heroDescriptionSecondary,
+  heroIcon,
+  features,
+  specs,
+  useCasesIcon,
+  useCases,
+  hasDiagram = false,
+  hasDifferentiators = true,
+  microserviceGuide,
+} = Astro.props;
 
 // Mini-syntaxe **gras** utilisée dans les descriptions de features (contenu de confiance, pas d'entrée utilisateur).
 function bold(text: string) {
@@ -55,24 +75,48 @@ function bold(text: string) {
     }
   </section>
 
-  <section class="section product-features">
-    <div class="container">
-      <h2 class="product-section-title" data-reveal>Features &amp; Benefits</h2>
-      <div class="product-features__list">
-        {
-          features.map((f) => (
-            <div class="product-features__row" data-reveal>
-              <div class="product-features__label">
-                <h3>{f.title}</h3>
-                <span class="product-divider" />
-              </div>
-              <p set:html={bold(f.description)} />
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  {
+    heroDescriptionSecondary && (
+      <section class="section product-hero-secondary">
+        <div class="container">
+          <p data-reveal>{heroDescriptionSecondary}</p>
+        </div>
+      </section>
+    )
+  }
+
+  <SectionDots count={3} active={2} />
+
+  {
+    features.length > 0 && (
+      <section class="section product-features">
+        <div class="container">
+          <h2 class="product-section-title" data-reveal>Features &amp; Benefits</h2>
+          <div class="product-features__list">
+            {
+              features.map((f) => (
+                <div class="product-features__row" data-reveal>
+                  <div class="product-features__label">
+                    <h3>{f.title}</h3>
+                    <span class="product-divider" />
+                  </div>
+                  {Array.isArray(f.description) ? (
+                    <ul class="product-features__bullets">
+                      {f.description.map((line) => (
+                        <li set:html={bold(line)} />
+                      ))}
+                    </ul>
+                  ) : (
+                    <p set:html={bold(f.description)} />
+                  )}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   {
     hasDiagram && (
@@ -84,31 +128,38 @@ function bold(text: string) {
     )
   }
 
-  <section class="section product-differentiators">
-    <div class="container product-differentiators__inner" data-reveal>
-      <slot />
-    </div>
-    <SectionDots count={3} active={2} />
-  </section>
+  {
+    hasDifferentiators && (
+      <section class="section product-differentiators">
+        <div class="container product-differentiators__inner" data-reveal>
+          <slot />
+        </div>
+      </section>
+    )
+  }
 
-  <section class="section product-specs">
-    <div class="container">
-      <h2 class="product-section-title" data-reveal>Technical specifications</h2>
-      <div class="product-specs__grid" data-reveal-group="scale">
-        {
-          specs.map((s) => (
-            <div class="product-specs__item" data-wide={s.wide ? true : undefined}>
-              <h3>{s.label}</h3>
-              <span class="product-divider" />
-              {s.values.map((v) => (
-                <p>{v}</p>
-              ))}
-            </div>
-          ))
-        }
-      </div>
-    </div>
-  </section>
+  {
+    specs.length > 0 && (
+      <section class="section product-specs">
+        <div class="container">
+          <h2 class="product-section-title" data-reveal>Technical specifications</h2>
+          <div class="product-specs__grid" data-reveal-group="scale">
+            {
+              specs.map((s) => (
+                <div class="product-specs__item" data-wide={s.wide ? true : undefined}>
+                  <h3>{s.label}</h3>
+                  <span class="product-divider" />
+                  {s.values.map((v) => (
+                    <p>{v}</p>
+                  ))}
+                </div>
+              ))
+            }
+          </div>
+        </div>
+      </section>
+    )
+  }
 
   {
     useCases.length > 0 && (
@@ -144,7 +195,25 @@ function bold(text: string) {
     )
   }
 
-  <GetStartedSection icon="/images/products/slicce-icon-cloud.png" />
+  {
+    microserviceGuide ? (
+      <section class="section product-microservice-cta">
+        <div class="container product-microservice-cta__inner">
+          <div class="product-microservice-cta__text" data-reveal="left">
+            <h2>Get the microservice guide</h2>
+            <a href={microserviceGuide.href} class="btn btn--primary-bold">
+              Contact us
+            </a>
+          </div>
+          <div class="product-microservice-cta__icon" data-reveal="right">
+            <Icon name="rocket-heptagon" size={200} />
+          </div>
+        </div>
+      </section>
+    ) : (
+      <GetStartedSection icon="/images/products/slicce-icon-cloud.png" />
+    )
+  }
 </BaseLayout>
 
 <style>
@@ -161,7 +230,7 @@ function bold(text: string) {
   }
 
   .product-hero__text {
-    max-width: 950px;
+    max-width: 800px;
   }
 
   .product-hero h1 {
@@ -169,7 +238,6 @@ function bold(text: string) {
     font-weight: 800;
     font-size: 56px;
     color: var(--color-green);
-    white-space: nowrap;
     margin-bottom: var(--space-6);
   }
 
@@ -201,10 +269,28 @@ function bold(text: string) {
 /*
   Alignement droite pod bloc noir (header)
 */
+  /* Le pod occupe toute la hauteur du bandeau noir (moins une petite marge
+     haut/bas fixe), plutôt qu'une taille fixe en pixels : la hauteur du
+     bandeau varie selon la longueur du titre/texte de chaque produit
+     (1 ou 2 lignes de titre, 2 à 6 lignes de texte), et une taille fixe
+     laissait soit un vide au-dessus du pod (bandeau haut), soit un pod trop
+     petit et perdu dans le bandeau (bandeau bas) selon la page. */
   .product-hero__icon {
     position: absolute;
-    right: -160px;
-    bottom: 0;
+    right: 20px;
+    top: var(--space-6);
+    bottom: var(--space-6);
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .product-hero__icon img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
   }
 /*
   Lignes vertes Technical specifications
@@ -274,21 +360,39 @@ function bold(text: string) {
     font-weight: 700;
   }
 
+/*
+  Liste à puces enumeration Features & Benefits (quand une feature a
+  plusieurs points distincts plutôt qu'un paragraphe unique)
+*/
+  .product-features__bullets {
+    font-family: var(--font-sans);
+    font-weight: 400;
+    font-size: 14.667px;
+    color: var(--color-ink);
+    line-height: 1.6;
+    max-width: 500px;
+    margin: 0;
+    padding-left: 1.1em;
+  }
+
+  .product-features__bullets li {
+    margin-bottom: var(--space-2);
+  }
+
+  .product-features__bullets li:last-child {
+    margin-bottom: 0;
+  }
+
+  .product-features__bullets :global(strong) {
+    font-weight: 700;
+  }
+
   .product-diagram-section {
     background: var(--color-section-gray);
   }
 
   .product-differentiators__inner {
     max-width: 1100px;
-    margin-bottom: var(--space-24);
-  }
-
-  .product-differentiators {
-    padding-bottom: var(--space-8);
-  }
-
-  .product-specs {
-    padding-top: var(--space-8);
   }
 
   .product-differentiators__inner :global(p) {
@@ -330,6 +434,55 @@ function bold(text: string) {
     white-space: pre-line;
   }
 
+  /*
+    Suite du texte du hero (2e paragraphe), centrée en dessous du bandeau
+    noir, juste au-dessus des SectionDots.
+  */
+  .product-hero-secondary {
+    padding-bottom: 0;
+  }
+
+  .product-hero-secondary .container {
+    max-width: 1050px;
+  }
+
+  .product-hero-secondary p {
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    font-weight: 400;
+    color: var(--color-ink);
+    line-height: 1.5;
+    text-align: center;
+  }
+
+  .product-microservice-cta {
+    position: relative;
+    background: var(--color-section-gray);
+    overflow: visible;
+  }
+
+  .product-microservice-cta__inner {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  .product-microservice-cta__text h2 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 42.667px;
+    color: var(--color-ink);
+    margin-bottom: var(--space-6);
+  }
+
+  .product-microservice-cta__icon {
+    position: absolute;
+    right: 0;
+    bottom: -64px;
+  }
+
   .product-usecases {
     background: var(--color-section-gray);
   }
@@ -367,8 +520,12 @@ function bold(text: string) {
   /* En dessous de cette largeur, l'icône (positionnée en pixels absolus)
      entre en collision avec le texte du hero avant même le point de bascule
      "mobile" — on la masque plus tôt et on repasse le titre en mode normal
-     pour que ça reste correct sur tablette / fenêtre desktop réduite. */
-  @media (max-width: 1550px) {
+     pour que ça reste correct sur tablette / fenêtre desktop réduite.
+     Seuil resserré (était 1550px) : à l'origine masquait l'icône sur la
+     plupart des écrans desktop courants (1440px, 1366px) alors que la
+     majorité des titres produit n'entrent en collision qu'à des largeurs
+     bien plus étroites. */
+  @media (max-width: 1200px) {
     .product-hero__icon {
       display: none;
     }
@@ -380,10 +537,23 @@ function bold(text: string) {
   }
 
   @media (max-width: 760px) {
-    .product-usecases__inner {
+    .product-usecases__inner,
+    .product-microservice-cta__inner {
       flex-direction: column;
       align-items: flex-start;
       text-align: left;
+      gap: var(--space-8);
+    }
+
+    /* Comme GetStartedSection : sur mobile, l'icône reste dans le flux
+       normal (sous le texte) au lieu d'être positionnée en absolu, pour
+       éviter tout chevauchement avec le texte au-dessus du footer. */
+    .product-microservice-cta {
+      padding-bottom: 0;
+    }
+
+    .product-microservice-cta__icon {
+      position: static;
     }
 
     .product-hero h1 {
@@ -392,6 +562,10 @@ function bold(text: string) {
 
     .product-hero__text p {
       font-size: 15px;
+    }
+
+    .product-features__list {
+      padding-left: 0;
     }
 
     .product-features__row {

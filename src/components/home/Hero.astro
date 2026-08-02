@@ -135,6 +135,20 @@ import Icon from '../Icon.astro';
     .hero__subhead {
       font-size: 1.125rem;
     }
+
+    /* .hero__content passe en flux normal (static) juste au-dessus, mais la
+       flèche restait positionnée en absolu par rapport à la section .hero
+       entière : elle finissait collée au bas du texte, parfois dessus. On la
+       repasse en flux normal elle aussi, sous le texte, avec sa propre
+       marge. */
+    .hero__scroll {
+      position: static;
+      display: flex;
+      justify-content: center;
+      transform: none;
+      margin-top: var(--space-4);
+      padding-bottom: var(--space-6);
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {

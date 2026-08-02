@@ -1,0 +1,228 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryHero from '../../../components/CategoryHero.astro';
+import SectionDots from '../../../components/SectionDots.astro';
+import GetStartedSection from '../../../components/home/GetStartedSection.astro';
+
+interface Item {
+  title: string;
+  description: string;
+  href?: string;
+}
+
+const groups: { title: string; items: Item[] }[] = [
+  {
+    title: '3G & Circuit Switched',
+    items: [
+      {
+        title: 'CAP-AEF',
+        description:
+          'Exposes CAMEL v1/v2/v3/v4 APIs and allows the implementation of intelligent services for the legacy mobile network. Exposes 3 different sets of APIs, CAMEL Service Control Function API, CAMEL Service Switching Function API and CAMEL Specialized Resource Function API.',
+        href: '/products/api-exposure-functions/3g-circuit-switched/cap-aef',
+      },
+      {
+        title: 'MAP-AEF',
+        description:
+          'Exposes GSM-MAP v1/v2/v3 APIs for communication between different elements in the GSM network, specifically for signaling and handling mobile applications such as call control, location management.',
+        href: '/products/api-exposure-functions/3g-circuit-switched/map-aef',
+      },
+      {
+        title: 'USSD-AEF',
+        description:
+          'Exposes GSM-MAP v1/v2/v3 APIs for Unstructured Supplementary Services Data and allows the implementation of interactive text-based services on legacy 3G devices.',
+        href: '/products/api-exposure-functions/3g-circuit-switched/ussd-aef',
+      },
+      {
+        title: 'INAP-AEF',
+        description:
+          'Exposes INAP CS1/CS1+ APIs and allows the implementation of intelligent services for the legacy landline network. Exposes 3 different sets of APIs, IN Service Control Function API, IN Service Switching Function API and IN Specialized Resource Function API.',
+        href: '/products/api-exposure-functions/3g-circuit-switched/inap-aef',
+      },
+    ],
+  },
+  {
+    title: '4G, 5G & Packet Switched',
+    items: [
+      {
+        title: 'ISC-AEF',
+        description:
+          'Exposes IMS Service Control Interface APIs and allows the implementation of intelligent services for IMS and VoLTE networks. Exposes 2 different sets of APIs, IMS Service Control Function API and IMS Media Resource Function Control API.',
+        href: '/products/api-exposure-functions/4g-packet-switched/isc-aef',
+      },
+      {
+        title: 'DMT-AEF',
+        description:
+          'Exposes DIAMETER APIs for S6a/S6d, Sh, Cx, Sy, Swx, Swm, Ro, Gy Gz interfaces and allows implementation of most common diameter applications using REST APIs.',
+        href: '/products/api-exposure-functions/4g-packet-switched/dmt-aef',
+      },
+      {
+        title: 'MTC-AEF',
+        description:
+          'Exposes 4G and 5G Network Exposure APIs partially aggregating the standard SCEF and NEF standard elements. Enables Non-IP Data Delivery (NIDD), Background Data Transfer (BDT) and Device Triggering.',
+      },
+    ],
+  },
+  {
+    title: 'Cross-domain',
+    items: [
+      {
+        title: 'CDS-AEF',
+        description:
+          'The Common Data Store Exposure Function provides a common API for application functions and services to store documents in an indexed NOSQL database.',
+      },
+      {
+        title: 'AAA-AEF',
+        description:
+          'Exposes DIAMETER APIs for Gx, Gy and Ro interfaces and allows implementation of online charging systems and policy charging rules using REST APIs.',
+      },
+      {
+        title: 'CPAAS-AEF',
+        description:
+          'Exposes Enterprise Unified Communication APIs to embed Voice, Messaging and Presence services into business applications. Relies on SIP/RTP and SMPP communication protocols.',
+        href: '/products/api-exposure-functions/cross-domain/cpaas-aef',
+      },
+      {
+        title: 'SMS-AEF',
+        description:
+          'Exposes GSM-MAP v1/v2/v3 APIs, DIAMETER SGd, SIP ISC and SMPP for Short Text Messages and allows the implementation of services requiring SMS exchange.',
+        href: '/products/api-exposure-functions/cross-domain/sms-aef',
+      },
+      {
+        title: 'MLC-AEF',
+        description:
+          'The Mobile Location Center API Exposure Function implements the 3G Lg and Lh interfaces, the 4G SLg and SLh interfaces, the 5G NLg and NLh interfaces and exposes one common API that can be used by application functions and services to determine the geographical location of mobile handsets.',
+      },
+      {
+        title: 'SCS-AEF',
+        description:
+          'Signaling Capture Services API Exposure Function exposes APIs that allow to generate on-demand network captures on a specific worker node. The function can also be configured to generate ongoing metrics and KPIs as well as Call Data Records to give visibility on the behavior and the performance of network functions hosted by the same worker node.',
+        href: '/products/api-exposure-functions/cross-domain/scs-aef',
+      },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="API Exposure Functions"
+  description="API Exposure Functions are communication engines that implement a standard telecom interface and expose an OpenAPI as a northbound interface for a 3rd party application to easily make use of these APIs."
+>
+  <CategoryHero
+    title="API Exposure Functions"
+    description="API Exposure Functions are communication engines that implement a standard telecom interface and expose an OpenAPI as a northbound interface for a 3rd party application to easily make use of these APIs. In simpler terms, the API Exposure Functions provides a way for developers to use a complex telecom interface in a simple way."
+    icon="/images/products/aef_bannerpod.png"
+  />
+
+  <section class="section">
+    <div class="container">
+      {
+        groups.map((group, i) => (
+          <>
+            <div class="group">
+              <h2 data-reveal>{group.title}</h2>
+              <div class="rows">
+                {group.items.map((item) => (
+                  <div class="row" data-reveal>
+                    <div class="row__label">
+                      <h3>{item.title}</h3>
+                      <span class="divider" />
+                    </div>
+                    <p>{item.description}</p>
+                    {item.href && (
+                      <a href={item.href} class="btn btn--primary-bold row__btn">
+                        Read more
+                      </a>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+            {i < groups.length - 1 && <SectionDots count={3} active={i + 1} />}
+          </>
+        ))
+      }
+
+      <div class="cta">
+        <h2>Didn't found the AEF you need?</h2>
+        <p>Contact us to understand how we can make it available for you.</p>
+      </div>
+    </div>
+  </section>
+
+  <GetStartedSection icon="/images/products/slicce-icon-cloud.png" />
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .group {
+    margin-bottom: var(--space-8);
+  }
+
+  .group h2 {
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: var(--space-10);
+  }
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 180px 1fr auto;
+    align-items: center;
+    column-gap: var(--space-8);
+  }
+
+  .row__label h3 {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 14.667px;
+    color: var(--color-ink);
+  }
+
+  .divider {
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--color-green);
+    margin-top: var(--space-2);
+  }
+
+  .row p {
+    font-family: var(--font-sans);
+    font-size: 14.667px;
+    color: var(--color-ink);
+    line-height: 1.6;
+    margin: 0;
+  }
+
+  .row__btn {
+    justify-self: end;
+    white-space: nowrap;
+    font-size: 14px;
+    padding: 0.5rem 1.75rem;
+  }
+
+  .cta {
+    text-align: center;
+    padding-top: var(--space-8);
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-3);
+    }
+
+    .row__btn {
+      justify-self: start;
+    }
+  }
+</style>

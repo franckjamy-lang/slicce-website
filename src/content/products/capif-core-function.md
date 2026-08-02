@@ -1,84 +1,89 @@
 ---
-title: Common API Framework Core Function
+title: CAPIF Core Function
 shortName: CAPIF-CF
 category: capif-core-function
 order: 1
+heroIcon: /images/products/capif_bannerpod.png
 heroDescription: >-
   The Common API Framework Core Function is an element defined by 3GPP to
   harmonize all aspects of northbound service APIs. It covers functionality
   related to on-board and off-board API invokers, APIs that need to be
   exposed for registration and release, API discovery by third-party
   entities, and authorization and authentication.
+heroDescriptionSecondary: >-
+  CAPIF functionality is considered a cornerstone in realizing 5G openness
+  because it allows secure exposure of 5G core APIs to third-party domains
+  and enables third parties to define and expose their own APIs. Slicce
+  extends the use case of the Common API Framework by publishing and
+  exposing northbound APIs for 3G and 4G networks.
 features:
   - title: JWT Authentication Server
-    description: >-
-      Stateless: the JWT is a self-contained token which has authentication
-      information, expire time information, and other user-defined claims
-      digitally signed. Portable across multiple backends, mobile-friendly,
-      with improved performance.
+    description:
+      - >-
+        Stateless: The JWT is a self-contained token which has
+        authentication information, expire time information, and other
+        user-defined claims digitally signed. This means that there is no
+        session to manage.
+      - "Portable: A single token can be used with multiple backends."
+      - "No cookies required: So it's very mobile-friendly."
+      - "Good performance: It reduces the network round trip time."
   - title: HTTP/2 with TLS 1.3 encryption
-    description: >-
-      Faster and more secure than TLS 1.2, with reduced round trips and
-      performance gains.
+    description:
+      - Faster and more secure than TLS 1.2
+      - >-
+        Shorter process by requiring only one round trip (or
+        back-and-forth communication) instead of two.
+      - >-
+        Speeds up encrypted connections even more with features such as
+        TLS false start and Zero Round Trip Time.
+      - Results in significant performance gains while also providing security benefits
   - title: API Invokers & API Providers management
-    description: >-
-      Maintains identity information, enables mutual authentication, and
-      manages authorization to access service APIs.
+    description:
+      - Maintain identity information for authentication.
+      - Mutual authentication with a central entity.
+      - Provides and manage the authorization needed to access service APIs.
   - title: Policy Control & Realtime charging
-    description: >-
-      Control API access, limit traffic rates, balance loads, and charge
-      subscriptions and calls.
+    description:
+      - Control which Invoker can consume which API.
+      - Limit Invokers traffic rate per API family.
+      - Balance the traffic load accross providers.
+      - Charge API subscriptions, API calls and JWTs.
   - title: Built-in logging and auditing service
-    description: >-
-      Central logging and auditing service to ease troubleshooting.
+    description:
+      - Central logging and auditing service to ease troubleshooting.
   - title: Persistent data store
-    description: >-
-      Maintains persistent data across multiple access points enabling
-      stateless operations at scale.
+    description:
+      - Maintains data persistent and make it available from many access point.
+      - Allow CAPIF Core Function stateless operation at scale.
 specs:
-  - label: CAPIF
-    wide: true
+  - label: 3GPP TS 23.222
     values:
-      - 3GPP TS 23.222 - Common API Framework for 3GPP northbound APIs
-      - 3GPP TS 23.122 - NAS functions related to Mobile Station in idle mode
-      - 3GPP TS 23.682 - Architecture enhancements for facilitating communications with packet data networks and applications
-  - label: 5G Core
-    wide: true
+      - Common API Framework for 3GPP Northbound APIs
+  - label: 3GPP TS 23.122
     values:
-      - 3GPP TS 23.501 - System architecture for the 5G System
-      - 3GPP TS 23.502 - Procedures for the 5G System
-      - 3GPP TS 32.240 - Charging architecture and principles
-  - label: Security
+      - Security Aspects of Common API Framework for 3GPP Northbound APIs
+  - label: 3GPP TS 23.682
     values:
-      - JWT (RFC 7519)
-      - TLS 1.3
-  - label: OMA
+      - Architecture enhancements to facilitate communications with packet data networks and applications
+  - label: 3GPP TS 23.501
     values:
-      - OMA framework standards
-useCasesIcon: /images/products/computer2.png
-useCases:
-  - label: Single Engine
-    href: /use-cases/single-engine
-  - label: Value Added Services
-    href: /use-cases/value-added-services
-  - label: 3rd party API Exposure
-    href: /use-cases/3rd-party-api-exposure
-  - label: Charging Interworking
-    href: /use-cases/charging-interworking
-  - label: Private Networks
-    href: /use-cases/private-networks
-  - label: 5G Northbound APIs
-    href: /use-cases/5g-northbound-apis
+      - System Architecture for the 5G System; Stage 2
+  - label: 3GPP TS 23.502
+    values:
+      - Procedures for the 5G System; Stage 2
+  - label: 3GPP TS 32.240
+    values:
+      - Telecommunication management; Charging management; Charging architecture and principles
+  - label: OMA-ER_Autho4API-V1_0-20141209-A
+    values:
+      - Authorization Framework for Network APIs
+  - label: OMA-TS-REST_NetAPI_Common-V1_0-20180116-A
+    values:
+      - Common definitions for RESTful Network APIs
+  - label: OMA-TS-NGSI_Registration_and_Discovery-V1_0-20120529-A
+    values:
+      - NGSI Registration and Discovery
+useCases: []
+microserviceGuide:
+  href: /contact
 ---
-
-CAPIF functionality is considered a cornerstone in realizing 5G openness
-because it allows secure exposure of 5G core APIs to third-party domains and
-enables third parties to define and expose their own APIs. Slicce extends
-the use case of the Common API Framework by publishing and exposing
-northbound APIs for 3G and 4G networks as well, not just 5G.
-
-Every other Slicce engine — API Exposure Functions, Application Functions,
-Interworking Functions — relies on this same CAPIF-CF foundation to
-harmonize invoker registration, discovery, authorization and charging, so
-adding a new engine to a workload never means reinventing how it is
-secured or billed.

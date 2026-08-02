@@ -5,10 +5,14 @@
 // et la description de la page calés à gauche.
 interface Props {
   title: string;
-  description: string;
+  description?: string;
   accentTitle?: boolean;
+  icon?: string;
+  // Petit label vert au-dessus du titre (ex: "Use Case" sur les 6 pages
+  // use-cases/*) — absent sur les autres pages utilisant ce bandeau.
+  kicker?: string;
 }
-const { title, description, accentTitle = false } = Astro.props;
+const { title, description, accentTitle = false, icon, kicker } = Astro.props;
 ---
 
 <section class="page-banner">
@@ -17,9 +21,17 @@ const { title, description, accentTitle = false } = Astro.props;
     <div class="page-banner__fade"></div>
   </div>
   <div class="container page-banner__content">
+    {kicker && <p class="page-banner__kicker" data-reveal>{kicker}</p>}
     <h1 data-reveal class:list={[{ 'is-accent': accentTitle }]}>{title}</h1>
-    <p data-reveal>{description}</p>
+    {description && <p data-reveal>{description}</p>}
   </div>
+  {
+    icon && (
+      <div class="page-banner__icon" data-reveal="right">
+        <img src={icon} alt="" width="200" height="200" loading="lazy" />
+      </div>
+    )
+  }
 </section>
 
 <style>
@@ -67,6 +79,14 @@ const { title, description, accentTitle = false } = Astro.props;
     color: var(--color-green);
   }
 
+  .page-banner__kicker {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 22px;
+    color: var(--color-green);
+    margin-bottom: var(--space-1);
+  }
+
   .page-banner__content p {
     font-family: var(--font-heading);
     font-size: 18px;
@@ -77,9 +97,35 @@ const { title, description, accentTitle = false } = Astro.props;
     margin: 0;
   }
 
+  .page-banner__icon {
+    position: absolute;
+    right: 60px;
+    bottom: 0;
+    z-index: 2;
+  }
+
+  .page-banner__icon img {
+    max-height: 200px;
+    width: auto;
+  }
+
+  @media (max-width: 1100px) {
+    .page-banner__icon {
+      display: none;
+    }
+  }
+
   @media (max-width: 780px) {
     .page-banner {
       height: 200px;
+    }
+
+    /* En dessous de cette largeur, l'image garde son ratio d'origine mais le
+       bandeau devient bien plus bas que large : elle finit par occuper
+       presque toute la largeur (au lieu d'un tiers droit comme en desktop)
+       et chevauche le texte. On la masque, le fond noir uni suffit. */
+    .page-banner__media {
+      display: none;
     }
 
     .page-banner__content h1 {

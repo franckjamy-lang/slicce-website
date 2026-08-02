@@ -3,33 +3,37 @@ title: SCS API Exposure Function
 shortName: SCS-AEF
 category: api-exposure-functions
 order: 9
+heroIcon: /images/products/aef_bannerpod.png
 heroDescription: >-
   The Signaling Capture Services API Exposure Function exposes APIs that
-  allow generating on-demand network captures on a specific worker node.
+  allow to generate on-demand network captures on a specific worker node.
+  The function can also be configured to generate ongoing metrics and KPIs
+  as well as Call Data Records to give visibility on the behavior and the
+  performance of network functions hosted by the same worker node.
 features:
   - title: Observability, tracing, and security
     description: >-
-      Leverages eBPF to capture at kernel space.
+      Leverage eBPF to capture at kernel space.
   - title: Non-intrusive
     description: >-
-      Does not interfere with other applications running on the same node,
-      and does not require any involvement of any specific applications.
+      Do not interfer with other applications running on the same node. Do
+      not require any involvement of any specific applications.
   - title: Generate KPIs
     description: >-
-      Generates and allows collection of Key Performance Indicators for
-      telecom interfaces at the node level.
+      Generate & allow collection Key Performance Indicators for telecom
+      interfaces at the node level.
   - title: Generate CDRs
     description: >-
-      Generates Call Data Records for telecom interfaces at the node level.
+      Generate Call Data Records for telecom interfaces at the node level.
   - title: On-demand live capture
     description: >-
-      Exposes APIs to perform on-demand packet captures at the node level.
+      Expose APIs to perform on-demand packet captures at the node level.
   - title: Rolling pcap captures
     description: >-
-      Exposes APIs to perform rolling packet captures at the node level.
+      Expose APIs to perform rolling packet captures at the node level.
   - title: Open architecture
     description: >-
-      Allows adding protocol parsers and decoders.
+      Allows to add protocols parsers and decoders.
 specs:
   - label: SCTP
     values:
@@ -49,18 +53,31 @@ specs:
   - label: SIP
     wide: true
     values:
-      - RFC 3261-3266, 1889, 1890, 3329, 3455
-      - 3GPP TS.24.229, TISPAN ES 283 003
+      - 3GPP TS.24.229 IMS SIP extensions
+      - TISPAN ES 283 003 IMS extensions
+      - IETF RFC 3266 support for IPv6 in SDP
+      - IETF RFC 3261 (Session Initiation Protocol – SIP)
+      - IETF RFC 3262 (Reliability of Provisional Responses in SIP)
+      - IETF RFC 3263 (Locating SIP Servers)
+      - IETF RFC 2327 (Session Description Protocol – SDP)
+      - IETF RFC 3264 (An Offer/Answer Model with SDP)
+      - IETF RFC 3265 (SIP Specific Event Notification)
+      - IETF RFC 3266 (Support for IPv6 in SDP)
+      - IETF RFC 1889 and 1890 (RTP/RTCP)
+      - IETF RFC 3329 SIP security agreement
+      - IETF RFC 3455 Private headers
   - label: DIAMETER
     wide: true
     values:
-      - RFC 4006, 3588 / 6733
-      - 3GPP TS 32.299, 3GPP TS 29.338
+      - IETF RFC 4006 Diameter Credit-Control Application
+      - IETF RFC 3588 / 6733 Diameter base Protocol
+      - 3GPP TS 32.299 Telecommunication management; Charging management; Diameter charging applications.
+      - 3GPP TS 29.338 Diameter based protocols to support Short Message Service capable MME.
   - label: SMPP
     values:
-      - v3.2
-      - v3.4
-      - v5.0
+      - SMPP v3.2
+      - SMPP v3.4
+      - SMPP v5.0
 useCasesIcon: /images/products/computer2.png
 useCases:
   - label: Private Networks
@@ -69,13 +86,12 @@ useCases:
     href: /use-cases/3rd-party-api-exposure
 ---
 
-By capturing traffic at kernel space through eBPF, SCS-AEF gives operators
-node-level observability, KPIs and CDRs for telecom interfaces without
-deploying a dedicated probe or touching the applications already running on
-that node.
+### Standalone mode
 
-Exposing on-demand and rolling packet captures as simple APIs means
-troubleshooting a signaling issue no longer requires SSH access and manual
-tcpdump sessions — a support team can trigger and retrieve a capture
-remotely, on any worker node, through the same interface used to manage
-the rest of the workload.
+**Standalone SCS-AEF instance per worker node.**
+
+### Discovery mode
+
+**Aggregated SCS-AEF instance control with CAPIF-CF discoverery.**
+
+*Ask us for the swagger file...*

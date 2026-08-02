@@ -18,6 +18,11 @@ const pageTitle = title === 'Slicce' ? title : `${title} | Slicce`;
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Empêche iOS Safari de transformer automatiquement le numéro de
+         téléphone du footer en lien avec son propre style par défaut
+         (couleur/soulignement variables selon l'appareil) : on garde un
+         rendu identique et lisible partout. -->
+    <meta name="format-detection" content="telephone=no" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" href="/favicon.ico" />
     <meta name="generator" content={Astro.generator} />

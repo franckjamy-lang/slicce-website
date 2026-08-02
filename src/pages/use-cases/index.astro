@@ -1,0 +1,245 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import SectionDots from '../../components/SectionDots.astro';
+import { siteInfo } from '../../data/navigation';
+
+const items = [
+  {
+    title: 'Single engine',
+    description:
+      'A single communication engine can be used to achieve a very specific purpose. Read how to build a network VoiceMail with simple APIs.',
+    href: '/use-cases/single-engine',
+    diagram: '/images/diagrams/usecases/single-engine.png',
+  },
+  {
+    title: 'Mobile VAS',
+    description:
+      'Manage a variety of network-based services for 3G and 4G subscribers. Read how to implement an entire service delivery platform workload.',
+    href: '/use-cases/value-added-services',
+    diagram: '/images/diagrams/usecases/mobile-vas.png',
+  },
+  {
+    title: '3rd party API exposure',
+    description:
+      'CAPIF-CF and API-AEFs can be deployed together to enable the operator to safely expose network APIs to its business customers.',
+    href: '/use-cases/3rd-party-api-exposure',
+    diagram: '/images/diagrams/usecases/3rd-party-api.png',
+  },
+  {
+    title: 'Charging interworking',
+    description:
+      'See how an Inter-working Function can be used to solve interoperability issues and ensure the continuity of online charging across networks.',
+    href: '/use-cases/charging-interworking',
+    diagram: '/images/diagrams/usecases/charging-interworking.png',
+  },
+  {
+    title: 'Private Network',
+    description: 'Close integration between business vertical applications and their private network instance.',
+    href: '/use-cases/private-networks',
+    diagram: '/images/diagrams/usecases/private-network.png',
+  },
+  {
+    title: '5G northbound APIs',
+    description: 'Checkout how to automate IoT and management connectivity with 5G northbound APIs.',
+    href: '/use-cases/5g-northbound-apis',
+    diagram: '/images/diagrams/usecases/5g-northbound.png',
+  },
+];
+---
+
+<BaseLayout
+  title="Workloads — Reference Use Cases"
+  description="Because each customer has different needs and goals, we can create kubernetes workloads, customizing pod composition from the available list of communication engines."
+>
+  <PageBanner
+    title="Workloads"
+    description="Because each customer has different needs and goals, we can create kubernetes workloads, customizing pod composition from the available list of communication engines."
+  />
+
+  <section class="section">
+    <div class="container">
+      <h1 class="visually-hidden">Reference Use Cases</h1>
+      <p class="intro" data-reveal>
+        Because each customer has different needs and goals, we can create kubernetes workloads, customizing pod
+        composition from the available list of communication engines. You can either choose to create your own
+        workload or to use our professional team to create it for you. Our expert services can be harnessed to
+        produce a new communication engine, a new application function, use existing communication engines in a new
+        workload or reproduce a reference workload and implement it in a new network.
+      </p>
+
+      <SectionDots count={3} active={2} />
+    </div>
+  </section>
+
+  <section class="section section--gray">
+    <div class="container">
+      <h2 class="diagram-title">Map of the available microservices<br />for workload creation</h2>
+      <div class="diagram">
+        <img
+          src="/images/diagrams/products-architecture.png"
+          alt="Architecture diagram: Public Cloud APIs connect to Application Functions, which connect through the 3GPP Common API Framework and Common Data Store to API Exposure Functions and Interworking Functions, which connect to Load Balancers in front of the 3G, 4G and 5G Core Networks."
+          width="1156"
+          height="842"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="workloads-title">Checkout our reference workloads</h2>
+      <div class="cards">
+        {
+          items.map((item) => (
+            <div class="card">
+              <img src={item.diagram} alt="" width="440" height="200" loading="lazy" class="card__diagram" />
+              <h3>{item.title}</h3>
+              <p>{item.description}</p>
+              <a href={item.href} class="btn btn--primary-bold">
+                To use case &gt;
+              </a>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section uc-cta">
+    <div class="container uc-cta__inner">
+      <div class="uc-cta__text" data-reveal="left">
+        <h2>Want to create your own workload?</h2>
+        <p>Ask us on the best known practices to implemenent your specific use case.</p>
+        <a href={siteInfo.whatsapp} target="_blank" rel="noopener noreferrer" class="btn btn--primary-bold">
+          Get in touch!
+        </a>
+      </div>
+      <div class="uc-cta__icon" data-reveal="right">
+        <img src="/images/diagrams/usecases/cta-icon.png" alt="" width="185" height="170" loading="lazy" />
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .section--gray {
+    background: var(--color-section-gray);
+  }
+
+  .intro {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .diagram-title {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .diagram {
+    display: flex;
+    justify-content: center;
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .workloads-title {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-12);
+    row-gap: var(--space-10);
+  }
+
+  .card {
+    text-align: center;
+    padding-top: var(--space-8);
+    border-top: 1px solid var(--border-subtle);
+  }
+
+  .card:nth-child(1),
+  .card:nth-child(2) {
+    border-top: none;
+    padding-top: 0;
+  }
+
+  .card__diagram {
+    display: block;
+    margin: 0 auto var(--space-4);
+    max-width: 100%;
+    height: auto;
+  }
+
+  .card h3 {
+    font-size: 20px;
+    margin-bottom: var(--space-2);
+  }
+
+  .card p {
+    color: var(--text-muted);
+    margin-bottom: var(--space-4);
+    max-width: 420px;
+    margin-inline: auto;
+  }
+
+  .uc-cta {
+    background: var(--color-section-gray);
+  }
+
+  .uc-cta__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+  }
+
+  .uc-cta__text h2 {
+    font-size: 42.667px;
+    margin-bottom: var(--space-4);
+  }
+
+  .uc-cta__text p {
+    margin-bottom: var(--space-6);
+  }
+
+  .uc-cta__icon {
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 860px) {
+    .cards {
+      grid-template-columns: 1fr;
+    }
+
+    .card {
+      border-top: 1px solid var(--border-subtle);
+      padding-top: var(--space-8);
+    }
+
+    .card:nth-child(1) {
+      border-top: none;
+      padding-top: 0;
+    }
+
+    .uc-cta__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>

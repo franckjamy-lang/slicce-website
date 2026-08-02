@@ -2,11 +2,13 @@
 import { getCollection, render } from 'astro:content';
 import ProductLayout from '../../layouts/ProductLayout.astro';
 import ChargingIwfDiagram from '../../components/products/ChargingIwfDiagram.astro';
+import CapifArchitectureDiagram from '../../components/products/CapifArchitectureDiagram.astro';
 
 // Certains produits ont un diagramme spécifique (fait main, pas dérivable des
 // specs génériques) : mappage explicite id de collection -> composant.
 const diagrams: Record<string, any> = {
   'interworking-functions/charging-iwf': ChargingIwfDiagram,
+  'capif-core-function': CapifArchitectureDiagram,
 };
 
 export async function getStaticPaths() {
@@ -20,18 +22,25 @@ export async function getStaticPaths() {
 const { product } = Astro.props;
 const { Content } = await render(product);
 const Diagram = diagrams[product.id];
+// Certaines pages (ex: CAPIF-CF) n'ont plus de paragraphe libre "ce qui
+// rend ce produit unique" sous les Features — on évite alors une section
+// vide (juste du padding, sans contenu) entre le diagramme et les specs.
+const hasDifferentiators = Boolean(product.body?.trim());
 ---
 
 <ProductLayout
   title={product.data.title}
   shortName={product.data.shortName}
   heroDescription={product.data.heroDescription}
+  heroDescriptionSecondary={product.data.heroDescriptionSecondary}
   heroIcon={product.data.heroIcon}
   features={product.data.features}
   specs={product.data.specs}
   useCasesIcon={product.data.useCasesIcon}
   useCases={product.data.useCases}
   hasDiagram={Boolean(Diagram)}
+  hasDifferentiators={hasDifferentiators}
+  microserviceGuide={product.data.microserviceGuide}
 >
   {Diagram && (
     <Fragment slot="diagram">

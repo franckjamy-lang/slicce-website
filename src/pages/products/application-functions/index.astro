@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryHero from '../../../components/CategoryHero.astro';
+import SectionDots from '../../../components/SectionDots.astro';
+---
+
+<BaseLayout
+  title="Application Functions"
+  description="Application Functions stands for engine instances that implement some specific service logic by consuming APIs published by AEFs through CAPIF-CF."
+>
+  <CategoryHero
+    title="Application Functions"
+    description="Application Functions stands for engine instances that implement some specific service logic by consuming APIs published by AEFs through CAPIF-CF. Even though the creation of an application function using the slicce cloud communication engine foundation is rapid and easy, customers can also choose to build their own AFs using any other framework available on the market and using any preferred programming language. The APIs published to the CAPIF-CF do not force the AF developer to use slicce cloud communication engine foundation."
+    icon="/images/products/af_bannerpod.png"
+  />
+
+  <section class="section">
+    <div class="container">
+      <div class="group">
+        <h2 data-reveal>Network Resource Driven Application Function</h2>
+        <p data-reveal>
+          The NRD-AF (Network-Resource-Driven Application Function) is Slicce's revolutionary application function
+          designed to simplify the creation of complex, event-driven services on your modern telecom network. Built
+          on our core Cloud Communication Engine architecture, NRD-AF combines the power of the 3GPP Common API
+          Framework (CAPIF) with an intuitive low-code programming environment, enabling ultra-fast innovation and
+          monetization.
+        </p>
+        <div class="group__cta">
+          <a href="/products/application-functions/nrd-af" class="btn btn--primary-bold">Read more</a>
+        </div>
+      </div>
+
+      <SectionDots count={3} active={2} />
+
+      <div class="group">
+        <h2 data-reveal>Single Endpoint Application Function</h2>
+        <p data-reveal>
+          The Single Endpoint Application Function uses a single HTTP Request/Response to implement a service logic
+          in a mid-call trigger. It is extremely easy to add a new service to this application function but the
+          service capabilities are limited to a single mid-call trigger per session. Some examples of services that
+          are pre-integrated in the application function:
+        </p>
+        <ul data-reveal>
+          <li>Number translation service</li>
+          <li>Whitelist/blacklisting</li>
+          <li>Optimal call routing</li>
+        </ul>
+        <p data-reveal>
+          These services are implemented using the mid-call triggers of the CAP-AEF, INAP-AEF or/and ISC-AEF so the
+          AF can serve circuit switch or packet switch calls or messages on mobile or fixed line networks.
+        </p>
+      </div>
+
+      <SectionDots count={3} active={1} />
+
+      <div class="group">
+        <h2 data-reveal>Multi Endpoint Application Function</h2>
+        <p data-reveal>
+          The Multi Endpoint Application Function uses the one or more entire API set to implement a service. The AF
+          will be triggered by the initial trigger point of the interface it is subscribed to, and it will be
+          responsible for the entire continuity of the call flow until its end. Some examples of services that are
+          pre-integrated in the application function:
+        </p>
+        <ul data-reveal>
+          <li>Multi-ring</li>
+          <li>Caller ringback tone</li>
+          <li>Interactive call screening</li>
+          <li>Branded calling</li>
+        </ul>
+        <p data-reveal>
+          These services are implemented using CAP-AEF, INAP-AEF or/and ISC-AEF so the AF can serve circuit switch or
+          packet switch calls or messages on mobile or fixed line networks.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section af-cta">
+    <div class="container af-cta__inner">
+      <div class="af-cta__text" data-reveal="left">
+        <h2>Need to build your own AF?</h2>
+        <p>Get us involved to get initiated with the slicce cloud communication engine fondation.</p>
+      </div>
+      <!-- Icône "3 cubes" du site source pas encore fournie : espace réservé, cf heroIcon/bannerpod. -->
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .group {
+    max-width: 900px;
+    margin: 0 auto var(--space-4);
+    text-align: center;
+  }
+
+  .group h2 {
+    font-size: 32px;
+    margin-bottom: var(--space-4);
+  }
+
+  .group p {
+    text-align: left;
+    margin-bottom: var(--space-4);
+  }
+
+  .group ul {
+    text-align: left;
+    margin: 0 0 var(--space-4);
+    padding-left: 1.3em;
+  }
+
+  .group ul li {
+    margin-bottom: var(--space-1);
+  }
+
+  .group__cta {
+    text-align: center;
+    margin-top: var(--space-6);
+  }
+
+  .af-cta {
+    background: var(--color-section-gray);
+  }
+
+  .af-cta__text h2 {
+    font-size: 42.667px;
+    margin-bottom: var(--space-4);
+  }
+</style>

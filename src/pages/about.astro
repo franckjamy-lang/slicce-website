@@ -1,0 +1,288 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBanner from '../components/PageBanner.astro';
+import SectionDots from '../components/SectionDots.astro';
+import GetStartedSection from '../components/home/GetStartedSection.astro';
+
+const expertise = [
+  {
+    title: '2G & 3G Mobile Core Networks',
+    description:
+      'We have extensive experience in the field of 2G and 3G mobile core networks and we are well-versed in the technical aspects of these technologies. We are proud of our ability to deploy our products to ensure continuity of the legacy networks while leveraging modern cloud native infrastructure.',
+  },
+  {
+    title: '4G & 5G Packet Core Networks',
+    description:
+      'Our expertise includes designing and implementing mobile networks that are reliable and efficient. Our team have a deep understanding of the differences between 4G and 5G networks and can provide valuable insights into how these technologies can be used to create value beyond standard connectivity.',
+  },
+  {
+    title: 'IMS & VoLTE Service',
+    description:
+      'We have a strong background in IMS and VoLTE services and are familiar with the latest trends and developments in this field. Our expertise includes designing and implementing IMS value added services that are reliable and efficient. We can help you navigate the complexities of these technologies.',
+  },
+  {
+    title: 'Value Added Services for Fixed & Wireless Networks',
+    description:
+      'The vast experience our teams has in this domain includes designing and implementing VAS that are innovative and can serve subscribers from different network generations. We also spent time re-creating common well known services such as caller ID, call waiting, voicemail and ring back tone just to make them more cost effective to operate.',
+  },
+  {
+    title: '2G/3G Short Message Service, SMS over NAS and SMS over IP',
+    description:
+      'We developed over time a deep understanding of the technicalities involved in SMS technology, including message routing, delivery, and reliability. Further, Our latests communication engines can be leveraged to optimize communication systems for various applications and deliver innovative solutions to complex problems related to SMS technology.',
+  },
+  {
+    title: '5G Northbound APIs & Machine Type Communication',
+    description:
+      'Our expertise in these areas enables us to design, develop, and implement scalable and secure communication systems for businesses and industries. We understand the technicalities involved in 5G Northbound APIs and Machine Type Communication and how they can be leveraged to support innovative business models and applications.',
+  },
+];
+
+const services = [
+  { title: 'Helm charts and Kubernetes workloads', description: 'Creating a workload with a selection of communication engines.' },
+  { title: 'Communications Engines / Microservices', description: 'Development of a new communication engine not existing in our portfolio.' },
+  { title: 'Migration of legacy services to cloud infrastructure', description: 'Development of migration strategy and plan to move legacy services to public or private cloud.' },
+  { title: 'Convergence of services or value added services', description: 'Re-create a value added service to make it available for 3G, 4G and 5G subscriber base.' },
+  { title: 'Mediation between network elements', description: 'Facilitate the inter-connection between 2 different network functions with different interfaces.' },
+  { title: 'Optimize cost of operational expenses', description: 'Generate an analysis report and recommendations to forecast operational cost prior to a migration.' },
+];
+
+const values = [
+  { title: 'Expertise', description: 'We build our strength on functional knowledge and being recognized as a professional authority in what we do.' },
+  { title: 'Performance', description: 'We set strong KPIs on results, not only technical but also in terms of meeting schedule and service delivered.' },
+  {
+    title: 'Partnerships',
+    description:
+      'We aim to see customers as partners, not only give them the most adapted solutions to their engineering needs but also to listen, advise and work tightly to embrace their challenges together.',
+  },
+  {
+    title: 'Simplicity',
+    description:
+      'We acknowledge the complexity of the digital world challenges of our customers and that is why we put our efforts in keeping our solutions and communication as simple and agile as possible.',
+  },
+  {
+    title: 'Trust',
+    description:
+      'We aim to be a trusted advisor. We earn the trust of our customers, partners and employees through transparency and we deliver solutions that can be trusted.',
+  },
+  {
+    title: 'Passion',
+    description:
+      'We are committed and led by heart and mind to our product and vision. We encourage and promote ideas & suggestions. Our pride source is our quality of work.',
+  },
+];
+---
+
+<BaseLayout title="About us" description="Telecom masters & microservices experts">
+  <PageBanner title="About us" />
+
+  <section class="section">
+    <div class="container intro">
+      <h2 class="intro__title">Telecom masters &amp; microservices experts</h2>
+      <p>
+        We are a fast-growing company dedicated to developing state of the art solutions for telecom. We aim to
+        enable the delivery of modern telecommunication software solutions in the most comprehensive, fast, and
+        cost-effective way. Our high expertise and vast experience are the key to see and develop simple solutions.
+        You can rely on us to get the solution you need right now and that will serve you in every possible future.
+      </p>
+    </div>
+  </section>
+
+  <section class="quote-band">
+    <p>
+      "Our mission is to empower telecommunication service providers with innovative self-contained lightweight
+      cloud-native communications engines that enable them to monetize by creating value beyond standard
+      connectivity."
+    </p>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <h2 class="section-title">Our Expertise</h2>
+      <div class="grid">
+        {
+          expertise.map((item) => (
+            <div class="entry">
+              <h3>{item.title}</h3>
+              <span class="divider" />
+              <p>{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection__title">Cloud Transformation &amp; Migration of legacy telecommunication services to cloud native infrastructures</h3>
+        <p>
+          We are skilled in designing and implementing cloud-based solutions that are scalable, secure, and
+          cost-effective. We have worked with various cloud platforms such as AWS, Azure, and Google Cloud Platform
+          and have a deep understanding of their services and features. We can help to:
+        </p>
+        <ul>
+          <li>Developing cloud migration strategies and roadmaps</li>
+          <li>Applying cloud security best practices and compliance requirements</li>
+          <li>Review deployments and identify and resolve issues</li>
+          <li>Implement continuous delivery pipelines using common tools</li>
+          <li>Managing cloud infrastructure using tools such as Terraform, Ansible or Helm</li>
+        </ul>
+        <p>
+          Being experts in both telecommunication and cloud-native infrastructure, we are best positioned to help
+          design and implement cloud-based solutions that are tailored to the needs of telecom companies while
+          ensuring compliance with security best practices and regulations.
+        </p>
+      </div>
+
+      <SectionDots count={3} active={1} />
+
+      <h2 class="section-title">Our Services</h2>
+      <div class="grid">
+        {
+          services.map((item) => (
+            <div class="entry">
+              <h3>{item.title}</h3>
+              <span class="divider" />
+              <p>{item.description}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="subsection">
+        <h3 class="subsection__title">Creation of new value added services for public and private networks</h3>
+        <p>
+          Supporting innovation and creation of new services that can generate additional revenues on top of the
+          standard connectivity fees is in the heart of our business. We always listen and encourage the creation of
+          new services to rapidly respond to new business requirements.
+        </p>
+      </div>
+
+      <SectionDots count={3} active={2} />
+
+      <h2 class="section-title">Our Values</h2>
+      <p class="intro-text">
+        Our values guide how we make decisions, treat each other, and serve our customers. More than simply words,
+        our values are the common thread that unites us.
+      </p>
+      <div class="grid values-grid">
+        {values.slice(0, 4).map((item) => (
+          <div class="entry">
+            <h3>{item.title}</h3>
+            <span class="divider" />
+            <p>{item.description}</p>
+          </div>
+        ))}
+        <img
+          src="/images/icons/slicce-logo-heptagon.png"
+          alt="Slicce"
+          width="140"
+          height="128"
+          class="values-grid__logo"
+          loading="lazy"
+        />
+        {values.slice(4).map((item) => (
+          <div class="entry">
+            <h3>{item.title}</h3>
+            <span class="divider" />
+            <p>{item.description}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <GetStartedSection
+    title="Let's talk business!"
+    description="We are looking forward to learn how we can help you in your journey."
+  />
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .intro {
+    max-width: 900px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .intro__title {
+    margin-bottom: var(--space-6);
+  }
+
+  .quote-band {
+    background: var(--color-green);
+    padding-block: var(--space-12);
+  }
+
+  .quote-band p {
+    max-width: 1000px;
+    margin: 0 auto;
+    text-align: center;
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 28px;
+    color: var(--color-ink);
+    line-height: 1.4;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .intro-text {
+    max-width: 800px;
+    margin: 0 auto var(--space-10);
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-12);
+    row-gap: var(--space-8);
+    margin-bottom: var(--space-12);
+  }
+
+  .entry h3 {
+    font-size: 17px;
+    margin-bottom: var(--space-2);
+  }
+
+  .divider {
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--color-green);
+    margin-bottom: var(--space-3);
+  }
+
+  .entry p {
+    font-size: 14px;
+    color: var(--text-muted);
+  }
+
+  .subsection {
+    max-width: 900px;
+    margin: 0 auto var(--space-8);
+  }
+
+  .subsection__title {
+    font-size: 24px;
+    margin-bottom: var(--space-4);
+  }
+
+  .values-grid__logo {
+    grid-column: 1 / -1;
+    justify-self: center;
+    margin-block: var(--space-2);
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

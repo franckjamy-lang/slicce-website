@@ -1,0 +1,189 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+---
+
+<BaseLayout
+  title="Mobile Value Added Service Delivery Platform"
+  description="This use case refers to the composition of a workload to deliver value added services in a mobile network."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="Mobile Value Added Service Delivery Platform"
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        A value-added service (VAS) is a popular telecommunications industry term for non-core services, or, in
+        short, all services beyond standard voice calls and fax transmissions. However, it can be used in any
+        service industry, for services available at little or no cost, to promote their primary business. In the
+        telecommunications industry, on a conceptual level, value-added services add value to the standard service
+        offering, spurring subscribers to use their phone more and allowing the operator to drive up their average
+        revenue per user.
+      </p>
+
+      <p>Mobile VAS services can be categorized into:</p>
+      <ul>
+        <li>Consumer behavior VAS</li>
+        <li>Network VAS</li>
+        <li>Enterprise VAS</li>
+      </ul>
+
+      <p>
+        A distinction may also be made between standard (peer-to-peer) content and premium-charged content. These
+        are called mobile value-added services (MVAS), which are often simply referred to as VAS. Value-added
+        services are supplied either in-house by the mobile network operator themselves or by a third-party
+        value-added service provider, also known as a content provider.
+      </p>
+
+      <p>
+        This use case refers to the composition of a workload to deliver value added services in a mobile network.
+        In this article we won't refer specifically to one service or application but to the overall workload
+        capabilities. Our objective being to bring together the widest set of capabilities to enable the fast and
+        easy creation of new services for mobile subscribers regardless if they are serviced by the 3G, 4G or 5G core
+        network.
+      </p>
+
+      <h2>Reference Mobile Value Added Services Workload</h2>
+    </div>
+
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/vas-workload-diagram.png"
+        alt="Reference Mobile Value Added Services Workload: CAP, SMS, MLC, AAA and ISC AEFs connect through a CAPIF-CF to SES/MES Application Functions and CDS/CPAAS AEFs, forming the Service Delivery Platform."
+        width="957"
+        height="786"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="container article">
+      <p>
+        The service delivery workload capacity can be extended by adding more AEFs or AFs instances and the workload
+        capablity set can be extended by adding new AEFs and AFs. Each AEFs or AFs can be upgrated independantly from
+        the other and to insure service continuity, an old version of an engine can co-reside with a new version of
+        an engine until the old versions are decommissioned.
+      </p>
+
+      <p>
+        The following diagram describes the Single Endpoint Session Application Function (SES-AF), which can be use
+        to implement simple services. In this example the SES-AF implements a VPN service. Triggered by the incoming
+        call, it queries the common data store (CDS-AEF) to retrieve the subcriber profile and redirect the call to
+        the correct routable number. The respective AEF will configure the response to the core network according to
+        the protocol it implements abdtracting thought to the service logic implemented in the SES-AF to be aware of
+        the specific telecom protocol structure.
+      </p>
+    </div>
+
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/vas-ses-af-diagram.png"
+        alt="SES-AF sequence diagram: CDS, SES and ISC/CAP AEFs exchange POST /ses/isc/session and POST /ses/cap/session requests, GET /subscriber/vpn/profile calls, and HTTP 200 OK responses to redirect SIP INVITE and INITIAL DP calls."
+        width="957"
+        height="744"
+        loading="lazy"
+      />
+    </div>
+
+    <div class="container article">
+      <p>
+        We don't have any limitation or restriction on the number of services implemented in a single AF or the
+        number of AF that runs a same service. It is at implementation time that we can decide how to proper
+        distribute our workload to make sure it remains as dynamic and as elastic as needed.
+      </p>
+
+      <p>The key values for using a cloud native workload as a service delivery platform are:</p>
+      <ul>
+        <li>Applicable to any public or private cloud infrastructure</li>
+        <li>Decomposed architecture that allows cost effective operation and continuous delivery</li>
+        <li>Elastic composition that allows to scale up and down in capacity but also in capabilities</li>
+        <li>
+          Application implemented using OpenAPI specitications allows combination with external APIs as well as
+          internal APIs.
+        </li>
+      </ul>
+
+      <div class="faq-callout">
+        <img src="/images/icons/question-heptagon-green.png" alt="" width="90" height="86" loading="lazy" />
+        <div>
+          <h2>Is the CAPIF Core Function a single point of failure?</h2>
+          <p>
+            The CAPIF Core Function is a stateless microservice. Many service instances can be executed at once
+            using one same common data store. The CAPIF-CF is never a single point of failure since you would
+            typically run more than one service instance in a production deployment and not data is lost in case a
+            container restart due to the stateless implementation. Read more about{' '}
+            <a href="/products/capif-core-function">CAPIF-CF here</a>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section more-usecases">
+    <div class="container more-usecases__inner">
+      <h2>Read more use cases...</h2>
+      <img src="/images/icons/laptop-hand-heptagon.png" alt="" width="180" height="160" loading="lazy" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .diagram {
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    margin-block: var(--space-8);
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .faq-callout {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-6);
+    margin-top: var(--space-8);
+  }
+
+  .faq-callout img {
+    flex-shrink: 0;
+  }
+
+  .faq-callout h2 {
+    font-size: 22px;
+    margin-bottom: var(--space-3);
+  }
+
+  .more-usecases {
+    background: var(--color-section-gray);
+  }
+
+  .more-usecases__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 620px) {
+    .faq-callout {
+      flex-direction: column;
+    }
+
+    .more-usecases__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+  }
+</style>

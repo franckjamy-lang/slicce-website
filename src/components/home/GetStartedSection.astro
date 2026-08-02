@@ -6,15 +6,21 @@ interface Props {
   // Icône par défaut = celle de la home (fusée). Les pages produit passent
   // leur propre visuel (nuage), différent de la home.
   icon?: string;
+  title?: string;
+  description?: string;
 }
-const { icon } = Astro.props;
+const {
+  icon,
+  title = 'Ready to get started?',
+  description = 'We are looking forward to demonstrate our product and real business use cases.',
+} = Astro.props;
 ---
 
 <section class="section get-started">
   <div class="container get-started__inner">
     <div class="get-started__text" data-reveal="left">
-      <h2>Ready to get started?</h2>
-      <p>We are looking forward to demonstrate our product and real business use cases.</p>
+      <h2>{title}</h2>
+      <p>{description}</p>
       <a href={siteInfo.whatsapp} target="_blank" rel="noopener noreferrer" class="btn btn--primary-bold">
         Get in touch!
       </a>

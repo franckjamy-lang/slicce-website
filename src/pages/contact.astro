@@ -1,0 +1,158 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBanner from '../components/PageBanner.astro';
+
+const offices = [
+  {
+    title: 'Headquarters',
+    lines: ['Herzl St. 57,', '3090261 Zichron Yaakov', 'Israel'],
+    phone: '+972 55 500-2700',
+  },
+  {
+    title: 'Americas',
+    lines: ['101 W Renner Rd,', 'TX 75082 Richardson', 'United States'],
+    phone: '+1 (646) 513-2698',
+  },
+  {
+    title: 'India',
+    lines: [
+      'Gaur World Smart Street - I.A. Surajpur',
+      'Unit No. ASIF 24, F-6th Floor',
+      'Noida, Gautam Buddha Nagar – 201306',
+      'Uttar Pradesh, India',
+    ],
+  },
+];
+
+// Formulaire Google Forms réel utilisé par le site source (Google Sites) —
+// même embed, pas une recréation : les réponses arrivent dans le même
+// Google Sheet que Slicce utilise déjà.
+const GOOGLE_FORM_EMBED_URL =
+  'https://docs.google.com/forms/d/e/1FAIpQLSfWuEgglqHOdSoCzoTQBs9VVa7oRKb4E5etL8-CR1HVYWCzoA/viewform?embedded=true';
+---
+
+<BaseLayout title="Contact" description="Mail us at info@slicce.co">
+  <PageBanner title="Contact" description="It's because we believe in long term relationships that our job never ends." />
+
+  <section class="section">
+    <div class="container contact-grid">
+      <div class="form-card">
+        <iframe
+          src={GOOGLE_FORM_EMBED_URL}
+          width="100%"
+          height="1235"
+          loading="lazy"
+          title="Contact us"
+        >
+          Loading…
+        </iframe>
+      </div>
+
+      <div class="side">
+        <div class="mail">
+          <h2>Mail us at</h2>
+          <a href="mailto:info@slicce.co">info@slicce.co</a>
+        </div>
+
+        {
+          offices.map((office) => (
+            <div class="office">
+              <h3>{office.title}</h3>
+              {office.lines.map((line) => (
+                <p>{line}</p>
+              ))}
+              {office.phone && <p>tel: {office.phone}</p>}
+            </div>
+          ))
+        }
+      </div>
+    </div>
+
+    <div class="flowchart">
+      <img
+        src="/images/diagrams/contact-flowchart.png"
+        alt="Customer workflow: Start here, Process customer inputs, Select engine, check if it exists, Create workload or Create engine, Customer success"
+        width="1156"
+        height="356"
+        loading="lazy"
+      />
+    </div>
+    <p class="tagline">It's because we believe in long term relationships that our job never ends.</p>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 660px) 1fr;
+    gap: var(--space-12);
+    align-items: start;
+  }
+
+  .form-card {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: 0 0 0 1px var(--border-subtle);
+  }
+
+  .form-card iframe {
+    display: block;
+    border: none;
+  }
+
+  .mail {
+    margin-bottom: var(--space-8);
+  }
+
+  .mail a {
+    font-size: 22px;
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
+  .office {
+    margin-bottom: var(--space-8);
+  }
+
+  .office h3 {
+    font-size: 17px;
+    margin-bottom: var(--space-2);
+  }
+
+  .office p {
+    font-size: 14px;
+    color: var(--text-muted);
+    margin: 0 0 var(--space-1);
+  }
+
+  .flowchart {
+    margin-top: var(--space-16);
+    display: flex;
+    justify-content: center;
+  }
+
+  .flowchart img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .tagline {
+    text-align: center;
+    margin-top: var(--space-6);
+    font-family: var(--font-heading);
+    font-style: italic;
+    font-size: 16px;
+    color: var(--text-muted);
+  }
+
+  @media (max-width: 960px) {
+    .contact-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

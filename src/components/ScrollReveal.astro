@@ -18,10 +18,15 @@
   const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   if (!prefersReducedMotion) {
-    const DURATION = 1;
+    // Durée réduite (était 1s) : les outils de capture "pleine page" qui
+    // scrollent/redimensionnent très vite (screenshot plein écran, crawlers)
+    // pouvaient figer l'animation à mi-course, laissant des blocs vides
+    // dans le rendu final malgré un scroll normal qui, lui, laisse le temps
+    // à l'animation de se terminer.
+    const DURATION = 0.4;
     const DISTANCE = 80; // plus prononcé qu'avant (était 40)
     const DISTANCE_X = 100;
-    const START = 'top 85%';
+    const START = 'top 92%';
 
     // Chaque variante = un point de départ ("from") différent pour GSAP.
     const variants: Record<string, gsap.TweenVars> = {
@@ -54,7 +59,11 @@
       gsap.from(children, {
         ...getVariant(group),
         duration: DURATION,
-        stagger: 0.15,
+        // "amount" (budget total réparti sur tous les enfants, plafonné)
+        // plutôt que "each" (délai fixe par enfant, qui s'additionnait sans
+        // limite — un groupe de 9 items comme la grille de specs pouvait
+        // mettre plus d'1s à finir d'apparaître, quel que soit DURATION).
+        stagger: { from: 'start', amount: Math.min(children.length * 0.05, 0.15) },
         scrollTrigger: {
           trigger: group,
           start: START,
@@ -62,5 +71,11 @@
         },
       });
     });
+
+    // Filet de sécurité : recalcule les positions de déclenchement une fois
+    // que tout (images, polices) a fini de charger, pour les cas où un outil
+    // externe redimensionne la fenêtre en pleine hauteur juste après le
+    // chargement initial de la page (capture d'écran automatisée par ex.).
+    window.addEventListener('load', () => ScrollTrigger.refresh());
   }
 </script>

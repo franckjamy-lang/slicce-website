@@ -1,0 +1,200 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import CapifArchitectureDiagram from '../../components/products/CapifArchitectureDiagram.astro';
+import QuestionMarkDivider from '../../components/QuestionMarkDivider.astro';
+---
+
+<BaseLayout
+  title="CAPIF-CF & 3rd Party API Exposure"
+  description="3GPP 3rd party API exposure is a process that enables external entities to access and use the functionalities and data of a 3GPP network."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="CAPIF-CF & 3rd Party API Exposure"
+    description="3GPP 3rd party API exposure is a process that enables external entities to access and use the functionalities and data of a 3GPP network."
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        3GPP 3rd party API exposure is a process that enables external entities to access and use the
+        functionalities and data of a 3GPP network. This process can provide benefits such as enhancing service
+        innovation, enabling interoperability, and creating new business opportunities. However, it also poses
+        challenges and risks such as security, privacy, performance, and governance. Therefore, 3GPP 3rd party API
+        exposure requires careful design and implementation to ensure that the network is protected and compliant
+        with the relevant standards and regulations. In this article, we will discuss some of the key aspects and
+        best practices of 3GPP 3rd party API exposure, such as:
+      </p>
+      <ul>
+        <li>
+          The architecture and components of 3GPP 3rd party API exposure, including the API gateway, the API
+          management platform, the API catalog, and the API security framework.
+        </li>
+        <li>The types and categories of 3GPP 3rd party APIs, such as network APIs, service APIs, charging APIs, and management APIs.</li>
+        <li>
+          The principles and guidelines for designing and developing 3GPP 3rd party APIs, such as following RESTful
+          principles, using common data models and formats, applying versioning and lifecycle management, and
+          ensuring backward compatibility.
+        </li>
+        <li>
+          The methods and tools for testing and validating 3GPP 3rd party APIs, such as using mock servers,
+          simulators, emulators, test automation tools, and API testing frameworks.
+        </li>
+        <li>
+          The strategies and techniques for monitoring and optimizing 3GPP 3rd party APIs, such as using metrics,
+          logs, alerts, dashboards, analytics, and feedback mechanisms.
+        </li>
+        <li>
+          The challenges and solutions for securing and protecting 3GPP 3rd party APIs, such as implementing
+          authentication, authorization, encryption, integrity verification, rate limiting, throttling, auditing,
+          logging, and anomaly detection.
+        </li>
+      </ul>
+
+      <p>
+        By following these best practices, 3GPP network operators can expose their APIs to 3rd parties in a safe and
+        efficient manner, while maximizing the value and potential of their network assets.
+      </p>
+    </div>
+  </section>
+
+  <section class="section section--gray">
+    <div class="container">
+      <CapifArchitectureDiagram />
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        The Common API Framework (CAPIF) is a standardized approach for exposing network capabilities to third-party
+        applications in a secure and efficient manner. CAPIF defines a set of common APIs that can be used by
+        different network domains and technologies, such as 5G, LTE, Wi-Fi, and fixed networks. CAPIF also specifies
+        the architecture and interfaces for the API Gateway, which is the main component that mediates the
+        communication between the network and the third-party applications.
+      </p>
+
+      <p>
+        The 3rd Generation Partnership Project (3GPP) is a collaboration of telecommunications standards
+        organizations that develops specifications for mobile communications systems. 3GPP has defined a set of
+        network exposure functions (NEFs) that provide access to various network services and capabilities, such as
+        location, charging, policy, and authentication. These NEFs are exposed through standardized APIs that
+        conform to the CAPIF principles and guidelines.
+      </p>
+
+      <p>
+        By using CAPIF and 3GPP 3rd party API exposure, network operators can offer innovative and value-added
+        services to their customers and partners, while ensuring security, privacy, and scalability. For example, a
+        third-party application can use the CAPIF and 3GPP APIs to request the location of a user device, apply a
+        specific policy rule for the user session, or charge the user for the service usage. These APIs enable a
+        seamless integration of network capabilities with external applications and platforms, creating new business
+        opportunities and enhancing customer experience.
+      </p>
+    </div>
+  </section>
+
+  <QuestionMarkDivider />
+
+  <section class="section">
+    <div class="container article">
+      <h2>Why to expose APIs to 3rd parties?</h2>
+      <p>
+        One of the key features of 5G is the ability to support a wide range of applications and services, from
+        enhanced mobile broadband to massive machine-type communications to ultra-reliable low-latency
+        communications. To enable this, 5G defines a Network Exposure Function (NEF) that exposes APIs to third
+        parties, such as application developers, service providers, or enterprises. The NEF acts as a gateway between
+        the 5G core network and the external entities, providing them with access to network capabilities and
+        resources, such as network slicing, quality of service, location, or charging. The NEF also ensures security
+        and privacy of the network and the users, by enforcing authentication, authorization, and data protection
+        mechanisms. By exposing APIs to third parties, the NEF enables innovation and customization of 5G services,
+        creating new business opportunities and enhancing user experience.
+      </p>
+    </div>
+
+    <div class="container faq-grid">
+      <div>
+        <h2>What APIs can be exposed to 3rd parties?</h2>
+        <p>
+          The 5G NEF exposes Northbound APIs for event monitoring, charging, analytics, QoS and resource management
+          with some focus on machine type communications to support the various use cases of IoT. Slicce has
+          developed a wide range of API Exposure Functions which extends the typical NEF capability set not only for
+          5G networks but also for legacy network such as 4G and 3G networks.
+        </p>
+      </div>
+      <div>
+        <h2>Is Slicce a Network Exposure Function?</h2>
+        <p>
+          Slicce is a decomposed solution that can be tailored for many purposes. NEF is one use case and Slicce's
+          AFs, AEFs and CAPIF-CF microservices can be brought together in a workload to compose a functional NEF.
+          Such a workload is probably more dynamic and open than a traditional vendor NEF as our solution is
+          engineered to adapt to other use cases and is not limited to the NEF use case only.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-band">
+    <div class="container cta-band__inner">
+      <a href="/products/api-exposure-functions" class="cta-band__link">Our API Exposure Functions...</a>
+      <img src="/images/diagrams/network-monitor-icon.png" alt="" width="200" height="102" loading="lazy" />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .section--gray {
+    background: var(--color-section-gray);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .faq-grid {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10);
+    margin-top: var(--space-8);
+  }
+
+  .cta-band {
+    background: var(--color-section-gray);
+  }
+
+  .cta-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
+  }
+
+  .cta-band__link {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 32px;
+    color: var(--color-ink);
+  }
+
+  .cta-band__link:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 860px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .cta-band__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      text-align: left;
+    }
+  }
+</style>

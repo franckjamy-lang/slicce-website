@@ -1,0 +1,151 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import QuestionMarkDivider from '../../components/QuestionMarkDivider.astro';
+import MoreQuestionsCta from '../../components/MoreQuestionsCta.astro';
+---
+
+<BaseLayout
+  title="Screening calls on a Private Network"
+  description="Network call screening is a feature that allows you to filter incoming calls on your private network, based on criteria such as caller ID, caller name, or caller location."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="Screening calls on a Private Network"
+    description="Network call screening is a feature that allows you to filter incoming calls on your private network, based on criteria such as caller ID, caller name, or caller location."
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        Network call screening is a feature that allows you to filter incoming calls on your private network, based
+        on criteria such as caller ID, caller name, or caller location. Network call screening can help you avoid
+        unwanted calls from telemarketers, scammers, or robocalls, and protect your privacy and security. Network
+        call screening can also save you time and money by reducing the number of calls that you need to answer or
+        return.
+      </p>
+    </div>
+
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/private-networks-diagram.png"
+        alt="Private Network Call Screening architecture: ISC-AEF, SMS-AEF, AAA-AEF and MLC-AEF connect to a CAPIF-CF, which connects to a Call Screening Service and a CDS-AEF."
+        width="957"
+        height="906"
+        loading="lazy"
+      />
+    </div>
+  </section>
+
+  <QuestionMarkDivider />
+
+  <section class="section">
+    <div class="container article">
+      <h2>How can we add value to a Private Networks?</h2>
+      <p>
+        One of the ways to enhance the performance and profitability of a private network is to offer additional
+        services that complement the core functionality of the network. Additional services can provide value to the
+        network users by addressing their specific needs, preferences, and pain points. Some examples of additional
+        services are:
+      </p>
+      <ul>
+        <li>
+          <strong>Security:</strong> Private networks can offer security features such as encryption, authentication,
+          firewall, antivirus, and VPN to protect the network data and devices from unauthorized access,
+          cyberattacks, and malware.
+        </li>
+        <li>
+          <strong>Cloud:</strong> Private networks can offer cloud services such as storage, backup, computing, and
+          applications to enable the network users to access and manage their data and resources from anywhere and
+          any device.
+        </li>
+        <li>
+          <strong>Analytics:</strong> Private networks can offer analytics services such as data collection,
+          processing, visualization, and reporting to help the network users gain insights and make informed
+          decisions based on their network performance, usage, and trends.
+        </li>
+        <li>
+          <strong>Automation:</strong> Private networks can offer automation services such as orchestration,
+          configuration, provisioning, and monitoring to help the network users simplify and optimize their network
+          operations and management.
+        </li>
+        <li>
+          <strong>Support:</strong> Private networks can offer support services such as troubleshooting, maintenance,
+          updates, and upgrades to help the network users resolve any issues and ensure the network reliability and
+          availability.
+        </li>
+      </ul>
+      <p>
+        By offering additional services, private networks can create a competitive advantage over other networks,
+        increase customer satisfaction and loyalty, and generate new revenue streams.
+      </p>
+    </div>
+
+    <div class="container faq-grid">
+      <div>
+        <h2>Could we create services without a VoLTE &amp; IMS core?</h2>
+        <p>
+          Creating services on a private network without an IMS core is possible, but it has some limitations and
+          challenges. IMS (IP Multimedia Subsystem) is a standardized architecture that enables the delivery of
+          voice, video, and data services over IP networks. IMS provides a common framework for interoperability,
+          security, quality of service, and billing among different service providers and network operators. Without
+          an IMS core, a private network would have to rely on proprietary or non-standardized solutions for service
+          creation and management, which could result in compatibility issues, performance degradation, or increased
+          costs. Therefore, it is advisable to use an IMS core for private networks that require advanced or diverse
+          services, such as VoLTE, VoWiFi, RCS, or IoT.
+        </p>
+      </div>
+      <div>
+        <h2>What about creating services for IoT Private Networks?</h2>
+        <p>
+          Creating services for IoT Private Networks can be a lucrative opportunity for businesses that want to
+          provide solutions for various industries and use cases, such as smart factories, smart cities, smart
+          agriculture, smart healthcare and more. Services for IoT Private Networks can include network design and
+          deployment, device management and provisioning, data analytics and visualization, security and compliance,
+          and integration with cloud platforms and applications. By creating services for IoT Private Networks,
+          businesses can help their customers leverage the benefits of IoT while reducing the risks and costs
+          associated with public networks. <a href="/products/api-exposure-functions">Read about our machine type
+          communications API Exposure function (MTC-AEF) for more information.</a>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <MoreQuestionsCta />
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .diagram {
+    max-width: 1000px;
+    display: flex;
+    justify-content: center;
+    margin-top: var(--space-8);
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .faq-grid {
+    max-width: 1100px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-10);
+    margin-top: var(--space-10);
+  }
+
+  @media (max-width: 860px) {
+    .faq-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

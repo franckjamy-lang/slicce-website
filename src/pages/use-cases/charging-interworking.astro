@@ -1,0 +1,168 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import SectionDots from '../../components/SectionDots.astro';
+import Icon from '../../components/Icon.astro';
+---
+
+<BaseLayout
+  title="Charging Interworking Function"
+  description="An interworking function for online charging in a telecom network is needed when there is a requirement to perform credit control and authorization for prepaid services in real time."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="Charging Interworking Function"
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        An interworking function for online charging in a telecom network is needed when there is a requirement to
+        perform credit control and authorization for prepaid services in real time. Online charging allows the
+        network to check the user's account balance and grant or deny access to the service based on the available
+        credit. Online charging also updates the user's account balance immediately after each service usage event,
+        and can notify the user of the remaining credit or terminate the service when the credit is exhausted.
+      </p>
+
+      <p>
+        Online charging is different from offline charging, which collects data about service usage and generates
+        charging data records (CDRs) that are sent to the billing system for postpaid services. Offline charging
+        does not require real-time interaction with the user's account, and does not affect the service delivery or
+        consumption.
+      </p>
+
+      <p>
+        An interworking function for online charging in a telecom network acts as a bridge between the service
+        element and the online charging system (OCS). The service element, such as an IP multimedia subsystem (IMS)
+        or a 5G network function, monitors the service usage and sends online charging triggers to the interworking
+        function. The interworking function converts these triggers into Diameter messages and forwards them to the
+        OCS. The OCS performs credit authorization and reservation, and sends back Diameter messages to the
+        interworking function. The interworking function converts these messages into online charging responses and
+        sends them back to the service element. The service element then allows or denies the service delivery based
+        on the online charging responses.
+      </p>
+
+      <p>
+        An interworking function for online charging in a telecom network is necessary to enable prepaid services in
+        a standardized and interoperable way, using the Diameter protocol as defined by 3GPP. It also provides
+        flexibility and scalability for supporting different types of services and charging models in a telecom
+        network.
+      </p>
+    </div>
+
+    <SectionDots count={3} active={2} />
+
+    <div class="container article">
+      <h2>Harmonization of 4G OCS with 3G and 5G cores</h2>
+    </div>
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/charging-interworking-4g.png"
+        alt="Harmonization of the OCS to a single technology in a cross-generation PLMN: 3G MSC/SMSC and 4G PGW connect via Diameter Gy to a 4G OCS; CHF-IWF instances convert 3G CAMEL, 5G Nchf and VoLTE/VoNR SIP signaling to Diameter Ro/Gy."
+        width="759"
+        height="799"
+        loading="lazy"
+      />
+    </div>
+
+    <SectionDots count={3} active={1} />
+
+    <div class="container article">
+      <h2>Harmonization of 3G OCS with 4G and 5G cores</h2>
+      <div class="diagram-placeholder">Harmonization of 3G OCS with 4G and 5G cores — diagram to be provided</div>
+
+      <p>
+        Replacing a telecom online charging system (OCS) is a painful process that involves many challenges and
+        risks. An OCS is a complex system that handles the real-time billing and charging of telecom services, such
+        as voice calls, data usage, SMS, roaming, etc. It interacts with many other systems, such as network
+        elements, customer relationship management (CRM), provisioning, mediation, rating, etc. It also supports
+        various business functions, such as pricing plans, promotions, discounts, bundles, etc.
+      </p>
+
+      <p>Replacing an OCS requires a careful planning and execution of several steps, such as:</p>
+      <ul>
+        <li>Analyzing the current OCS architecture, functionality, performance, and limitations</li>
+        <li>Selecting a new OCS vendor and solution that meets the business and technical requirements</li>
+        <li>Designing and testing the integration of the new OCS with the existing systems and processes</li>
+        <li>Migrating the existing data and configuration from the old OCS to the new OCS</li>
+        <li>Training the staff and customers on how to use the new OCS</li>
+        <li>Monitoring and troubleshooting the new OCS during and after the launch</li>
+      </ul>
+
+      <p>Each of these steps can pose significant challenges and risks, such as:</p>
+      <ul>
+        <li>Compatibility issues between the old and new OCS systems and interfaces</li>
+        <li>Data loss or corruption during the migration process</li>
+        <li>Performance degradation or service disruption during the integration or launch phases</li>
+        <li>Customer dissatisfaction or churn due to changes in billing or charging behavior or errors</li>
+        <li>Regulatory or legal compliance issues due to changes in pricing or taxation rules</li>
+        <li>Cost overruns or delays due to unforeseen technical or operational issues</li>
+      </ul>
+
+      <p>
+        Therefore, replacing an OCS is a painful process that requires a lot of time, resources, and expertise. It
+        should only be done when there is a clear business case and a well-defined strategy for minimizing the risks
+        and maximizing the benefits. Making use of the charging interworking function (CHF-IWF) represents
+        considerable cost and time savings and allows network operators to evolve their network cores without
+        carying on the costs of implementing a new billing solution.
+      </p>
+    </div>
+  </section>
+
+  <section class="section cta-band">
+    <div class="container cta-band__inner">
+      <h2>Read more about our CHF-IWF</h2>
+      <Icon name="rocket-heptagon" size={140} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .diagram {
+    max-width: 900px;
+    display: flex;
+    justify-content: center;
+    margin-block: var(--space-6) var(--space-8);
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .diagram-placeholder {
+    background: var(--color-section-gray);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-16);
+    text-align: center;
+    color: var(--text-muted);
+    margin-bottom: var(--space-6);
+  }
+
+  .cta-band {
+    background: var(--color-section-gray);
+  }
+
+  .cta-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 620px) {
+    .cta-band__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+  }
+</style>

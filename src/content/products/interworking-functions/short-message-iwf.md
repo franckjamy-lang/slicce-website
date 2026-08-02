@@ -1,14 +1,15 @@
 ---
-title: Short Message Interworking Function
+title: SMS Interworking Function
 shortName: SMS-IWF
 category: interworking-functions
 order: 3
+heroIcon: /images/products/chf-iwf_bannerpod.png
 heroDescription: >-
   The Short Message Service Interworking Function (SMS-IWF) is dedicated to
   the conversion of short text messages between the 3G, 4G, 5G and
-  enterprise networks. The SMS-IWF can frontend any existing SMSC and extend
-  its capabilities, removing the need to replace the entire network function
-  to evolve to new network technologies.
+  enterprise networks. The SMS-IWF can frontend any existing SMSC an
+  extend its capabilities removing the need to replace the entire network
+  function to evolve to new network technologies.
 features:
   - title: Multi-purpose communication engine
     description: >-
@@ -20,7 +21,7 @@ features:
       using simple scripting language to shorten time-to-market.
   - title: Application level firewall
     description: >-
-      Ability to block undesired and unexpected messages through firewall
+      Ability to block undesired and unexpected messages through Firewall
       like allow/block rule mechanism.
   - title: Adjustable rate control
     description: >-
@@ -61,23 +62,31 @@ specs:
   - label: SIP
     wide: true
     values:
-      - 3GPP TS.24.229
-      - TISPAN ES 283 003
-      - IETF RFC 3261-3266
-      - RFC 1889-1890
-      - RFC 3329
-      - RFC 3455
+      - 3GPP TS.24.229 IMS SIP extensions
+      - TISPAN ES 283 003 IMS extensions
+      - IETF RFC 3266 support for IPv6 in SDP
+      - IETF RFC 3261 (Session Initiation Protocol – SIP)
+      - IETF RFC 3262 (Reliability of Provisional Responses in SIP)
+      - IETF RFC 3263 (Locating SIP Servers)
+      - IETF RFC 2327 (Session Description Protocol – SDP)
+      - IETF RFC 3264 (An Offer/Answer Model with SDP)
+      - IETF RFC 3265 (SIP Specific Event Notification)
+      - IETF RFC 3266 (Support for IPv6 in SDP)
+      - IETF RFC 1889 and 1890 (RTP/RTCP)
+      - IETF RFC 3329 SIP security agreement
+      - IETF RFC 3455 Private headers
   - label: DIAMETER
     wide: true
     values:
-      - RFC 4006 - Diameter Credit-Control Application
-      - RFC 3588 / 6733 - Diameter base Protocol
-      - 3GPP TS 32.299 / 29.338 - Telecommunication management; Charging management; Diameter charging applications.
+      - IETF RFC 4006 Diameter Credit-Control Application
+      - IETF RFC 3588 / 6733 Diameter base Protocol
+      - 3GPP TS 32.299 Telecommunication management; Charging management; Diameter charging applications.
+      - 3GPP TS 29.338 Diameter based protocols to support Short Message Service capable MME.
   - label: SMPP
     values:
-      - v3.2
-      - v3.4
-      - v5.0
+      - SMPP v3.2
+      - SMPP v3.4
+      - SMPP v5.0
 useCasesIcon: /images/products/computer2.png
 useCases:
   - label: Single Engine
@@ -94,17 +103,29 @@ useCases:
     href: /use-cases/5g-northbound-apis
 ---
 
-What makes SMS-IWF unique is its ability to convert short messages across
-virtually every generation and channel in use today — SMSoNAS, SMSoIP,
-GSM-MAP SMS, 5G SMS, SMPP-based ESMEs and even WhatsApp — through a single,
-protocol-agnostic engine.
+### SMS-IWF for Operators
 
-This lets operators front-end an existing SMSC and extend its reach to new
-channels and network generations without replacing the whole network
-function, protecting past investment while opening the door to new
-messaging use cases.
+**Brings SMS over NAS, SMS over IP and SMS over 5G SBI to legacy SMSC**
 
-Built-in protections — an allow/block firewall for undesired or unexpected
-messages, and adjustable inbound rate control — keep the home network's
-SMSC safe from abuse, so the added flexibility never comes at the cost of
-stability.
+SMS is a popular service that allows users to send and receive short text messages on their mobile devices. In 5G networks, there are two basic methods to transport SMS: SMS-over-NAS (SMSoNAS) and SMS-over-IP (SMSoIP).
+
+SMSoNAS uses Non-Access Stratum (NAS) signaling to deliver SMS messages between the user device and the SMS Function (SMSF) in the 5G Core (5GC). SMSoNAS is defined in 3GPP TS 23.501 and can be used when the device is connected to either 5G or 4G networks. SMSoNAS is recommended for devices that do not support voice services over IMS or for data-only devices.
+
+SMSoIP uses IP Multimedia Subsystem (IMS) to deliver SMS messages over IP using SIP (Session Initiation Protocol) messages. SMSoIP is defined in 3GPP TS 24.341 and can be used when the device is connected to IMS, either over 5G or 4G networks. SMSoIP can be deployed simultaneously with voice services over IMS to provide both voice and SMS services.
+
+The choice of SMSoNAS or SMSoIP depends on several factors, such as the device capabilities, the network architecture, the service requirements, and the operator preferences. Both methods have advantages and disadvantages in terms of complexity, performance, interoperability, and roaming. Operators need to carefully evaluate their options and plan their migration strategy from EPS to 5GS accordingly.
+
+### SMS-IWF for ESME
+
+**Bridges the mobile network with External Short Messages Entities**
+
+External Short Messages Entities (ESMEs) are applications or systems that can send and receive short messages to and from a Short Message Service Center (SMSC) using the Short Message Peer-to-Peer (SMPP) protocol. ESMEs can provide various benefits for businesses, such as:
+
+- Enhancing customer engagement and loyalty by sending personalized, timely and relevant messages to customers via SMS, such as appointment reminders, order confirmations, delivery notifications, feedback requests, etc.
+- Improving operational efficiency and productivity by automating workflows and processes that involve SMS communication, such as sending alerts, confirmations, reports, etc. to employees, partners or suppliers.
+- Increasing revenue and profitability by leveraging SMS as a marketing channel to promote products, services, offers, discounts, etc. to potential or existing customers, or as a payment channel to enable customers to pay for goods or services via SMS.
+- Reducing costs and risks by using SMS as a reliable and secure communication channel that can reach customers or stakeholders in any location, at any time, and with minimal infrastructure requirements.
+
+ESMEs can help businesses achieve their goals and objectives by providing a simple, fast and effective way to communicate with their target audiences via SMS. ESMEs can also integrate with other applications or systems to enable seamless data exchange and interoperability. Therefore, ESMEs can offer significant business value for various industries and sectors that rely on SMS communication.
+
+[Get the microservice guide](/contact)

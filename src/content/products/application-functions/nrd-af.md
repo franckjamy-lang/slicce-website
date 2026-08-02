@@ -3,51 +3,43 @@ title: Network Resource Driven Application Function
 shortName: NRD-AF
 category: application-functions
 order: 1
+heroIcon: /images/products/af_bannerpod.png
 heroDescription: >-
   The NRD-AF (Network-Resource-Driven Application Function) is Slicce's
   revolutionary Low-Code Service Creation Environment (SCE). Designed to
   simplify the rapid development of complex, event-driven services, NRD-AF
-  liberates service designers from intricate coding.
+  liberates service designers from intricate coding. Built on our core
+  Cloud Communication Engine architecture, it combines the power of the
+  3GPP Common API Framework (CAPIF) with an intuitive low-code environment,
+  enabling ultra-fast innovation and monetization for telecom operators.
 features:
   - title: Low-Code Visual Designer
     description: >-
-      Accelerated time-to-market: launch new, sophisticated services in
+      Accelerated Time-to-Market: Launch new, sophisticated services in
       days, not months.
   - title: Native CAPIF Integration
     description: >-
-      Seamless network access: safely and easily consume 3G, 4G, and 5G
-      network APIs (e.g. location, charging, QoS).
+      Seamless Network Access: Safely and easily consume 3G, 4G, and 5G
+      network APIs (e.g., location, charging, QoS).
   - title: Event-Driven Architecture
     description: >-
-      Real-time responsiveness: deliver highly personalized and
+      Real-Time Responsiveness: Deliver highly personalized and
       context-aware services based on immediate network state.
   - title: Web API & External Integration
     description: >-
-      Convergence & innovation: fuse network capabilities with external
+      Convergence & Innovation: Fuse network capabilities with external
       data for powerful new cross-domain services.
   - title: AI Service Integration
     description: >-
       Connects seamlessly to external AI services (OpenAI, Google Cloud,
       Azure, etc.) for advanced capabilities like natural language
       processing, speech transcription, sentiment analysis, and image
-      recognition.
+      recognition — enabling intelligent, context-aware workflows.
   - title: Cloud-Native & Scalable
     description: >-
-      Operational efficiency: scales automatically with demand, ensuring
+      Operational Efficiency: Scales automatically with demand, ensuring
       high availability and cost-effective operation.
-specs:
-  - label: Low-Code Engine
-    wide: true
-    values:
-      - A proprietary runtime optimized for execution of visual programming flows
-  - label: Protocol Abstraction
-    wide: true
-    values:
-      - All 3GPP protocols abstracted into simple, secure REST API calls via the CAPIF-CF
-  - label: Security & Policy
-    wide: true
-    values:
-      - Inherits the strict security and access control policies defined by the Common API Framework
+specs: []
 useCasesIcon: /images/products/computer2.png
 useCases:
   - label: Value Added Services
@@ -60,14 +52,59 @@ useCases:
     href: /use-cases/5g-northbound-apis
 ---
 
-NRD-AF is built upon the robust, community-driven principles of Node-RED.
-That foundation means it is not a closed platform, but a highly extensible
-one — service designers can drag, drop and wire together network events,
-external data and AI services without writing low-level protocol code.
+### Technology Under the Hood
 
-Typical services built this way range from contextual VAS like smart traffic
-prioritization, to enterprise automation such as fleet management
-geo-fencing, fraud services like SIM swap detection, or personalized
-"pay-per-session" charging — all assembled visually and deployed in days
-rather than months, thanks to native CAPIF integration and an event-driven
-runtime that reacts to the network in real time.
+**The NRD-AF leverages the Cloud Communication Engine foundation**
+
+- Low-Code Engine: A proprietary runtime optimized for execution of visual programming flows.
+- Protocol Abstraction: All 3GPP protocols are abstracted into simple, secure REST API calls via the CAPIF-CF.
+- Security & Policy: Inherits the strict security and access control policies defined by the Common API Framework, ensuring that all network resource consumption is authorized and logged.
+
+### AI Service Integration
+
+**Enabling Intelligent Workflows via AI Services**
+
+NRD-AF supports seamless connectivity to external AI services (OpenAI, Google Cloud, Azure, etc.), enabling advanced features like natural language processing, speech transcription, sentiment analysis, and image recognition — all fully customizable via API.
+
+- Use Case: Generate contextual responses or summaries based on network events. Example: Trigger a GPT-4 chatbot session when a customer experiences poor QoS or roaming issues.
+- Use Case: Analyze voice messages or transcribe calls. Example: Detect emotional distress in a voicemail or transcribe and summarize a support call.
+- Use Case: Speech-to-text and email automation. Example: Convert a phone call into text and auto-send a summary email to the support team.
+- Use Case: Visual analysis and object detection. Example: Analyze video streams to detect faces, objects, or anomalies linked to network events.
+
+### Some Use Cases
+
+**Ideas of what you can build with NRD-AF**
+
+**Contextual VAS**
+
+Example service: Smart Traffic Prioritization: Temporarily increase QoS for a user's session when they open a specific mission-critical application (e.g., remote healthcare or broadcast).
+
+Network Events/APIs Used: Location Change Event, QoS API, External Application Trigger.
+
+**Enterprise Automation**
+
+Example service: Fleet Management Geo-Fencing: Trigger an alert in an enterprise system when a vehicle's SIM crosses a specific geographic boundary.
+
+Network Events/APIs Used: Location Reporting API, SMS-AEF, External Enterprise Webhook.
+
+**Security & Fraud**
+
+Example service: SIM Swap Detection Service: Automatically flag and block a charging session if a significant change in device/location is detected within minutes of a SIM replacement.
+
+Network Events/APIs Used: Charging API, Subscriber API, External Fraud Detection System.
+
+**Personalized Charging**
+
+Example service: "Pay-Per-Session" Charging: Start and stop a specific, premium charging session only when the user is actively using a partnered streaming service.
+
+Network Events/APIs Used: Charging Interworking Function (IWF), Packet Flow Description (PFD) API.
+
+### Extensibility and Open Standards
+
+**Built on Node-RED: Community Power and Unparalleled Flexibility**
+
+The NRD-AF's low-code environment is built upon the robust, community-driven principles of Node-RED. This powerful foundation means that NRD-AF is not a closed platform; rather, it is highly extensible. Developers can leverage the vast ecosystem of pre-built community node libraries to quickly integrate with virtually any external system, database, or cloud service. For specialized network functions or proprietary enterprise systems, custom nodes can be easily created and integrated, providing unparalleled flexibility and future-proofing your service development efforts.
+
+### Ready to Transform Your Network?
+
+Stop relying on complex, lengthy development cycles. With NRD-AF, your network engineers and service designers can become instant innovators. Scheduled with a Slicce expert today a live demonstration of the NRD-AF Low-Code Designer and see how quickly you can bring your next event-driven application to life.

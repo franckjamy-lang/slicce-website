@@ -1,0 +1,102 @@
+---
+// Bandeau noir épuré utilisé en tête des pages "catégorie" (listing de
+// produits : API Exposure Functions, Interworking Functions, etc.) —
+// même traitement visuel que le hero des pages produit individuelles
+// (ProductLayout), mais sans les sections qui suivent (features, specs...).
+// A ne pas confondre avec PageBanner (bandeau avec skyline en fond), conçu
+// pour les pages utilitaires (Catalog, Articles, Blog).
+interface Props {
+  title: string;
+  description: string;
+  icon?: string;
+}
+const { title, description, icon } = Astro.props;
+---
+
+<section class="category-hero">
+  <div class="container category-hero__inner">
+    <div class="category-hero__text" data-reveal="left">
+      <h1>{title}</h1>
+      <p>{description}</p>
+    </div>
+  </div>
+  {
+    icon && (
+      <div class="category-hero__icon" data-reveal="right">
+        <img src={icon} alt="" width="560" height="448" loading="lazy" />
+      </div>
+    )
+  }
+</section>
+
+<style>
+  .category-hero {
+    position: relative;
+    background: var(--color-black-soft);
+    overflow: hidden;
+  }
+
+  .category-hero__inner {
+    position: relative;
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+  }
+
+  .category-hero__text {
+    max-width: 800px;
+  }
+
+  .category-hero h1 {
+    font-family: var(--font-heading);
+    font-weight: 800;
+    font-size: 56px;
+    color: var(--color-green);
+    margin-bottom: var(--space-6);
+  }
+
+  .category-hero__text p {
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+    font-weight: 400;
+    color: var(--color-off-white);
+    line-height: 1.5;
+  }
+
+  .category-hero__icon {
+    position: absolute;
+    right: 20px;
+    top: var(--space-6);
+    bottom: var(--space-6);
+    max-width: 400px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
+  .category-hero__icon img {
+    max-height: 100%;
+    max-width: 100%;
+    width: auto;
+    height: auto;
+  }
+
+  @media (max-width: 1200px) {
+    .category-hero__icon {
+      display: none;
+    }
+
+    .category-hero h1 {
+      font-size: 40px;
+    }
+  }
+
+  @media (max-width: 760px) {
+    .category-hero h1 {
+      font-size: 32px;
+    }
+
+    .category-hero__text p {
+      font-size: 15px;
+    }
+  }
+</style>

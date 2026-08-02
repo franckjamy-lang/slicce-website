@@ -1,0 +1,320 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBanner from '../components/PageBanner.astro';
+
+const faqs = [
+  {
+    q: 'What are the benefits of cloud-native transformation for telecom operators?',
+    bulletsFrom: 2,
+    a: [
+      "Cloud-native transformation is the process of adopting cloud computing technologies and practices to deliver telecom services and applications. It involves moving from legacy or monolithic systems to more agile, scalable and resilient cloud-native applications that run on containers, microservices and orchestration platforms.",
+      'Some of the benefits of cloud-native transformation for telecom operators are:',
+      'Reduced costs: Cloud-native applications can help telecom operators save on capital expenditures (CAPEX) and operational expenditures (OPEX) by optimizing the utilization of resources, simplifying hardware inventories, automating processes and avoiding expensive upgrades.',
+      'Improved agility: Cloud-native applications can help telecom operators respond faster to changing customer demands, market conditions and competitive pressures by enabling rapid deployment, scaling and updates of services and applications.',
+      'Enhanced resilience: Cloud-native applications can help telecom operators ensure high availability, reliability and security of their services and applications by leveraging the built-in features of cloud platforms such as load balancing, fault tolerance, backup and recovery.',
+      'Increased innovation: Cloud-native applications can help telecom operators unlock new opportunities for revenue generation, customer satisfaction and differentiation by supporting various next-generation use cases such as 5G, IoT, edge computing and AI.',
+    ],
+  },
+  {
+    q: 'How slicce is different from a traditional service delivery platform?',
+    bulletsFrom: 2,
+    a: [
+      'Slicce is a cloud-native service delivery platform that enables telecom operators to expose and consume APIs from different network generations and domains. It leverages the Common API Framework (CAPIF) to harmonize and secure the API exposure and discovery process. It also provides a communication engine foundation that helps customers create and manage application functions (AFs) with ease and flexibility.',
+      'Some of the differences between slicce and a traditional service delivery platform are:',
+      'Cloud-native: Slicce is designed to run on cloud platforms using containers, microservices and orchestration technologies. This makes it more scalable, agile and resilient than traditional service delivery platforms that rely on legacy or monolithic systems.',
+      'API-centric: Slicce focuses on exposing and consuming APIs from various network sources and destinations. This makes it more interoperable, flexible and innovative than traditional service delivery platforms that use proprietary or complex interfaces.',
+      'Customer-oriented: Slicce empowers customers to create and consume their own AFs using any framework or programming language they prefer. This makes it more customizable, user-friendly and cost-effective than traditional service delivery platforms that impose limitations or restrictions on AF development.',
+    ],
+  },
+  {
+    q: 'How do I start to plan a new workload with slicce?',
+    bulletsFrom: 1,
+    a: [
+      'To plan a new workload with slicce, you need to follow these steps:',
+      'Define your use case: Identify the business problem or opportunity you want to address with slicce. For example, you may want to create a new service, enhance an existing service or integrate with a third-party service.',
+      'Identify your network sources and destinations: Determine the network generations and domains that are involved in your use case. For example, you may need to access or provide APIs from 3G, 4G or 5G networks or from different network functions or services.',
+      'Select your API exposure functions (AEFs): Choose the communication engines that implement and expose the standard telecom interfaces you need for your use case. For example, you may need AEFs for SMS, MMS, USSD or location services.',
+      'Create or consume your application functions (AFs): Decide whether you want to create your own AFs using slicce communication engine foundation or any other framework or programming language you prefer, or consume existing AFs from other sources. For example, you may want to create an AF for a chatbot service or consume an AF for a payment service.',
+      'Register and discover your APIs: Use the Common API Framework (CAPIF) core function (CF) to register and discover the APIs exposed by AEFs and AFs. For example, you may need to register your chatbot AF API and discover the payment AF API.',
+    ],
+  },
+  {
+    q: 'Can we deploy slicce network functions in virtual machines?',
+    a: [
+      'Slicce network functions are designed to run on cloud platforms using containers, microservices and orchestration technologies.',
+      'Containers are more lightweight, portable and efficient than virtual machines. They allow slicce network functions to scale up and down quickly and easily according to the demand. They also enable slicce network functions to leverage the features and benefits of cloud-native technologies such as Kubernetes, Docker and Helm.',
+      'However, if your specific use case or customer is limited to rely on virtual machines and there is an understanding that we give up on the value of a microservice architecture, all slicce communication engines can be delivered in the form of debian or rpm packages to deployed on most common linux-based virtual or physical machines.',
+    ],
+  },
+  {
+    q: 'How long does it take to complete a migration project and what are the steps involved?',
+    bulletsFrom: 3,
+    a: [
+      'A migration project is a process of moving data, applications or systems from one environment to another. It can be done for various reasons such as upgrading technology, improving performance, reducing costs or enhancing security.',
+      'The duration and complexity of a migration project depend on several factors such as the size and type of data or applications, the source and target environments, the migration strategy and tools, and the potential risks and challenges.',
+      'However, a general outline of a migration project can be divided into five steps:',
+      'Step 1: Prepare a specification document outlining the technical and business needs of the migration: This step involves defining the scope, objectives, requirements and expectations of the migration project. It also involves identifying the stakeholders, roles and responsibilities involved in the project.',
+      'Step 2: Create a document listing migration risks: This step involves assessing the potential risks and challenges that may arise during or after the migration project. It also involves developing mitigation plans and contingency measures to address them.',
+      'Step 3: Prepare and clean data for migration: This step involves analyzing, validating and transforming the data or applications that need to be migrated. It also involves ensuring that they are compatible with the target environment and meet quality standards.',
+      'Step 4: Pilot test first: This step involves performing a trial run of the migration process on a subset of data or applications. It also involves verifying that they are successfully transferred to the target environment without any errors or issues.',
+      'Step 5: Check the result: This step involves validating that all data or applications have been migrated correctly and completely. It also involves evaluating that they function properly in the target environment and meet performance expectations.',
+    ],
+  },
+  {
+    q: 'How slicce business model is adapted to cloud business models?',
+    bulletsFrom: 1,
+    a: [
+      'Slicce business model is adapted to cloud business models by offering customers a flexible and cost-effective way to access and consume slicce network functions and services. Customers can choose from different options depending on their needs and preferences:',
+      'Subscription: Customers can pay a fixed monthly or annual fee to access and use slicce communication engines and services. This option provides customers with predictable costs and unlimited usage within their subscription plan.',
+      'Pay-as-you-go: Customers can pay only for what they use based on the amount of resources consumed by slicce communications engines and services. This option provides customers with variable costs and flexibility to scale up or down as needed.',
+      'Freemium: Customers can access and use some of the basic features of slicce communications engines and services for free. This option provides customers with an opportunity to try out slicce before committing to a paid plan.',
+    ],
+  },
+  {
+    q: 'What are some examples of added value that you can create for telecom operators and their customers?',
+    bulletsFrom: 1,
+    a: [
+      'Some examples of added value that Slicce can create for telecom operators and their customers are:',
+      'New revenue streams: Slicce can help telecom operators generate new revenue streams by enabling them to offer new or enhanced services and applications to their customers or partners. For example, slicce can help telecom operators provide 5G network slicing services to different verticals such as healthcare, manufacturing or entertainment.',
+      'Improved customer satisfaction: Slicce can help telecom operators improve customer satisfaction by enabling them to deliver better quality and performance of their services and applications. For example, slicce can help telecom operators optimize their network resources and reduce latency and congestion for their customers.',
+      'Increased differentiation: Slicce can help telecom operators increase differentiation by enabling them to create and customize their own services and applications using slicce communication engine foundation. For example, slicce can help telecom operators create personalized chatbots or voice assistants for their customers.',
+    ],
+  },
+  {
+    q: 'How fast can a new microservice be created using the slicce communication engine foundation?',
+    bulletsFrom: 2,
+    a: [
+      'The speed of creating a new microservice using the slicce communication engine foundation depends on several factors such as the complexity and functionality of the microservice, the skills and experience of the developer, and the tools and frameworks used.',
+      'However, a general estimate is that it can take from a few hours to a few days to create a new microservice using the Slicce communication engine foundation. This is because the Slicce communication engine foundation provides developers with:',
+      'A set of reusable components and libraries that simplify and accelerate the development process. For example, developers can use components for authentication, logging, monitoring or error handling without having to write them from scratch.',
+      'A standardized interface and protocol that enables seamless integration with other slicce network functions and services. For example, developers can use CAPIF to register and discover APIs exposed by their microservices or other network functions.',
+      'A flexible and customizable environment that allows developers to choose any framework or programming language they prefer. For example, developers can use Python, Java or Node.js to create their microservices.',
+    ],
+  },
+  {
+    q: 'How do you ensure the continuity and availability of legacy services during and after the migration?',
+    bulletsFrom: 1,
+    a: [
+      'To ensure the continuity and availability of legacy services during and after the migration, you may want to consider some of the following steps:',
+      'Assess your legacy services and identify their dependencies, risks, costs, and benefits.',
+      'Choose a migration strategy that suits your needs and goals. Some common strategies are lift and shift, replatforming, refactoring, or replacing.',
+      'Consult with our engineering team to define your workload and pick the communication engines that are best fitting your strategy.',
+      'Plan your migration carefully and test it thoroughly before going live.',
+      'Monitor your legacy services and new services during and after the migration. Ensure that they are performing well and meeting your expectations.',
+    ],
+  },
+  {
+    q: 'What is the Common API Framework and why is it important for 5G openness?',
+    bulletsFrom: 2,
+    a: [
+      'The Common API Framework is a set of specifications defined by 3GPP, a global standards forum for cellular communication technologies. It defines how the core network capabilities of 5G can be exposed as Northbound APIs for consumption by third parties outside the Mobile Network Operator (MNO) domain, such as enterprise applications or vertical industries. The Common API Framework is important for 5G openness because it enables interoperability, flexibility and innovation in the use of 5G network services by different stakeholders and domains.',
+      'According to 3GPP, some of the values of the Common API Framework for 5G Northbound APIs are:',
+      'It enables a consistent way of exposing 5G network capabilities to third parties across different domains and use cases.',
+      'It supports interoperability between different implementations of 5G network functions and third-party applications.',
+      'It facilitates flexibility and innovation in the development and deployment of 5G network services by allowing dynamic discovery and registration of APIs.',
+      'It provides security mechanisms for authentication, authorization, encryption and integrity protection of API communications.',
+    ],
+  },
+  {
+    q: 'How does Slicce extend the use case of the Common API Framework to 3G and 4G networks?',
+    a: [
+      "Slicce's cloud communication engines provide a Common API Framework that is compatible with 3G and 4G networks. The Common API Framework is a set of APIs that provide a common interface to the network functions exposed by the Slicce cloud communication engines. The Common API Framework is designed to be compatible with 3G and 4G networks, as well as 5G networks, and provides a unified Exposure interface covering 4G and 5G and hiding the complexity of the underlying network topology from application developers by providing a common API framework (CAPIF) allowing for consumption of the service APIs in an easier way.",
+    ],
+  },
+  {
+    q: 'How do I access and manage the APIs exposed using CAPIF?',
+    a: [
+      "The 3GPP have addressed a variety of different processes, including onboarding/offboarding of Application Functions, service discovery and management, event subscription and notification, security and charging within the standardization of CAPIF. Slicce's implementation of the CAPIF is constantly evolving and parving toward a full compliance of the 3GPP specifications while embracing additional functionality that ease and enhance the generic CAPIF use cases. The CAPIF Core Function controls the access of service API by the API invoker based on policy or usage limits. If the usage limits have exceeded, the authorization of the API invoker for accessing the service APIs is revoked. The decision to revoke the API invoker authorization may be triggered by the AEF or the CAPIF core function itself.",
+    ],
+  },
+  {
+    q: 'What are the benefits of using API Exposure Functions for developers and telecom operators?',
+    a: [
+      'APIs are widely used in IT and telecom as the need for a secure exposure platform arises to make the development easier, brings agility to the creation of services, and hides complexity. This makes APIs an obvious choice for providers to implement over-restrictive and expensive integration techniques. Exposure through application programming interfaces (APIs) is becoming increasingly important for communication service providers (CSPs) to enable new services, increase their relevance in the edge computing ecosystem and become more attractive partners.',
+    ],
+  },
+  {
+    q: 'Can slicce cloud communication engines be used on private networks?',
+    a: [
+      "Slicce cloud communication engines can be used on private networks. With network slicing, it's possible to create virtual private 5G networks that are flexible, secure and scalable – opening up opportunities across a wide range of industries. Slicce's value proposition for private networks is that businesses can customize their network slice or private network instance and closely integrate vertical applications with the private mobile core – something that has not been possible so far. This can increase the value of a premise-based network realization by a tight integration between the mobile core and the vertical applications.",
+    ],
+  },
+  {
+    q: 'The case for SMS-IWF: SMSoNAS vs SMSoIP, what are the Pros and Cons?',
+    a: [
+      'SMSoNAS and SMSoIP are two different ways of delivering SMS messages in 5G networks. SMSoNAS is a 5G SMS delivery method that uses the NAS layer to deliver SMS messages. SMSoIP, on the other hand, is an IMS-based SMS solution under 5G networks. SMSoIP can be deployed simultaneously with voice service over IMS to provide both voice and short message service.',
+      'The pros of SMSoNAS are that it is a simple and efficient way of delivering SMS messages in 5G networks. It is also backward compatible with 4G and 3G networks. The cons of SMSoNAS are that it is not as feature-rich as SMSoIP and does not support multimedia messaging.',
+      'The pros of SMSoIP are that it is a feature-rich SMS solution that supports multimedia messaging. It is also integrated with the IMS network, which provides a rich set of features such as presence, video calling, and voice calling. The cons of SMSoIP are that it is more complex than SMSoNAS and requires more resources to deploy.',
+      'SMS-IWF (SMS Interworking Function) is a network element that enables SMS messages to be exchanged between different networks. The benefits of SMS-IWF are that it enables SMS messages to be exchanged between different networks, which is useful for users who are roaming or who are using different networks. SMS-IWF also enables SMS messages to be exchanged between different types of networks, such as 2G, 3G, and 4G networks.',
+    ],
+  },
+];
+import Icon from '../components/Icon.astro';
+import GetStartedSection from '../components/home/GetStartedSection.astro';
+
+// La numérotation du site source saute le n°10 (1-9 puis 11-16) pour ces
+// 15 questions — conservé tel quel plutôt que "corrigé" en 1-15 continu.
+function displayNumber(i: number) {
+  return i < 9 ? i + 1 : i + 2;
+}
+---
+
+<BaseLayout title="Frequently Asked Questions" description="Frequently asked questions about Slicce cloud communication engines.">
+  <PageBanner title="Frequently Asked Questions" />
+
+  <section class="section">
+    <div class="container faq">
+      {
+        faqs.map((item, i) => {
+          const bulletsFrom = item.bulletsFrom;
+          const introParas = bulletsFrom !== undefined ? item.a.slice(0, bulletsFrom) : item.a;
+          const bullets = bulletsFrom !== undefined ? item.a.slice(bulletsFrom) : [];
+          return (
+            <div class="faq-item">
+              <button type="button" class="faq-item__question">
+                <span class="faq-item__q-text">
+                  {displayNumber(i)}. {item.q}
+                </span>
+                <span class="faq-item__icon">
+                  <Icon name="chevron-down" size={18} class="faq-item__chevron" />
+                </span>
+              </button>
+              <div class="faq-item__answer">
+                <div class="faq-item__answer-inner">
+                  {introParas.map((p) => (
+                    <p>{p}</p>
+                  ))}
+                  {bullets.length > 0 && (
+                    <ul>
+                      {bullets.map((b) => (
+                        <li>{b}</li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })
+      }
+    </div>
+  </section>
+
+  <GetStartedSection
+    title="More questions?"
+    description="Submit your questions to our team of experts."
+    icon="/images/icons/question-heptagon-green.png"
+  />
+</BaseLayout>
+
+<script>
+  document.querySelectorAll<HTMLButtonElement>('.faq-item__question').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      item?.classList.toggle('is-open');
+    });
+  });
+</script>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .faq {
+    max-width: 900px;
+  }
+
+  .faq-item {
+    border: 1px solid var(--border-subtle);
+    border-radius: var(--radius-lg, 16px);
+    margin-bottom: var(--space-4);
+    background: var(--color-white, #fff);
+  }
+
+  .faq-item__question {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    width: 100%;
+    padding: 23px var(--space-6);
+    min-height: 85px;
+    box-sizing: border-box;
+    background: none;
+    border: none;
+    text-align: left;
+    cursor: pointer;
+  }
+
+  .faq-item__q-text {
+    font-weight: 700;
+    font-family: var(--font-heading);
+    font-size: 17px;
+    color: var(--color-ink);
+    padding-top: 6px;
+  }
+
+  .faq-item__icon {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--color-gray-100);
+    transition: background 0.2s ease;
+  }
+
+  .faq-item__chevron {
+    color: var(--text-muted);
+    transition: transform 0.2s ease, color 0.2s ease;
+    transform: rotate(-90deg);
+  }
+
+  .faq-item.is-open .faq-item__icon {
+    background: var(--color-green);
+  }
+
+  .faq-item.is-open .faq-item__chevron {
+    color: var(--color-ink);
+    transform: rotate(0deg);
+  }
+
+  .faq-item__answer {
+    display: grid;
+    grid-template-rows: 0fr;
+    transition: grid-template-rows 0.25s ease;
+  }
+
+  .faq-item.is-open .faq-item__answer {
+    grid-template-rows: 1fr;
+  }
+
+  .faq-item__answer-inner {
+    overflow: hidden;
+    padding-inline: var(--space-6);
+  }
+
+  .faq-item.is-open .faq-item__answer-inner {
+    padding-bottom: var(--space-6);
+  }
+
+  .faq-item__answer-inner p {
+    font-size: 14.667px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .faq-item__answer-inner ul {
+    margin: 0 0 var(--space-3);
+    padding-left: 1.2em;
+  }
+
+  .faq-item__answer-inner li {
+    font-size: 14.667px;
+    color: var(--text-muted);
+    margin-bottom: var(--space-2);
+  }
+</style>

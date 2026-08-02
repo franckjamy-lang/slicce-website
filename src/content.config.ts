@@ -19,6 +19,10 @@ const products = defineCollection({
     ]),
     order: z.number().default(0),
     heroDescription: z.string(),
+    // Paragraphe optionnel qui se poursuit sous le bandeau noir, centré,
+    // juste au-dessus des SectionDots (ex: CAPIF-CF, cf capture de
+    // comparaison — le texte du hero est coupé en 2 sur le site source).
+    heroDescriptionSecondary: z.string().optional(),
     // Chemin vers une image locale (jamais une URL Google Sites) — laissé
     // vide tant que l'asset réel n'a pas été fourni.
     heroIcon: z.string().optional(),
@@ -27,7 +31,10 @@ const products = defineCollection({
         z.object({
           title: z.string(),
           // Peut contenir des **termes en gras** (mini-syntaxe markdown).
-          description: z.string(),
+          // Un tableau de chaînes rend une liste à puces (plusieurs points
+          // distincts, ex: CAPIF-CF "JWT Authentication Server") plutôt
+          // qu'un paragraphe unique.
+          description: z.union([z.string(), z.array(z.string())]),
         })
       )
       .default([]),
@@ -52,6 +59,14 @@ const products = defineCollection({
     marketplace: z
       .object({
         aws: z.string().url().optional(),
+      })
+      .optional(),
+    // Bandeau CTA "Get the microservice guide" affiché juste avant le footer
+    // à la place du GetStartedSection générique "Ready to get started?"
+    // (cf CAPIF-CF sur le site source).
+    microserviceGuide: z
+      .object({
+        href: z.string(),
       })
       .optional(),
   }),

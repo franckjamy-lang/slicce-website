@@ -1,0 +1,184 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import CategoryHero from '../../../components/CategoryHero.astro';
+import SectionDots from '../../../components/SectionDots.astro';
+import ExchangeArrows from '../../../components/icons/ExchangeArrows.astro';
+import GetStartedSection from '../../../components/home/GetStartedSection.astro';
+
+interface Scenario {
+  a: string;
+  b: string;
+  description: string;
+}
+
+const groups: { title: string; intro: string; shortName: string; href: string; scenarios: Scenario[] }[] = [
+  {
+    title: 'Charging Interworking Function (CHF-IWF)',
+    intro:
+      'The Charging IWF provides inter-working for 3G/4G/5G online charging interfaces. It can be configured to performs the following conversion scenarios',
+    shortName: 'CHF-IWF',
+    href: '/products/interworking-functions/charging-iwf',
+    scenarios: [
+      { a: 'CAMEL v1/v2/v3/v4', b: 'CAMEL v1/v2/v3/v4', description: 'Adapts proper CAMEL version between 3G online charging interfaces.' },
+      { a: 'CAMEL v1/v2/v3/v4', b: 'DIAMETER Ro/Gy', description: 'Adapts 3G CAMEL voice/sms/data and 4G DIAMETER online charging interfaces.' },
+      { a: 'CAMEL v1/v2/v3/v4', b: 'HTTP2 N28/N40/Nchf', description: 'Adapts 3G CAMEL online charging interface to 5G online charging interface.' },
+      { a: 'DIAMETER Ro/Gy', b: 'DIAMETER Ro/Gy', description: 'Mediate DIAMETER AVPs between different 4G online charging interfaces.' },
+      { a: 'DIAMETER Ro/Gy', b: 'HTTP2 N28/N40/Nchf', description: 'Adapts 4G DIAMETER online charging interface to 5G online charging interface.' },
+    ],
+  },
+  {
+    title: 'IP Multimedia Subsystem Interworking Function (IMS-IWF)',
+    intro:
+      'The IMS IWF provides interworking between IMS, VoLTE, VoNR and 3G Circuit Switch voice and messaging services. It can be configured to performs the following conversion scenarios',
+    shortName: 'IMS-IWF',
+    href: '/products/interworking-functions/ip-multimedia-iwf',
+    scenarios: [
+      { a: 'SIP REGISTER', b: 'GSM-MAP LU/ATM', description: 'Converts the SIP REGISTER into GSM-MAP UL or ATM to update the subscriber info in the HLR and maintain subscriber status in the 3G domain.' },
+      { a: 'SIP MESSAGE', b: 'GSM-MAP MO/MT ForwardSM', description: 'Converts SMS PDUs from SIP to GSM-MAP and vice versa to ensure seamless SMS exchange between 3G and VoLTE handsets.' },
+      { a: 'SIP INVITE/MESSAGE', b: 'DIAMETER Credit Control', description: 'Triggers DIAMETER Credit Control session to perform online charging for VoLTE sessions.' },
+      { a: 'SIP INVITE/MESSAGE', b: 'GSM-MAP VLR/MSC emulation', description: "Implements GSM-MAP UL & SRI procedures to allow calls from the 3G to the VoLTE domain's IBCF." },
+    ],
+  },
+  {
+    title: 'Short Message Service Interworking Function (SMS-IWF)',
+    intro:
+      'The SMS IWF is an interworking function dedicated to the conversion of short text messages between the 3G, 4G and 5G networks. It can be configured to performs the following conversion scenarios',
+    shortName: 'SMS-IWF',
+    href: '/products/interworking-functions/short-message-iwf',
+    scenarios: [
+      { a: 'GSM-MAP v1/v2/v3', b: 'DIAMETER SGd', description: 'Adapts 3G GSM-MAP short text messages and SMSoNAS.' },
+      { a: 'GSM-MAP v1/v2/v3', b: 'SIP ISC', description: 'Adapts 3G GSM-MAP short text messages and SMSoIP messages.' },
+      { a: 'GSM-MAP v1/v2/v3', b: 'HTTP2 N20/N21/Nsmsf/Nudm', description: 'Adapts 3G GSM-MAP short text messages and SMS over 5G SBI.' },
+      { a: 'GSM-MAP v1/v2/v3', b: 'SMPP', description: 'Adapts 3G GSM-MAP short text messages and SMPP.' },
+      { a: 'DIAMETER SGd', b: 'SIP ISC', description: 'Adapts SMSoNAS and SMSoIP.' },
+      { a: 'DIAMETER SGd', b: 'HTTP2 N20/N21/Nsmsf/Nudm', description: 'Adapts SMSoNAS and 5G SMS.' },
+      { a: 'DIAMETER SGd', b: 'SMPP', description: 'Adapts SMSoNAS and SMPP.' },
+      { a: 'DIAMETER SGd', b: 'Whatsapp Business', description: 'Adapts SMSoNAS and Whatsapp API.' },
+      { a: 'SIP ISC', b: 'HTTP2 N20/N21/Nsmsf/Nudm', description: 'Adapts SMSoIP and 5G SMS.' },
+      { a: 'SIP ISC', b: 'SMPP', description: 'Adapts SMSoIP and SMPP.' },
+      { a: 'SIP ISC', b: 'Whatsapp Business', description: 'Adapts SMSoIP and Whatsapp API.' },
+      { a: 'HTTP2 N20/N21/Nsmsf/Nudm', b: 'SMPP', description: 'Adapts 5G SMS and SMPP.' },
+      { a: 'HTTP2 N20/N21/Nsmsf/Nudm', b: 'Whatsapp Business', description: 'Adapts 5G SMS and Whatsapp API.' },
+    ],
+  },
+];
+---
+
+<BaseLayout
+  title="Interworking Functions"
+  description="Interworking Functions are dedicated to the conversion of one telecom interface to another."
+>
+  <CategoryHero
+    title="Interworking Functions"
+    description="Interworking Functions are dedicated to the conversion of one telecom interface to another. They act as a gateway between existing elements and newer elements introduced in a network or to bridge gaps when it comes to the inter-connection of two networks using different technologies or different telecom protocols. These functions are also referred as Gateways and usually implement standard telecom protocol conversions and do not require an AF to implement some service logic."
+    icon="/images/products/chf-iwf_bannerpod.png"
+  />
+
+  <section class="section">
+    <div class="container">
+      {
+        groups.map((group, i) => (
+          <>
+            <div class="group">
+              <h2 data-reveal>{group.title}</h2>
+              <p class="intro" data-reveal>{group.intro}</p>
+              <div class="scenarios" data-reveal-group="scale">
+                {group.scenarios.map((s) => (
+                  <div class="scenario">
+                    <p class="scenario__label">{s.a}</p>
+                    <ExchangeArrows />
+                    <p class="scenario__label">{s.b}</p>
+                    <p class="scenario__description">{s.description}</p>
+                  </div>
+                ))}
+              </div>
+              <div class="group__cta">
+                <a href={group.href} class="btn btn--primary-bold">
+                  Read more about the {group.shortName} &gt;
+                </a>
+              </div>
+            </div>
+            {i < groups.length - 1 && <SectionDots count={3} active={i === 0 ? 2 : 1} />}
+          </>
+        ))
+      }
+
+      <div class="cta">
+        <h2>Didn't found the IWF you need?</h2>
+        <p>Contact us and see how we can make it available for you.</p>
+      </div>
+    </div>
+  </section>
+
+  <GetStartedSection icon="/images/products/slicce-icon-cloud.png" />
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .group {
+    margin-bottom: var(--space-10);
+    text-align: center;
+  }
+
+  .group h2 {
+    font-size: 28px;
+    margin-bottom: var(--space-4);
+  }
+
+  .intro {
+    max-width: 800px;
+    margin: 0 auto var(--space-10);
+    color: var(--text-muted);
+  }
+
+  .scenarios {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-8) var(--space-6);
+    margin-bottom: var(--space-8);
+  }
+
+  .scenario__label {
+    font-family: var(--font-sans);
+    font-weight: 700;
+    font-size: 13.5px;
+    color: var(--color-ink);
+    margin: 0;
+  }
+
+  .scenario :global(.exchange-arrows) {
+    margin-block: var(--space-2);
+  }
+
+  .scenario__description {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    color: var(--text-muted);
+    line-height: 1.5;
+    margin-top: var(--space-2);
+  }
+
+  .group__cta {
+    text-align: center;
+  }
+
+  .cta {
+    text-align: center;
+    padding-top: var(--space-8);
+  }
+
+  @media (max-width: 1100px) {
+    .scenarios {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 560px) {
+    .scenarios {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

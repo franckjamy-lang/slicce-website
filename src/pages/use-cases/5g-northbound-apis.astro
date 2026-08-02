@@ -1,0 +1,176 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
+import SectionDots from '../../components/SectionDots.astro';
+import Icon from '../../components/Icon.astro';
+
+const apis = [
+  {
+    title: 'NEF API',
+    description:
+      'The Network Exposure Function (NEF) API, provides access to network capabilities and events, such as location, mobility, or charging. The NEF API can be used for MTC to enable applications to request network services or resources based on the needs and characteristics of the devices or machines.',
+  },
+  {
+    title: 'NWDAF API',
+    description:
+      'The Network Data Analytics Function (NWDAF) API, provides analytics and insights on network data, such as traffic patterns, congestion, or quality of service. It is used to optimize the performance and efficiency of the devices or machines based on the network conditions and predictions.',
+  },
+  {
+    title: 'NSSF API',
+    description:
+      'The Network Slice Selection Function (NSSF) API, provides management and orchestration of network slices. Network slices are logical partitions of the network that can provide customized connectivity and service levels in order to suit the requirements and preferences of the devices or machines.',
+  },
+];
+---
+
+<BaseLayout
+  title="5G Northbound APIs & Machine Type Communication"
+  description="5G is the fifth generation of mobile communication technology that promises to deliver higher data rates, lower latency, and massive connectivity for various applications and services."
+>
+  <PageBanner
+    kicker="Use Case"
+    title="5G Northbound APIs & Machine Type Communication"
+  />
+
+  <section class="section">
+    <div class="container article">
+      <p>
+        5G is the fifth generation of mobile communication technology that promises to deliver higher data rates,
+        lower latency, and massive connectivity for various applications and services. One of the key features of 5G
+        is the support for Machine Type Communication (MTC), which enables the communication between devices without
+        human intervention. MTC can be used for various scenarios such as smart cities, industrial automation,
+        healthcare, and agriculture.
+      </p>
+
+      <p>
+        To enable MTC in 5G networks, there is a need for standardized interfaces and protocols that can facilitate
+        the interaction between different entities such as devices, applications, network functions, and service
+        platforms. These interfaces and protocols are collectively known as 5G Northbound APIs (NB APIs), which are
+        defined by various standardization bodies such as 3GPP, ETSI, and oneM2M.
+      </p>
+
+      <p>
+        5G NB APIs can be classified into three categories: device management APIs, service exposure APIs, and
+        application enablement APIs. Device management APIs provide functions for managing the lifecycle,
+        configuration, and security of devices in 5G networks. Service exposure APIs provide functions for exposing
+        network capabilities and resources to applications and service platforms. Application enablement APIs
+        provide functions for creating, deploying, and executing applications and services on top of 5G networks.
+      </p>
+
+      <p>
+        5G NB APIs are essential for enabling MTC in 5G networks, as they provide a common framework for
+        interoperability, scalability, and flexibility. By using 5G NB APIs, devices can communicate with each other
+        and with applications and service platforms in a seamless and efficient manner. Moreover, 5G NB APIs can
+        enable new business models and value propositions for MTC in 5G networks, such as network slicing, edge
+        computing, and data monetization.
+      </p>
+    </div>
+
+    <SectionDots count={3} active={2} />
+
+    <div class="container article">
+      <h2>The Machine Type Communication API Exposure Function</h2>
+    </div>
+
+    <div class="container diagram">
+      <img
+        src="/images/diagrams/usecases/5g-mtc-aef-diagram.png"
+        alt="MTC-AEF architecture: a 3rd Party API Invoker and in-domain API Invokers access MTC AEFs published to a Private Network CAPIF-CF and a PLMN CAPIF-CF, within a NEF, via CAPIF-1, CAPIF-1e and CAPIF-2 (Nnef) interfaces."
+        width="1154"
+        height="915"
+        loading="lazy"
+      />
+    </div>
+
+    <SectionDots count={3} active={1} />
+
+    <div class="container article">
+      <p class="section-intro">Examples of 5G northbound APIs that can be used for MTC</p>
+
+      <div class="grid">
+        {
+          apis.map((api) => (
+            <div class="entry">
+              <h3>{api.title}</h3>
+              <p>{api.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section cta-band">
+    <div class="container cta-band__inner">
+      <h2>Want to learn more about 5G NB APIs?</h2>
+      <Icon name="rocket-heptagon" size={140} />
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .article {
+    max-width: 900px;
+  }
+
+  .diagram {
+    max-width: 1100px;
+    display: flex;
+    justify-content: center;
+    margin-block: var(--space-6) var(--space-8);
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+  }
+
+  .section-intro {
+    text-align: center;
+    margin-bottom: var(--space-8);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--space-8);
+  }
+
+  .entry h3 {
+    font-size: 18px;
+    margin-bottom: var(--space-2);
+  }
+
+  .entry p {
+    margin: 0;
+    color: var(--text-muted);
+  }
+
+  .cta-band {
+    background: var(--color-section-gray);
+  }
+
+  .cta-band__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  @media (max-width: 860px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  @media (max-width: 620px) {
+    .cta-band__inner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: var(--space-6);
+    }
+  }
+</style>

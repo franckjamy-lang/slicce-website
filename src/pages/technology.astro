@@ -1,0 +1,284 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import PageBanner from '../components/PageBanner.astro';
+import SectionDots from '../components/SectionDots.astro';
+
+const principles = [
+  {
+    title: '1. Self-contained',
+    description:
+      "A communication engine is always self-contained, meaning it can operate by itself and doesn't require the presence of other containers to service.",
+  },
+  {
+    title: '2. Lightweight',
+    description:
+      'A communication engine is not a big silo but a microservice. It must implement a specific function that can serve a wider workload.',
+  },
+  {
+    title: '3. Remotely managed',
+    description:
+      'Communication engines must always expose remote management capabilities; configuration files, configuration APIs or web interface for manual intervention.',
+  },
+  {
+    title: '4. Auditable',
+    description:
+      'A communication engine provides the tools to audit its health and its behavior. An example of common audit tools are CDRs, Alarms logs or Audit logs.',
+  },
+  {
+    title: '5. Follow industry standards',
+    description: 'Must follow OpenAPI industry standard and must comply with the 3GPP common API framework.',
+  },
+  {
+    title: '6. High level of customization',
+    description:
+      'Communication engines implementing a telecom protocol must provide the ability to customize its protocol stack to adapt to various use cases.',
+  },
+];
+
+const components = [
+  { title: 'Light HTTP server', description: 'Used by communication engines to expose an API or a Graphical UI.' },
+  { title: 'Async HTTP client', description: 'Used by communication engines that needs to issue HTTP requests.' },
+  { title: 'React UI library', description: 'A set of react components reused across engines single page web GUI.' },
+  { title: 'CAPIF library', description: 'A library of CAPIF API requires for API Invokers and API Providers.' },
+  { title: 'SIP library', description: 'Provides the SIP & MRFC protocol stack.' },
+  { title: 'DIAMETER library', description: 'Provides the DIAMETER protocol stack.' },
+  { title: 'GTP library', description: 'Provides GTP-C v1 GTP-C v2 protocol stack.' },
+  { title: 'RADIUS library', description: 'Provides a client/server RADIUS protocol stack.' },
+  { title: 'SMPP library', description: 'Provides ESME SMPP v3.4/v5.0 protocol stack.' },
+  { title: 'SS7 library', description: 'Contains all the SS7 protocol stack; SCTP, M3UA, SCCP, TCAP, MAP, CAP and INAP.' },
+  { title: 'Common library', description: 'Contains common framework libraries such as logging, caching, JSON and SNMP.' },
+  { title: 'Data access library', description: 'Provides data access component for engines that requires storage of noSQL docs.' },
+];
+---
+
+<BaseLayout
+  title="Technology"
+  description="Slicce develops microservices that focus on performing specific tasks on top of the telecom core network."
+>
+  <PageBanner title="Technology" />
+
+  <section class="section">
+    <div class="container tech-intro">
+      <p>
+        Slicce develops microservices that focus on performing specific tasks on top of the telecom core network.
+        These microservices are called cloud communication engines. The communication engines can either stand by
+        themselves or be deployed with others in a workload. A workload is a set of containers or pods put together
+        to construct a solution, platform or service. The cloud communication engines are divided into four
+        categories: API Exposure Functions (AEF), Application Functions (AF), Inter-Working Functions (IWF) and Load
+        Balancers (LB). Slicce's architecture relies on OpenAPIs to communicate between microservices. Therefore, it
+        also delivers a 3GPP Common API Framework Core Function (CAPIF-CF) to harmonize the communication between the
+        microservices in a standard way and allow API exposure for 3G, 4G and 5G northbound APIs. All the cloud
+        communication engines, regardless of their category, rely on one same foundation: the slicce cloud
+        communication engine foundation.
+      </p>
+    </div>
+
+    <SectionDots count={3} active={1} />
+  </section>
+
+  <section class="section section--gray">
+    <div class="container">
+      <h2 class="section-title">The slicce cloud communication engine foundation</h2>
+      <p class="section-intro">
+        All slicce communication engines follow the same design principles and use one same foundation. This eases
+        not only the maintenance of the microservices but also enables a faster creation of new microservices. Here
+        are some of the foundation principles:
+      </p>
+      <div class="rows">
+        {
+          principles.map((p) => (
+            <div class="row">
+              <div class="row__label">
+                <h3>{p.title}</h3>
+                <span class="divider" />
+              </div>
+              <p>{p.description}</p>
+            </div>
+          ))
+        }
+      </div>
+
+      <div class="diagram-placeholder">Cloud communication engine foundation architecture — diagram to be provided</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <SectionDots count={3} active={2} />
+
+      <p class="section-intro">
+        The foundation components are reusable across cloud communication engines to reduce the time of development
+        of a new microservices:
+      </p>
+      <div class="grid">
+        {
+          components.map((c) => (
+            <div class="entry">
+              <h3>{c.title}</h3>
+              <span class="divider" />
+              <p>{c.description}</p>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+
+  <section class="section section--gray">
+    <div class="container">
+      <p class="quote">
+        In the heart of the foundation the 3GPP Common API framework facilitates communication exchanges using APIs
+        across the workload's microservices.
+      </p>
+      <div class="diagram-placeholder">3GPP Common API Framework at the heart of the foundation — diagram to be provided</div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container valuable">
+      <img src="/images/icons/question-heptagon-outline.png" alt="" width="140" height="112" loading="lazy" />
+      <div>
+        <h2>What makes the cloud communication engine foundation valuable?</h2>
+        <p>
+          It brings us the ability to rapidly develop new communication engines that adds more value. This is done by
+          applying the common microservices architecture and by re-using the existing libraries to reach stability and
+          production level very rapidly.
+        </p>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .section--gray {
+    background: var(--color-section-gray);
+  }
+
+  .tech-intro p {
+    max-width: 900px;
+    margin-inline: auto;
+  }
+
+  .section-title {
+    text-align: center;
+    margin-bottom: var(--space-6);
+  }
+
+  .section-intro {
+    max-width: 900px;
+    margin: 0 auto var(--space-10);
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .rows {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    margin-bottom: var(--space-10);
+  }
+
+  .row {
+    display: grid;
+    grid-template-columns: 260px 1fr;
+    column-gap: var(--space-8);
+  }
+
+  .row__label h3 {
+    font-size: 16px;
+  }
+
+  .row p {
+    font-size: 14.667px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+
+  .divider {
+    display: block;
+    width: 40px;
+    height: 3px;
+    background: var(--color-green);
+    margin-top: var(--space-2);
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    column-gap: var(--space-8);
+    row-gap: var(--space-8);
+  }
+
+  .entry h3 {
+    font-size: 16px;
+  }
+
+  .entry p {
+    font-size: 14.667px;
+    color: var(--text-muted);
+    margin-top: var(--space-2);
+  }
+
+  .quote {
+    max-width: 900px;
+    margin: 0 auto var(--space-8);
+    text-align: center;
+    font-family: var(--font-heading);
+    font-size: 18.667px;
+  }
+
+  .diagram-placeholder {
+    background: var(--color-white);
+    border: 1px dashed var(--border-subtle);
+    border-radius: var(--radius-md);
+    padding: var(--space-16);
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  .section--gray .diagram-placeholder {
+    background: var(--color-white);
+  }
+
+  .valuable {
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    max-width: 900px;
+  }
+
+  .valuable img {
+    flex-shrink: 0;
+  }
+
+  .valuable h2 {
+    font-size: 26px;
+    margin-bottom: var(--space-3);
+  }
+
+  @media (max-width: 860px) {
+    .row {
+      grid-template-columns: 1fr;
+      row-gap: var(--space-3);
+    }
+
+    .grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+
+    .valuable {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+  }
+
+  @media (max-width: 560px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

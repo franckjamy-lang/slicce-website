@@ -1,0 +1,186 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const items = [
+  {
+    title: 'Common API Framework',
+    description:
+      'The cornerstone of 5G network openness extended by Slicce to leverage the 3gpp common API framework for 3G and 4G networks and extended northbound APIs.',
+    href: '/products/capif-core-function',
+    icon: '/images/products/icon-capif.webp',
+  },
+  {
+    title: 'API Exposure Functions',
+    description:
+      'Publish REST APIs via CAPIF for common 3G / 4G / 5G telecom interfaces and provides developers an easy access these interfaces.',
+    href: '/products/api-exposure-functions',
+    icon: '/images/products/icon-aef.webp',
+  },
+  {
+    title: 'Application Functions',
+    description:
+      'Communication engine instances that implement some specific service logic by consuming APIs published by AEFs through CAPIF-CF.',
+    href: '/products/application-functions',
+    icon: '/images/products/icon-af.webp',
+  },
+  {
+    title: 'Interworking Functions',
+    description:
+      'Converts of one telecom interface to another. Commonly referred to as Gateways, these are zero-code telecom protocol convertors.',
+    href: '/products/interworking-functions',
+    icon: '/images/products/icon-iwf.webp',
+  },
+  {
+    title: 'Load Balancers',
+    description:
+      "Telecom protocol's aware load balancers which are typically used to properly distribute the telecom control plane within a workload.",
+    href: '/products/load-balancers',
+    icon: '/images/products/icon-lb.webp',
+  },
+];
+
+const [capif, ...rest] = items;
+---
+
+<BaseLayout title="Products" description="Self-contained Lightweight Cloud Communication Engines. One solution for all networks.">
+  <section class="section hero">
+    <div class="container">
+      <h1>Self-contained Lightweight<br />Cloud Communication Engines</h1>
+    </div>
+  </section>
+
+  <section class="section section--gray">
+    <div class="container">
+      <h2 class="diagram-title">One solution for all networks</h2>
+      <div class="diagram">
+        <img
+          src="/images/diagrams/products-architecture.png"
+          alt="Architecture diagram: Public Cloud APIs connect to Application Functions (Unified value added services), which connect through the 3GPP Common API Framework and Common Data Store to API Exposure Functions and Interworking Functions, which connect to telecom protocol aware Load Balancers in front of the 3G, 4G and 5G Core Networks."
+          width="1156"
+          height="842"
+          loading="lazy"
+        />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="entry entry--featured">
+        <div class="entry__icon">
+          <img src={capif.icon} alt="" width="100" height="100" loading="lazy" />
+        </div>
+        <div class="entry__text">
+          <h2>{capif.title}</h2>
+          <p>{capif.description}</p>
+          <a href={capif.href} class="read-more">Read more...</a>
+        </div>
+      </div>
+
+      <div class="grid">
+        {
+          rest.map((item) => (
+            <div class="entry">
+              <div class="entry__icon">
+                <img src={item.icon} alt="" width="100" height="100" loading="lazy" />
+              </div>
+              <div class="entry__text">
+                <h2>{item.title}</h2>
+                <p>{item.description}</p>
+                <a href={item.href} class="read-more">
+                  Read more...
+                </a>
+              </div>
+            </div>
+          ))
+        }
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hero {
+    padding-top: var(--space-16);
+    padding-bottom: var(--space-16);
+    background: var(--color-black-soft);
+    color: var(--text-inverse);
+    text-align: center;
+  }
+
+  .hero h1 {
+    color: var(--text-inverse);
+  }
+
+  .section {
+    padding-block: var(--space-12);
+  }
+
+  .section--gray {
+    background: var(--color-section-gray);
+  }
+
+  .diagram-title {
+    text-align: center;
+    margin-bottom: var(--space-10);
+  }
+
+  .diagram {
+    display: flex;
+    justify-content: center;
+  }
+
+  .diagram img {
+    max-width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+  }
+
+  .entry {
+    display: flex;
+    gap: var(--space-6);
+    align-items: flex-start;
+  }
+
+  .entry--featured {
+    max-width: 900px;
+    margin: 0 auto var(--space-16);
+  }
+
+  .entry__icon {
+    flex-shrink: 0;
+  }
+
+  .entry__text h2 {
+    font-size: 22px;
+    margin-bottom: var(--space-2);
+  }
+
+  .entry__text p {
+    color: var(--text-muted);
+    margin-bottom: var(--space-3);
+  }
+
+  .read-more {
+    color: var(--color-ink);
+    font-weight: 700;
+    text-decoration: underline;
+  }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: var(--space-12);
+    row-gap: var(--space-10);
+  }
+
+  @media (max-width: 760px) {
+    .grid {
+      grid-template-columns: 1fr;
+    }
+
+    .entry {
+      flex-direction: column;
+    }
+  }
+</style>
