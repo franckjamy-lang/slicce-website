@@ -60,19 +60,19 @@ function bold(text: string) {
 
 <BaseLayout title={title} description={heroDescription}>
   <section class="section product-hero">
-    <div class="container product-hero__inner">
+    <div class="product-hero__inner">
       <div class="product-hero__text" data-reveal="left">
         <h1>{title}</h1>
         <p>{heroDescription}</p>
       </div>
+      {
+        heroIcon && (
+          <div class="product-hero__icon" data-reveal="right">
+            <img src={heroIcon} alt="" width="560" height="448" loading="lazy" />
+          </div>
+        )
+      }
     </div>
-    {
-      heroIcon && (
-        <div class="product-hero__icon" data-reveal="right">
-          <img src={heroIcon} alt="" width="560" height="448" loading="lazy" />
-        </div>
-      )
-    }
   </section>
 
   {
@@ -217,20 +217,41 @@ function bold(text: string) {
 </BaseLayout>
 
 <style>
+  /* Hauteur fixe (comme sur le site original, ~360px sur toutes les pages
+     sans distinction) : le texte est centré verticalement dedans plutôt
+     que de dicter la hauteur du bandeau via son propre padding. */
   .product-hero {
     position: relative;
     background: var(--color-black-soft);
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 360px;
+    /* Annule le padding-block hérité de .section : la hauteur/le
+       centrage sont désormais gérés ici et par .product-hero__inner. */
+    padding-block: 0;
   }
 
+  /* Texte + pod dans la même rangée flex (au lieu d'un pod positionné en
+     absolu, ancré au bord de la fenêtre indépendamment du texte) : les
+     deux se partagent l'espace sans jamais se chevaucher, quelle que
+     soit la largeur de fenêtre. */
   .product-hero__inner {
     position: relative;
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-8);
+    width: 100%;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
   }
 
   .product-hero__text {
-    max-width: 800px;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 1100px;
   }
 
   .product-hero h1 {
@@ -238,7 +259,7 @@ function bold(text: string) {
     font-weight: 800;
     font-size: 56px;
     color: var(--color-green);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
   }
 
 /*
@@ -269,21 +290,16 @@ function bold(text: string) {
 /*
   Alignement droite pod bloc noir (header)
 */
-  /* Le pod occupe toute la hauteur du bandeau noir (moins une petite marge
-     haut/bas fixe), plutôt qu'une taille fixe en pixels : la hauteur du
-     bandeau varie selon la longueur du titre/texte de chaque produit
-     (1 ou 2 lignes de titre, 2 à 6 lignes de texte), et une taille fixe
-     laissait soit un vide au-dessus du pod (bandeau haut), soit un pod trop
-     petit et perdu dans le bandeau (bandeau bas) selon la page. */
+  /* Le pod colle au haut et au bas du bandeau (comme sur le site
+     original) : sa taille grossit/rétrécit avec la hauteur du bandeau,
+     qui varie selon la longueur du titre/texte de chaque produit. */
   .product-hero__icon {
-    position: absolute;
-    right: 20px;
-    top: var(--space-6);
-    bottom: var(--space-6);
-    max-width: 400px;
+    flex: 0 0 auto;
+    align-self: stretch;
+    max-width: 450px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .product-hero__icon img {

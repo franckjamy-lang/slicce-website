@@ -66,7 +66,10 @@ import Icon from '../Icon.astro';
 <style>
   .hero {
     position: relative;
-    background: var(--color-black-soft);
+    /* Noir pur (pas --color-black-soft) : doit matcher exactement le fond
+       de skyline.jpg pour que l'espace ajouté au-dessus du visuel (sur
+       les fenêtres hautes) soit invisible, sans jointure. */
+    background: #000;
     color: var(--text-inverse);
     overflow: hidden;
   }
@@ -118,6 +121,34 @@ import Icon from '../Icon.astro';
     transform: translateX(-50%);
     color: var(--text-inverse);
     z-index: 3;
+  }
+
+  /* Le hero occupe au moins toute la hauteur de la fenêtre (comme sur le
+     site original) : la section blanche qui suit ne devient visible
+     qu'au scroll. Le visuel garde sa taille naturelle (dimensionnée en
+     vw, comme avant) et reste calé en bas grâce au flex : une fenêtre
+     plus haute ajoute simplement du noir au-dessus du visuel au lieu de
+     l'agrandir/le rogner, ce qui garde des proportions identiques et le
+     skyline toujours entièrement visible, quelle que soit la hauteur. */
+  @media (min-width: 781px) {
+    .hero {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      /* Le header est sticky mais reste dans le flux (occupe ~72px) :
+         sans cette soustraction, header + hero (100vh) dépasserait la
+         fenêtre et la flèche de scroll serait cachée sous le pli. */
+      min-height: calc(100vh - 72px);
+      /* Bande noire réservée sous le skyline pour la flèche de scroll,
+         comme sur le site original (le visuel ne colle pas au bord). */
+      padding-bottom: 8vw;
+    }
+
+    /* Texte un peu plus bas que le visuel remonté ci-dessus, pour rester
+       au niveau des carrés hauts (site original). */
+    .hero__content {
+      bottom: 34vw;
+    }
   }
 
   @media (max-width: 780px) {

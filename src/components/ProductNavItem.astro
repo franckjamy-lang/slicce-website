@@ -10,23 +10,16 @@ import Icon from './Icon.astro';
 
 interface Props {
   item: NavGroup;
+  currentPath: string;
 }
 
-const { item } = Astro.props;
+const { item, currentPath } = Astro.props;
 const hasChildren = !!item.children?.length;
+const isActive = !!item.href && (currentPath === item.href || currentPath.startsWith(item.href + '/'));
 ---
 
 <li class="site-nav__node">
   <div class="site-nav__row">
-    {
-      item.href ? (
-        <a href={item.href} class="site-nav__label">
-          {item.label}
-        </a>
-      ) : (
-        <span class="site-nav__label site-nav__label--group">{item.label}</span>
-      )
-    }
     {
       hasChildren && (
         <button type="button" class="site-nav__toggle" aria-expanded="false" aria-label={`Afficher ${item.label}`}>
@@ -36,12 +29,21 @@ const hasChildren = !!item.children?.length;
         </button>
       )
     }
+    {
+      item.href ? (
+        <a href={item.href} class:list={['site-nav__label', { 'is-active': isActive }]}>
+          {item.label}
+        </a>
+      ) : (
+        <span class="site-nav__label site-nav__label--group">{item.label}</span>
+      )
+    }
   </div>
   {
     hasChildren && (
       <ul class="site-nav__children">
         {item.children!.map((child) => (
-          <Astro.self item={child} />
+          <Astro.self item={child} currentPath={currentPath} />
         ))}
       </ul>
     )
@@ -56,7 +58,6 @@ const hasChildren = !!item.children?.length;
   .site-nav__row {
     display: flex;
     align-items: center;
-    justify-content: space-between;
     gap: var(--space-2);
   }
 
@@ -75,6 +76,11 @@ const hasChildren = !!item.children?.length;
     text-decoration: none;
   }
 
+  a.site-nav__label.is-active {
+    font-weight: 700;
+    color: var(--color-ink);
+  }
+
   .site-nav__label--group {
     color: var(--text-muted);
     font-weight: 600;
@@ -90,10 +96,10 @@ const hasChildren = !!item.children?.length;
     width: 28px;
     height: 28px;
     flex-shrink: 0;
-    background: transparent;
-    border: 1px solid var(--border-subtle);
+    background: var(--color-off-white);
+    border: 1px solid var(--color-gray-300);
     border-radius: var(--radius-sm);
-    color: var(--text-muted);
+    color: var(--color-ink);
     cursor: pointer;
   }
 

@@ -73,10 +73,10 @@ const components = [
       </p>
     </div>
 
-    <SectionDots count={3} active={1} />
+    <SectionDots count={4} active={1} />
   </section>
 
-  <section class="section section--gray">
+  <section class="section">
     <div class="container">
       <h2 class="section-title">The slicce cloud communication engine foundation</h2>
       <p class="section-intro">
@@ -98,7 +98,17 @@ const components = [
         }
       </div>
 
-      <div class="diagram-placeholder">Cloud communication engine foundation architecture — diagram to be provided</div>
+    </div>
+    <div class="diagram-band">
+      <div class="container">
+        <img
+          src="/images/products/slicce-engine.drawio.svg"
+          alt="Cloud communication engine foundation architecture diagram"
+          width="822"
+          height="351"
+          loading="lazy"
+        />
+      </div>
     </div>
   </section>
 
@@ -127,16 +137,24 @@ const components = [
   <section class="section section--gray">
     <div class="container">
       <p class="quote">
-        In the heart of the foundation the 3GPP Common API framework facilitates communication exchanges using APIs
-        across the workload's microservices.
+        In the heart of the foundation the 3GPP Common API framework facilitates<br />
+        communication exchanges using APIs across the workload's microservices.
       </p>
-      <div class="diagram-placeholder">3GPP Common API Framework at the heart of the foundation — diagram to be provided</div>
+      <div class="diagram">
+        <img
+          src="/images/products/slicce-capif.drawio.svg"
+          alt="3GPP Common API Framework at the heart of the foundation diagram"
+          width="882"
+          height="462"
+          loading="lazy"
+        />
+      </div>
     </div>
   </section>
 
   <section class="section">
     <div class="container valuable">
-      <img src="/images/icons/question-heptagon-outline.png" alt="" width="140" height="112" loading="lazy" />
+      <img src="/images/icons/question-heptagon-outline.png" alt="" width="190" height="152" loading="lazy" />
       <div>
         <h2>What makes the cloud communication engine foundation valuable?</h2>
         <p>
@@ -159,27 +177,29 @@ const components = [
   }
 
   .tech-intro p {
-    max-width: 900px;
-    margin-inline: auto;
+    text-align: justify;
   }
 
   .section-title {
     text-align: center;
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-8);
   }
 
   .section-intro {
-    max-width: 900px;
-    margin: 0 auto var(--space-10);
+    margin: 0 auto var(--space-12);
     text-align: center;
-    color: var(--text-muted);
+    color: var(--color-ink);
+    font-family: var(--font-heading);
+    font-weight: 500;
+    font-size: 18.667px;
   }
 
   .rows {
     display: flex;
     flex-direction: column;
-    gap: var(--space-8);
-    margin-bottom: var(--space-10);
+    gap: var(--space-12);
+    max-width: 1000px;
+    margin: 0 auto var(--space-12);
   }
 
   .row {
@@ -189,21 +209,22 @@ const components = [
   }
 
   .row__label h3 {
-    font-size: 16px;
+    font-size: 18px;
   }
 
   .row p {
+    max-width: 700px;
     font-size: 14.667px;
-    color: var(--text-muted);
+    color: var(--color-ink);
     margin: 0;
   }
 
   .divider {
     display: block;
-    width: 40px;
-    height: 3px;
+    width: 56px;
+    height: 4px;
     background: var(--color-green);
-    margin-top: var(--space-2);
+    margin-top: var(--space-3);
   }
 
   .grid {
@@ -219,36 +240,43 @@ const components = [
 
   .entry p {
     font-size: 14.667px;
-    color: var(--text-muted);
+    color: var(--color-ink);
     margin-top: var(--space-2);
   }
 
   .quote {
-    max-width: 900px;
     margin: 0 auto var(--space-8);
     text-align: center;
     font-family: var(--font-heading);
     font-size: 18.667px;
   }
 
-  .diagram-placeholder {
-    background: var(--color-white);
-    border: 1px dashed var(--border-subtle);
-    border-radius: var(--radius-md);
-    padding: var(--space-16);
-    text-align: center;
-    color: var(--text-muted);
+  .diagram-band {
+    background: var(--color-section-gray);
+    padding-block: var(--space-12);
   }
 
-  .section--gray .diagram-placeholder {
-    background: var(--color-white);
+  .diagram-band .container {
+    display: flex;
+    justify-content: center;
+  }
+
+  .diagram {
+    display: flex;
+    justify-content: center;
+  }
+
+  .diagram img,
+  .diagram-band img {
+    width: 100%;
+    max-width: 800px;
+    height: auto;
   }
 
   .valuable {
     display: flex;
     align-items: center;
     gap: var(--space-8);
-    max-width: 900px;
   }
 
   .valuable img {

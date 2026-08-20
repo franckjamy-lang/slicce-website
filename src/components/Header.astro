@@ -30,7 +30,7 @@ function isActive(href: string) {
                     <Icon name="chevron-down" size={14} class="site-nav__chevron" />
                   </a>
                   <ul class="site-nav__dropdown">
-                    {productsMenu.map((group) => <ProductNavItem item={group} />)}
+                    {productsMenu.map((group) => <ProductNavItem item={group} currentPath={currentPath} />)}
                   </ul>
                 </li>
               );
@@ -45,7 +45,9 @@ function isActive(href: string) {
                   </a>
                   <ul class="site-nav__dropdown">
                     {useCasesMenu.map((useCase) => (
-                      <li class="site-nav__dropdown-item"><a href={useCase.href}>{useCase.label}</a></li>
+                      <li class="site-nav__dropdown-item">
+                        <a href={useCase.href} class:list={{ 'is-active': isActive(useCase.href) }}>{useCase.label}</a>
+                      </li>
                     ))}
                   </ul>
                 </li>
@@ -250,6 +252,11 @@ function isActive(href: string) {
   .site-nav__dropdown-item > a:hover {
     background: var(--color-off-white);
     text-decoration: none;
+  }
+
+  .site-nav__dropdown-item > a.is-active {
+    font-weight: 700;
+    color: var(--color-ink);
   }
 
   @media (max-width: 960px) {

@@ -14,36 +14,54 @@ const { title, description, icon } = Astro.props;
 ---
 
 <section class="category-hero">
-  <div class="container category-hero__inner">
+  <div class="category-hero__inner">
     <div class="category-hero__text" data-reveal="left">
       <h1>{title}</h1>
       <p>{description}</p>
     </div>
+    {
+      icon && (
+        <div class="category-hero__icon" data-reveal="right">
+          <img src={icon} alt="" width="560" height="448" loading="lazy" />
+        </div>
+      )
+    }
   </div>
-  {
-    icon && (
-      <div class="category-hero__icon" data-reveal="right">
-        <img src={icon} alt="" width="560" height="448" loading="lazy" />
-      </div>
-    )
-  }
 </section>
 
 <style>
+  /* Hauteur fixe (comme sur le site original, ~360px sur toutes les pages
+     sans distinction) : le texte est centré verticalement dedans plutôt
+     que de dicter la hauteur du bandeau via son propre padding. */
   .category-hero {
     position: relative;
     background: var(--color-black-soft);
     overflow: hidden;
+    display: flex;
+    align-items: center;
+    min-height: 360px;
   }
 
+  /* Texte + pod dans la même rangée flex (au lieu d'un pod positionné en
+     absolu, ancré au bord de la fenêtre indépendamment du texte) : les
+     deux se partagent l'espace sans jamais se chevaucher, quelle que
+     soit la largeur de fenêtre. */
   .category-hero__inner {
     position: relative;
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-16);
+    width: 100%;
+    max-width: 1600px;
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-8);
   }
 
   .category-hero__text {
-    max-width: 800px;
+    flex: 1 1 0;
+    min-width: 0;
+    max-width: 1100px;
   }
 
   .category-hero h1 {
@@ -51,7 +69,7 @@ const { title, description, icon } = Astro.props;
     font-weight: 800;
     font-size: 56px;
     color: var(--color-green);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
   }
 
   .category-hero__text p {
@@ -62,15 +80,16 @@ const { title, description, icon } = Astro.props;
     line-height: 1.5;
   }
 
+  /* Le pod colle au haut et au bas du bandeau (comme sur le site
+     original) : sa taille grossit/rétrécit avec la hauteur du bandeau,
+     qui varie selon la longueur du titre/texte de chaque page. */
   .category-hero__icon {
-    position: absolute;
-    right: 20px;
-    top: var(--space-6);
-    bottom: var(--space-6);
-    max-width: 400px;
+    flex: 0 0 auto;
+    align-self: stretch;
+    max-width: 450px;
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: center;
   }
 
   .category-hero__icon img {
