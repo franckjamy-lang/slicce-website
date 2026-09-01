@@ -94,7 +94,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .wysiwyg-toolbar{display:flex;gap:.3rem;flex-wrap:wrap;padding:.6rem;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm) var(--r-sm) 0 0;border-bottom:none}
 .tb-btn{background:none;border:none;color:var(--muted);padding:.4rem .55rem;border-radius:4px;cursor:pointer;font-size:.78rem;font-weight:600;transition:all .15s}
 .tb-btn:hover{background:var(--surface);color:var(--text)}
-.tb-btn.active{background:rgba(0,184,85,.14);color:var(--green-text)}
 .tb-sep{width:1px;background:var(--border2);margin:.2rem .3rem}
 .wysiwyg-body,#post-body{background:var(--surface2);border:1px solid var(--border2);border-radius:0 0 var(--r-sm) var(--r-sm);padding:1rem 1.1rem;min-height:280px;font-size:.9rem;line-height:1.7;color:var(--text)}
 .wysiwyg-body:focus,#post-body:focus{outline:none;border-color:var(--green)}
@@ -150,7 +149,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <button class="nav-btn" data-panel="catalog" onclick="showPanel('catalog',this)"><span class="nav-icon">▦</span> Catalog <span class="nav-dot" id="dot-catalog"></span></button>
 
     <div class="nav-group-label">System</div>
-    <button class="nav-btn" data-panel="team" onclick="showPanel('team',this)"><span class="nav-icon">👤</span> Team</button>
     <button class="nav-btn" data-panel="settings" onclick="showPanel('settings',this)"><span class="nav-icon">⚙</span> Settings</button>
 
     <div class="sidebar-foot">
@@ -217,9 +215,9 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
             <hr class="div">
             <div class="section-label">Content</div>
             <div class="wysiwyg-toolbar">
-              <button class="tb-btn" data-cmd="bold" onclick="wfmt('af-body','bold')" title="Bold"><b>B</b></button>
-              <button class="tb-btn" data-cmd="italic" onclick="wfmt('af-body','italic')" title="Italic"><i>I</i></button>
-              <button class="tb-btn" data-cmd="underline" onclick="wfmt('af-body','underline')" title="Underline"><u>U</u></button>
+              <button class="tb-btn" onclick="wfmt('af-body','bold')" title="Bold"><b>B</b></button>
+              <button class="tb-btn" onclick="wfmt('af-body','italic')" title="Italic"><i>I</i></button>
+              <button class="tb-btn" onclick="wfmt('af-body','underline')" title="Underline"><u>U</u></button>
               <div class="tb-sep"></div>
               <button class="tb-btn" onclick="wblock('af-body','h2')">H2</button>
               <button class="tb-btn" onclick="wblock('af-body','h3')">H3</button>
@@ -292,9 +290,9 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
             <hr class="div">
             <div class="section-label">Body</div>
             <div class="wysiwyg-toolbar">
-              <button class="tb-btn" data-cmd="bold" onclick="bfmt('bold')" title="Bold"><b>B</b></button>
-              <button class="tb-btn" data-cmd="italic" onclick="bfmt('italic')" title="Italic"><i>I</i></button>
-              <button class="tb-btn" data-cmd="underline" onclick="bfmt('underline')" title="Underline"><u>U</u></button>
+              <button class="tb-btn" onclick="bfmt('bold')" title="Bold"><b>B</b></button>
+              <button class="tb-btn" onclick="bfmt('italic')" title="Italic"><i>I</i></button>
+              <button class="tb-btn" onclick="bfmt('underline')" title="Underline"><u>U</u></button>
               <div class="tb-sep"></div>
               <button class="tb-btn" onclick="bblock('h2')">H2</button>
               <button class="tb-btn" onclick="bblock('h3')">H3</button>
@@ -308,7 +306,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
               <div class="tb-sep"></div>
               <button class="tb-btn" onclick="bfmt('removeFormat')">Clear</button>
             </div>
-            <div id="post-body" class="wysiwyg-body" contenteditable="true" data-placeholder="Write your post…"></div>
+            <div id="post-body" contenteditable="true" data-placeholder="Write your post…"></div>
           </div>
         </div>
       </div>
@@ -343,29 +341,6 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
           </div>
           <div class="card-body">
             <div class="form-grid" id="cat-form-fields"><!-- dynamically generated from sheet headers --></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ══════════════════ TEAM ══════════════════ -->
-      <div class="panel" id="panel-team">
-        <div class="connect-banner" id="team-not-admin-banner" style="display:none">
-          <div class="connect-text">You're signed in as <strong id="team-current-email" style="color:var(--text)"></strong> (Contributor). Only admins can manage the team.</div>
-        </div>
-        <div class="card">
-          <div class="card-head">
-            <span class="card-head-title">Team &amp; permissions</span>
-            <button class="btn btn-primary btn-sm" id="team-add-btn" onclick="addTeamRow()">+ Add person</button>
-          </div>
-          <div class="card-body">
-            <p style="font-size:.82rem;color:var(--muted);margin-bottom:1rem;line-height:1.6">
-              <strong style="color:var(--text)">Admins</strong> can do everything everywhere. <strong style="color:var(--text)">Contributors</strong> only get the actions checked below, per module.
-              Rights are enforced on the server — this isn't just a visual toggle.
-            </p>
-            <div id="team-list" style="display:flex;flex-direction:column;gap:.85rem"></div>
-            <div style="margin-top:1.25rem;display:flex;justify-content:flex-end">
-              <button class="btn btn-primary" id="team-save-btn" onclick="saveTeam()">Save team</button>
-            </div>
           </div>
         </div>
       </div>
@@ -445,7 +420,6 @@ let imgTargetIsWysiwyg = false;
 window.onload = () => {
   refreshConnectionStates();
   loadArticles(); loadBlog(); loadCatalog();
-  loadCurrentIdentity();
 };
 
 function refreshConnectionStates() {
@@ -465,7 +439,7 @@ function showPanel(id, navBtn) {
   document.querySelectorAll('.nav-btn[data-panel]').forEach(b => b.classList.remove('active'));
   document.getElementById('panel-' + id).classList.add('active');
   if (navBtn) navBtn.classList.add('active');
-  const titles = { articles:'Articles', 'articles-editor':'Article editor', blog:'Blog', 'blog-editor':'Post editor', catalog:'Catalog', 'catalog-editor':'Product editor', team:'Team', settings:'Settings' };
+  const titles = { articles:'Articles', 'articles-editor':'Article editor', blog:'Blog', 'blog-editor':'Post editor', catalog:'Catalog', 'catalog-editor':'Product editor', settings:'Settings' };
   document.getElementById('topbar-title').textContent = titles[id] || id;
 
   const actions = document.getElementById('topbar-actions');
@@ -650,118 +624,6 @@ async function ghPutFile(moduleName, jsonObj, sha, message) {
   return { content: { sha: result.sha } }; // keep same shape callers expect
 }
 
-// ══════════════════════════════════════════════════════════════════════════
-// TEAM & PERMISSIONS
-// ══════════════════════════════════════════════════════════════════════════
-const TEAM_MODULES = ['articles', 'blog', 'catalog'];
-let teamDB = { users: [] };
-let teamSha = null;
-let currentIdentity = null; // { email, role, ... } — filled from Cloudflare Access + permissions.json
-
-async function loadCurrentIdentity() {
-  try {
-    const r = await fetch('/cdn-cgi/access/get-identity');
-    if (r.ok) {
-      const data = await r.json();
-      currentIdentity = { email: data.email || null };
-    }
-  } catch(e) { /* not behind Access yet, or local dev — ignore */ }
-  loadTeam();
-}
-
-async function loadTeam() {
-  const list = document.getElementById('team-list');
-  list.innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
-  try {
-    const result = await ghGetFile('permissions');
-    if (result === null) {
-      teamDB = { users: currentIdentity?.email ? [{ email: currentIdentity.email, role: 'admin' }] : [] };
-      teamSha = null;
-    } else {
-      teamDB = result.json;
-      teamSha = result.sha;
-    }
-    const me = (teamDB.users||[]).find(u => currentIdentity?.email && u.email.toLowerCase() === currentIdentity.email.toLowerCase());
-    const isAdmin = !currentIdentity?.email || (me ? me.role === 'admin' : true); // unknown identity (no Access yet) = treat as admin locally
-    document.getElementById('team-not-admin-banner').style.display = isAdmin ? 'none' : 'flex';
-    document.getElementById('team-current-email').textContent = currentIdentity?.email || '';
-    document.getElementById('team-add-btn').style.display = isAdmin ? 'inline-flex' : 'none';
-    document.getElementById('team-save-btn').style.display = isAdmin ? 'inline-flex' : 'none';
-    syncTeamUsersRef();
-    renderTeam(isAdmin);
-  } catch(e) {
-    list.innerHTML = '<div style="color:var(--danger);font-size:.875rem;padding:1rem">' + esc(e.message) + '</div>';
-  }
-}
-
-function renderTeam(isAdmin) {
-  const list = document.getElementById('team-list');
-  const users = teamDB.users || [];
-  if (!users.length) { list.innerHTML = '<div class="empty-state">No one added yet.</div>'; return; }
-
-  list.innerHTML = users.map((u, i) => {
-    const disabled = isAdmin ? '' : 'disabled';
-    const permsGrid = TEAM_MODULES.map(mod => {
-      const p = u[mod] || {};
-      return '<div style="display:flex;flex-direction:column;gap:.3rem">' +
-        '<span class="field-hint" style="text-transform:capitalize;font-weight:600;color:var(--text)">'+mod+'</span>' +
-        ['create','edit','delete'].map(action =>
-          '<label style="display:flex;align-items:center;gap:.4rem;font-size:.78rem;color:var(--muted)">' +
-          '<input type="checkbox" style="width:auto" '+(p[action]?'checked':'')+' '+disabled+
-          ' onchange="teamUsers['+i+']['+"'"+mod+"'"+']=teamUsers['+i+']['+"'"+mod+"'"+']||{};teamUsers['+i+']['+"'"+mod+"'"+']['+"'"+action+"'"+']=this.checked">' +
-          action.charAt(0).toUpperCase()+action.slice(1) + '</label>'
-        ).join('') +
-      '</div>';
-    }).join('');
-
-    return '<div class="card" style="padding:1rem">' +
-      '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:'+(u.role==='admin'?'0':'.85rem')+'">' +
-        '<input type="email" value="'+esc(u.email||'')+'" placeholder="email@example.com" '+disabled+
-        ' style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)"' +
-        ' onchange="teamUsers['+i+'].email=this.value">' +
-        '<select '+disabled+' style="background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .6rem;font-size:.85rem;color:var(--text)" onchange="teamUsers['+i+'].role=this.value; renderTeam(true)">' +
-          '<option value="admin"'+(u.role==='admin'?' selected':'')+'>Admin</option>' +
-          '<option value="contributor"'+(u.role!=='admin'?' selected':'')+'>Contributor</option>' +
-        '</select>' +
-        (isAdmin ? '<button class="btn btn-danger btn-sm btn-icon" onclick="removeTeamRow('+i+')">🗑</button>' : '') +
-      '</div>' +
-      (u.role === 'admin' ? '' : '<div style="display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;padding-top:.85rem;border-top:1px solid var(--border)">'+permsGrid+'</div>') +
-    '</div>';
-  }).join('');
-}
-
-// Exposed as a plain array reference so inline onchange handlers can mutate it directly
-let teamUsers = [];
-function syncTeamUsersRef() { teamUsers = teamDB.users; }
-
-function addTeamRow() {
-  syncTeamUsersRef();
-  teamUsers.push({ email: '', role: 'contributor', articles:{}, blog:{}, catalog:{} });
-  teamDB.users = teamUsers;
-  renderTeam(true);
-}
-function removeTeamRow(i) {
-  syncTeamUsersRef();
-  teamUsers.splice(i, 1);
-  teamDB.users = teamUsers;
-  renderTeam(true);
-}
-
-async function saveTeam() {
-  syncTeamUsersRef();
-  teamDB.users = teamUsers;
-  const invalid = teamDB.users.some(u => !u.email || !u.email.includes('@'));
-  if (invalid) { toast('Every row needs a valid email', true); return; }
-  const btn = document.getElementById('team-save-btn');
-  btn.innerHTML = '<span class="spinner"></span>'; btn.disabled = true;
-  try {
-    const result = await ghPutFile('permissions', teamDB, teamSha, 'Update team permissions');
-    teamSha = result.content.sha;
-    toast('✓ Team saved');
-  } catch(e) { toast(e.message, true); }
-  btn.disabled = false; btn.textContent = 'Save team';
-}
-
 async function loadBlog() {
   document.getElementById('blog-list').innerHTML = '<div class="empty-state"><span class="spinner"></span></div>';
   try {
@@ -902,24 +764,6 @@ async function deletePost() {
   } catch(e) { toast(e.message, true); }
 }
 
-// Toolbar active-state sync — highlights B/I/U when the cursor is inside formatted text
-function syncToolbarState() {
-  const sel = window.getSelection();
-  if (!sel || !sel.anchorNode) return;
-  let node = sel.anchorNode;
-  if (node.nodeType === 3) node = node.parentElement; // text node -> element
-  const field = node && node.closest ? node.closest('.wysiwyg-body') : null;
-  if (!field) return;
-  const toolbar = field.previousElementSibling;
-  if (!toolbar || !toolbar.classList.contains('wysiwyg-toolbar')) return;
-  toolbar.querySelectorAll('[data-cmd]').forEach(btn => {
-    let active = false;
-    try { active = document.queryCommandState(btn.dataset.cmd); } catch(e) {}
-    btn.classList.toggle('active', active);
-  });
-}
-document.addEventListener('selectionchange', syncToolbarState);
-
 // WYSIWYG commands (generic — works for any contenteditable target)
 function wfmt(targetId, cmd, val) { document.getElementById(targetId).focus(); document.execCommand(cmd, false, val||null); }
 function wblock(targetId, tag) { document.getElementById(targetId).focus(); document.execCommand('formatBlock', false, tag); }
@@ -1001,8 +845,8 @@ function buildCatalogForm(data) {
     let field;
     if (f.type === 'wysiwyg') {
       field = '<div class="wysiwyg-toolbar wysiwyg-toolbar-sm">' +
-        '<button type="button" class="tb-btn" data-cmd="bold" onclick="wfmt(\''+id+'\',\'bold\')"><b>B</b></button>' +
-        '<button type="button" class="tb-btn" data-cmd="italic" onclick="wfmt(\''+id+'\',\'italic\')"><i>I</i></button>' +
+        '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'bold\')"><b>B</b></button>' +
+        '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'italic\')"><i>I</i></button>' +
         '<div class="tb-sep"></div>' +
         '<button type="button" class="tb-btn" onclick="wfmt(\''+id+'\',\'insertUnorderedList\')">• List</button>' +
         '<button type="button" class="tb-btn" onclick="winsertLink(\''+id+'\')">🔗</button>' +

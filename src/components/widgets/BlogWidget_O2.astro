@@ -67,7 +67,7 @@
 
   function mediaTag(url: string, cls: string, alt: string) {
     return isVideo(url)
-      ? `<video class="${cls}" src="${esc(url)}" muted autoplay loop playsinline preload="auto"></video>`
+      ? `<video class="${cls}" src="${esc(url)}" muted playsinline preload="metadata"></video>`
       : `<img class="${cls}" src="${esc(url)}" alt="${esc(alt)}" loading="lazy">`;
   }
 
@@ -137,7 +137,7 @@
     const mediaEl = document.getElementById('modal-media')!;
     if (p.image) {
       mediaEl.innerHTML = isVideo(p.image)
-        ? `<video class="modal-img" src="${esc(p.image)}" controls autoplay muted playsinline></video>`
+        ? `<video class="modal-img" src="${esc(p.image)}" controls playsinline></video>`
         : `<img class="modal-img" src="${esc(p.image)}" alt="${esc(p.title || '')}">`;
       mediaEl.style.display = 'flex';
     } else {
