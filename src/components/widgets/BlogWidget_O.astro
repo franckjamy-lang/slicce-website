@@ -19,7 +19,7 @@
   <div class="modal-overlay" id="modal-overlay">
     <div class="modal">
       <button class="modal-close" id="modal-close-btn">✕</button>
-      <div id="modal-media" class="modal-media"></div>
+      <img id="modal-img" class="modal-img" style="display:none" src="" alt="" />
       <div class="modal-inner">
         <h1 id="modal-title" class="modal-title"></h1>
         <div id="modal-date" class="modal-date"></div>
@@ -40,10 +40,9 @@
   const GH_BRANCH = 'main';
   const PAGE_SIZE = 6;
 
-  type Post = { title: string; intro?: string; image?: string; publishDate?: string; body?: string; featured?: boolean };
+  type Post = { title: string; intro?: string; image?: string; publishDate?: string; body?: string };
 
   let allPosts: Post[] = [];
-  let heroIndex = 0;
   let visible = PAGE_SIZE;
   (window as any)._posts = [];
 
@@ -58,17 +57,6 @@
     } catch (e) {
       return d;
     }
-  }
-
-  function isVideo(url?: string) {
-    if (!url) return false;
-    return /\.(mp4|webm|mov|m4v|ogg)(\?.*)?$/i.test(url);
-  }
-
-  function mediaTag(url: string, cls: string, alt: string) {
-    return isVideo(url)
-      ? `<video class="${cls}" src="${esc(url)}" muted playsinline preload="metadata"></video>`
-      : `<img class="${cls}" src="${esc(url)}" alt="${esc(alt)}" loading="lazy">`;
   }
 
   async function loadData(): Promise<{ posts: Post[] }> {
@@ -87,7 +75,7 @@
     (window as any)._posts[idx] = p;
     document.getElementById('hero-slot')!.innerHTML = `
       <article class="hero" data-open-post="${idx}">
-        ${p.image ? mediaTag(p.image, 'hero-img', p.title) : '<div class="hero-img"></div>'}
+        ${p.image ? `<img class="hero-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">` : '<div class="hero-img"></div>'}
         <div class="hero-text">
           <h1 class="hero-title">${esc(p.title)}</h1>
           ${p.intro ? `<p class="hero-excerpt">${esc(p.intro)}</p>` : ''}
@@ -104,7 +92,7 @@
         (window as any)._posts[idx] = p;
         return `
       <article class="card" data-open-post="${idx}">
-        ${p.image ? mediaTag(p.image, 'card-img', p.title) : '<div class="card-img"></div>'}
+        ${p.image ? `<img class="card-img" src="${esc(p.image)}" alt="${esc(p.title)}" loading="lazy">` : '<div class="card-img"></div>'}
         <h2 class="card-title">${esc(p.title)}</h2>
         ${p.intro ? `<p class="card-excerpt">${esc(p.intro)}</p>` : ''}
         ${p.publishDate ? `<div class="card-date">${fmtDate(p.publishDate)}</div>` : ''}
@@ -114,7 +102,7 @@
   }
 
   function renderPage() {
-    const rest = allPosts.filter((_, i) => i !== heroIndex); // exclut le vrai hero (featured), pas forcément l'index 0
+    const rest = allPosts.slice(1); // exclut le hero (premier article)
     const shown = rest.slice(0, visible);
     renderGrid(shown, 1);
     const wrap = document.getElementById('load-more-wrap')!;
@@ -134,15 +122,13 @@
   function openPost(idx: number) {
     const p = (window as any)._posts[idx];
     if (!p) return;
-    const mediaEl = document.getElementById('modal-media')!;
+    const img = document.getElementById('modal-img') as HTMLImageElement;
     if (p.image) {
-      mediaEl.innerHTML = isVideo(p.image)
-        ? `<video class="modal-img" src="${esc(p.image)}" controls playsinline></video>`
-        : `<img class="modal-img" src="${esc(p.image)}" alt="${esc(p.title || '')}">`;
-      mediaEl.style.display = 'flex';
+      img.src = p.image;
+      img.alt = p.title || '';
+      img.style.display = 'block';
     } else {
-      mediaEl.innerHTML = '';
-      mediaEl.style.display = 'none';
+      img.style.display = 'none';
     }
     document.getElementById('modal-title')!.textContent = p.title || '';
     document.getElementById('modal-date')!.textContent = fmtDate(p.publishDate);
@@ -188,10 +174,7 @@
         document.getElementById('empty')!.style.display = 'block';
         return;
       }
-      // Hero = the post explicitly marked featured; falls back to the most recent one if none is set
-      const featuredIdx = allPosts.findIndex((p) => p.featured);
-      heroIndex = featuredIdx >= 0 ? featuredIdx : 0;
-      renderHero(allPosts[heroIndex], heroIndex);
+      renderHero(allPosts[0], 0);
       renderPage();
     } catch (e: any) {
       document.getElementById('loading')!.textContent = 'Failed to load articles.';
@@ -252,8 +235,7 @@
   }
   #blog-widget-scope .modal-close { position: absolute; top: 16px; right: 16px; z-index: 5; width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 0, 0, 0.06); border: none; cursor: pointer; font-size: 18px; color: #333; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
   #blog-widget-scope .modal-close:hover { background: rgba(0, 0, 0, 0.12); }
-  #blog-widget-scope .modal-media { width: 100%; background: #f4f4f4; display: none; align-items: center; justify-content: center; max-height: 70vh; overflow: hidden; }
-  #blog-widget-scope .modal-img { width: 100%; height: auto; max-height: 70vh; object-fit: contain; display: block; }
+  #blog-widget-scope .modal-img { width: 100%; max-height: 320px; object-fit: cover; display: block; }
   #blog-widget-scope .modal-inner { padding: 2.5rem 2.75rem 3rem; }
   #blog-widget-scope .modal-title { font-family: var(--head); font-weight: 700; font-size: 1.85rem; line-height: 1.2; color: var(--text); margin-bottom: 0.6rem; }
   #blog-widget-scope .modal-date { font-size: 0.85rem; color: var(--muted2); font-weight: 500; padding-bottom: 1.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border); }
