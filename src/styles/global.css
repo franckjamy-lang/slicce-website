@@ -24,12 +24,21 @@ html {
 
 body {
   margin: 0;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   font-family: var(--font-sans);
   font-size: var(--text-base);
   line-height: 1.6;
   color: var(--text-body);
   background: var(--bg-page);
   overflow-x: clip;
+}
+
+/* Colle le footer en bas de la fenêtre même quand le contenu de la page
+   est plus court que la hauteur de l'écran (ex: pages articles, catalog). */
+#main-content {
+  flex: 1 0 auto;
 }
 
 img,
@@ -147,7 +156,7 @@ button {
   border: 2px solid var(--color-ink);
   border-radius: var(--radius-md);
   padding: 0.5rem 2.75rem;
-  font-size: 0.875rem;
+  font-size: 1.25rem;
   font-weight: 800;
 }
 

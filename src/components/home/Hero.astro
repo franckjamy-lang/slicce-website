@@ -151,6 +151,17 @@ import Icon from '../Icon.astro';
     }
   }
 
+  /* À partir de 961px, le header (voir Header.astro, ".site-header--hero")
+     devient transparent et superposé (position: fixed), il ne réserve donc
+     plus d'espace dans le flux : le hero occupe alors toute la fenêtre au
+     lieu de soustraire la hauteur du header, pour que le fond noir du
+     skyline remonte jusqu'en haut. */
+  @media (min-width: 961px) {
+    .hero {
+      min-height: 100vh;
+    }
+  }
+
   @media (max-width: 780px) {
     .hero__content {
       position: static;
