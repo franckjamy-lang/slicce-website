@@ -1218,15 +1218,43 @@ function openPoolManager(poolKey) {
   document.getElementById('pool-modal').classList.add('open');
 }
 function closePoolManager() { document.getElementById('pool-modal').classList.remove('open'); }
+let poolEditingIndex = -1;
 function renderPoolManagerItems() {
   const list = document.getElementById('pool-items');
   if (!poolManagerItems.length) { list.innerHTML = '<div class="pill-empty">Nothing yet.</div>'; return; }
-  list.innerHTML = poolManagerItems.map((v,i) =>
-    '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
-    '<span style="font-size:.85rem">'+esc(v)+'</span>' +
-    '<button class="btn btn-danger btn-sm btn-icon" onclick="poolRemoveItem('+i+')">✕</button></div>'
-  ).join('');
+  list.innerHTML = poolManagerItems.map((v,i) => {
+    if (i === poolEditingIndex) {
+      return '<div style="display:flex;align-items:center;gap:.4rem;background:var(--surface2);border:1px solid var(--green);border-radius:var(--r-sm);padding:.35rem .5rem">' +
+        '<input type="text" id="pool-edit-input" value="'+esc(v)+'" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:.3rem .5rem;font-size:.85rem;color:var(--text)" onkeydown="if(event.key===\'Enter\'){poolCommitEdit('+i+')}if(event.key===\'Escape\'){poolCancelEdit()}">' +
+        '<button class="btn btn-primary btn-sm" onclick="poolCommitEdit('+i+')">✓</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="poolCancelEdit()">✕</button></div>';
+    }
+    return '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
+      '<span style="font-size:.85rem">'+esc(v)+'</span>' +
+      '<span style="display:flex;gap:.3rem">' +
+      '<button class="btn btn-ghost btn-sm btn-icon" onclick="poolStartEdit('+i+')" title="Rename">✎</button>' +
+      '<button class="btn btn-danger btn-sm btn-icon" onclick="poolRemoveItem('+i+')" title="Delete">✕</button>' +
+      '</span></div>';
+  }).join('');
+  if (poolEditingIndex >= 0) {
+    const input = document.getElementById('pool-edit-input');
+    if (input) { input.focus(); input.select(); }
+  }
 }
+function poolStartEdit(i) { poolEditingIndex = i; renderPoolManagerItems(); }
+function poolCancelEdit() { poolEditingIndex = -1; renderPoolManagerItems(); }
+function poolCommitEdit(i) {
+  const input = document.getElementById('pool-edit-input');
+  const v = input ? input.value.trim() : '';
+  if (v) {
+    const dup = poolManagerItems.some((x,idx) => idx !== i && x.toLowerCase() === v.toLowerCase());
+    if (dup) { toast('That value already exists in the list', true); return; }
+    poolManagerItems[i] = v;
+  }
+  poolEditingIndex = -1;
+  renderPoolManagerItems();
+}
+function poolRemoveItem(i) { poolManagerItems.splice(i,1); renderPoolManagerItems(); }
 function poolAddItem() {
   const input = document.getElementById('pool-new-item');
   const v = input.value.trim();
@@ -1236,7 +1264,6 @@ function poolAddItem() {
   input.value = '';
   renderPoolManagerItems();
 }
-function poolRemoveItem(i) { poolManagerItems.splice(i,1); renderPoolManagerItems(); }
 
 async function savePoolManager() {
   const [moduleName, dbKey] = poolManagerTarget.split('-');
@@ -1290,15 +1317,43 @@ function openAuthorManager() {
   document.getElementById('author-modal').classList.add('open');
 }
 function closeAuthorManager() { document.getElementById('author-modal').classList.remove('open'); }
+let authorEditingIndex = -1;
 function renderAuthorManagerItems() {
   const list = document.getElementById('author-items');
   if (!authorManagerItems.length) { list.innerHTML = '<div class="pill-empty">Nothing yet.</div>'; return; }
-  list.innerHTML = authorManagerItems.map((a,i) =>
-    '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
-    '<span style="font-size:.85rem">'+esc(a.name)+(a.role?' <span style="color:var(--muted)">— '+esc(a.role)+'</span>':'')+'</span>' +
-    '<button class="btn btn-danger btn-sm btn-icon" onclick="authorRemoveItem('+i+')">✕</button></div>'
-  ).join('');
+  list.innerHTML = authorManagerItems.map((a,i) => {
+    if (i === authorEditingIndex) {
+      return '<div style="display:flex;align-items:center;gap:.4rem;background:var(--surface2);border:1px solid var(--green);border-radius:var(--r-sm);padding:.35rem .5rem">' +
+        '<input type="text" id="author-edit-name" value="'+esc(a.name)+'" placeholder="Name" style="flex:1;background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:.3rem .5rem;font-size:.85rem;color:var(--text)">' +
+        '<input type="text" id="author-edit-role" value="'+esc(a.role||'')+'" placeholder="Role" style="width:100px;background:var(--bg);border:1px solid var(--border2);border-radius:4px;padding:.3rem .5rem;font-size:.85rem;color:var(--text)">' +
+        '<button class="btn btn-primary btn-sm" onclick="authorCommitEdit('+i+')">✓</button>' +
+        '<button class="btn btn-ghost btn-sm" onclick="authorCancelEdit()">✕</button></div>';
+    }
+    return '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
+      '<span style="font-size:.85rem">'+esc(a.name)+(a.role?' <span style="color:var(--muted)">— '+esc(a.role)+'</span>':'')+'</span>' +
+      '<span style="display:flex;gap:.3rem">' +
+      '<button class="btn btn-ghost btn-sm btn-icon" onclick="authorStartEdit('+i+')" title="Edit">✎</button>' +
+      '<button class="btn btn-danger btn-sm btn-icon" onclick="authorRemoveItem('+i+')" title="Delete">✕</button>' +
+      '</span></div>';
+  }).join('');
+  if (authorEditingIndex >= 0) {
+    const input = document.getElementById('author-edit-name');
+    if (input) { input.focus(); input.select(); }
+  }
 }
+function authorStartEdit(i) { authorEditingIndex = i; renderAuthorManagerItems(); }
+function authorCancelEdit() { authorEditingIndex = -1; renderAuthorManagerItems(); }
+function authorCommitEdit(i) {
+  const nameEl = document.getElementById('author-edit-name');
+  const roleEl = document.getElementById('author-edit-role');
+  const name = nameEl ? nameEl.value.trim() : '';
+  if (name) {
+    authorManagerItems[i] = { id: authorManagerItems[i].id, name, role: roleEl ? roleEl.value.trim() : '' };
+  }
+  authorEditingIndex = -1;
+  renderAuthorManagerItems();
+}
+function authorRemoveItem(i) { authorManagerItems.splice(i,1); renderAuthorManagerItems(); }
 function authorAddItem() {
   const nameEl = document.getElementById('author-new-name');
   const roleEl = document.getElementById('author-new-role');
@@ -1309,7 +1364,6 @@ function authorAddItem() {
   nameEl.value = ''; roleEl.value = '';
   renderAuthorManagerItems();
 }
-function authorRemoveItem(i) { authorManagerItems.splice(i,1); renderAuthorManagerItems(); }
 async function saveAuthorManager() {
   blogDB.authors = [...authorManagerItems];
   try {
