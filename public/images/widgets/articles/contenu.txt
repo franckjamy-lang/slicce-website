@@ -1,0 +1,12 @@
+article_5G-Northbound.jpg
+article_5G-Northbound2.jpg
+article_Event-Driven-Telecom--When-Network-Logic-Stops-Following-Flows-and-Starts-Reacting-2.jpg
+article_From-stagnant-flow.jpg
+article_Legacy-Network-are-not-the-problem.jpg
+article_Modern-Telcos-challenges.jpg
+article_NRD-AF - Branded 2.png
+article_NRD-AF - Branded2.jpg
+article_Octopus-3-1200-644.jpg
+article_Octopus.jpg
+article_nrdaf_interf.png
+contenu.txt

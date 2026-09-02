@@ -1,5 +1,5 @@
 {
   "users": [
-    { "email": "franckjamy@slicce.co", "role": "admin" }
+    { "firstName": "Franck", "lastName": "Jamy", "email": "fm@slicce.co", "role": "admin" }
   ]
 }

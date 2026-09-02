@@ -155,6 +155,17 @@ export async function onRequestPut(context) {
     if (added.length    && !perms.create) return errJson('You do not have permission to add items in ' + moduleName + '.', 403);
     if (modified.length && !perms.edit)   return errJson('You do not have permission to edit items in ' + moduleName + '.', 403);
     if (removed.length  && !perms.delete) return errJson('You do not have permission to delete items in ' + moduleName + '.', 403);
+
+    // Shared taxonomy lists (categories, authors, tags, families, networks, etc.)
+    // are admin-only, regardless of per-item create/edit/delete rights.
+    const otherKeysChanged = Object.keys(body.json).some(k => {
+      if (k === key) return false;
+      const before = current ? current.json[k] : undefined;
+      return JSON.stringify(before) !== JSON.stringify(body.json[k]);
+    });
+    if (otherKeysChanged) {
+      return errJson('Only admins can edit shared lists (categories, authors, tags, families, networks).', 403);
+    }
   }
 
   try {

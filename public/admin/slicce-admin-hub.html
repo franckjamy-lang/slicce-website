@@ -87,6 +87,13 @@ body{font-family:"DM Sans",sans-serif;background:var(--bg);color:var(--text);min
 .field textarea{resize:vertical;min-height:72px;line-height:1.6}
 .field select option{background:var(--surface2)}
 .field-hint{font-size:.72rem;color:var(--muted)}
+.manage-link{background:none;border:none;color:var(--green-text);font-size:.7rem;font-weight:600;text-transform:none;letter-spacing:0;cursor:pointer;padding:0;margin-left:.4rem;text-decoration:underline}
+.manage-link:hover{color:var(--green-d)}
+.pill-picker{display:flex;flex-wrap:wrap;gap:.4rem;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.6rem;min-height:2.4rem}
+.pill{display:inline-flex;align-items:center;gap:.3rem;font-size:.78rem;padding:.3rem .65rem;border-radius:20px;border:1px solid var(--border2);background:var(--bg);color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.pill:hover{border-color:var(--green-text)}
+.pill.selected{background:var(--green);border-color:var(--green);color:#000;font-weight:600}
+.pill-empty{font-size:.78rem;color:var(--muted);padding:.2rem}
 hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
 .section-label{font-size:.73rem;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin-bottom:.75rem}
 
@@ -203,7 +210,7 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
                 <input type="hidden" id="af-date">
                 <span class="field-hint" id="af-date-preview" style="color:var(--green)"></span>
               </div>
-              <div class="field"><label>Categories</label><input type="text" id="af-categorie" placeholder="5G, MTC"></div>
+              <div class="field"><label>Categories <button type="button" class="manage-link" onclick="openPoolManager('articles-categories')">Manage</button></label><div id="af-categorie-picker" class="pill-picker"></div></div>
               <div class="field" style="grid-column:1/-1"><label>Excerpt</label><textarea id="af-extrait" rows="2"></textarea></div>
               <div class="field">
                 <label>Cover image URL</label>
@@ -275,15 +282,15 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
                 <input type="hidden" id="bf-date">
               </div>
               <div class="field"><label>Slug</label><input type="text" id="bf-slug" placeholder="auto-generated-from-title"></div>
-              <div class="field"><label>Category</label><select id="bf-category"></select></div>
-              <div class="field"><label>Author</label><select id="bf-author"></select></div>
+              <div class="field"><label>Category <button type="button" class="manage-link" onclick="openPoolManager('blog-categories')">Manage</button></label><select id="bf-category"></select></div>
+              <div class="field"><label>Author <button type="button" class="manage-link" onclick="openAuthorManager()">Manage</button></label><select id="bf-author"></select></div>
               <div class="field" style="grid-column:1/-1"><label>Intro / Excerpt</label><textarea id="bf-intro" rows="2"></textarea></div>
               <div class="field">
                 <label>Cover image URL</label>
                 <input type="url" id="bf-image" oninput="previewGeneric('bf-image','bf-image-preview','bf-image-img')">
                 <div id="bf-image-preview"><img id="bf-image-img" src="" alt=""></div>
               </div>
-              <div class="field"><label>Tags <span style="font-weight:400;text-transform:none">(comma-separated)</span></label><input type="text" id="bf-tags" placeholder="5g, api, launch"></div>
+              <div class="field" style="grid-column:1/-1"><label>Tags <button type="button" class="manage-link" onclick="openPoolManager('blog-tags')">Manage</button></label><div id="bf-tags-picker" class="pill-picker"></div></div>
               <div class="field" style="display:flex;align-items:center;gap:.5rem;flex-direction:row">
                 <input type="checkbox" id="bf-featured" style="width:auto">
                 <label style="text-transform:none;font-weight:400;font-size:.85rem">Featured post (shown as hero)</label>
@@ -406,6 +413,39 @@ hr.div{border:none;border-top:1px solid var(--border);margin:1.1rem 0}
     <div style="display:flex;gap:.5rem;justify-content:flex-end">
       <button class="btn btn-ghost" onclick="closeImageInsert()">Cancel</button>
       <button class="btn btn-primary" onclick="confirmImageInsert()">Insert</button>
+    </div>
+  </div>
+</div>
+
+<!-- Generic list manager modal (categories / tags / families / networks) -->
+<div class="modal-overlay" id="pool-modal">
+  <div class="modal-box">
+    <div style="font-weight:600;font-size:.95rem" id="pool-modal-title">Manage list</div>
+    <div style="display:flex;gap:.5rem">
+      <input type="text" id="pool-new-item" placeholder="Add new value…" style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)" onkeydown="if(event.key==='Enter'){event.preventDefault();poolAddItem();}">
+      <button class="btn btn-primary btn-sm" onclick="poolAddItem()">Add</button>
+    </div>
+    <div id="pool-items" style="display:flex;flex-direction:column;gap:.4rem;max-height:280px;overflow-y:auto"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closePoolManager()">Cancel</button>
+      <button class="btn btn-primary" onclick="savePoolManager()">Save list</button>
+    </div>
+  </div>
+</div>
+
+<!-- Author manager modal (Blog only — name + role, not a flat list) -->
+<div class="modal-overlay" id="author-modal">
+  <div class="modal-box">
+    <div style="font-weight:600;font-size:.95rem">Manage authors</div>
+    <div style="display:flex;gap:.5rem">
+      <input type="text" id="author-new-name" placeholder="Name" style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)">
+      <input type="text" id="author-new-role" placeholder="Role (optional)" style="width:120px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)">
+      <button class="btn btn-primary btn-sm" onclick="authorAddItem()">Add</button>
+    </div>
+    <div id="author-items" style="display:flex;flex-direction:column;gap:.4rem;max-height:280px;overflow-y:auto"></div>
+    <div style="display:flex;gap:.5rem;justify-content:flex-end">
+      <button class="btn btn-ghost" onclick="closeAuthorManager()">Cancel</button>
+      <button class="btn btn-primary" onclick="saveAuthorManager()">Save authors</button>
     </div>
   </div>
 </div>
@@ -567,7 +607,8 @@ function fillArticleForm(d) {
   document.getElementById('af-extrait').value = d.extrait || '';
   document.getElementById('af-image').value = d.image || '';
   document.getElementById('af-lien').value = d.lien || '';
-  document.getElementById('af-categorie').value = d.categorie || '';
+  const selectedCats = (d.categorie || '').split(',').map(s => s.trim()).filter(Boolean);
+  renderPillPicker('af-categorie-picker', getTaxonomyPool('articles-categories'), selectedCats);
   document.getElementById('af-featured').value = (d.featured||'').toLowerCase()==='oui' ? 'oui' : '';
   document.getElementById('af-layout').value = d.layout || 'square';
   document.getElementById('af-body').innerHTML = d.contenu || '';
@@ -584,7 +625,7 @@ async function saveArticle() {
     extrait: document.getElementById('af-extrait').value,
     image: document.getElementById('af-image').value,
     lien: document.getElementById('af-lien').value,
-    categorie: document.getElementById('af-categorie').value,
+    categorie: getPillSelection('af-categorie-picker').join(', '),
     featured: document.getElementById('af-featured').value,
     layout: document.getElementById('af-layout').value,
     contenu: document.getElementById('af-body').innerHTML
@@ -715,7 +756,13 @@ function renderTeam(isAdmin) {
     }).join('');
 
     return '<div class="card" style="padding:1rem">' +
-      '<div style="display:flex;align-items:center;gap:.75rem;margin-bottom:'+(u.role==='admin'?'0':'.85rem')+'">' +
+      '<div style="display:flex;align-items:center;gap:.6rem;margin-bottom:'+(u.role==='admin'?'0':'.85rem')+'">' +
+        '<input type="text" value="'+esc(u.firstName||'')+'" placeholder="First name" '+disabled+
+        ' style="width:120px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)"' +
+        ' onchange="teamUsers['+i+'].firstName=this.value">' +
+        '<input type="text" value="'+esc(u.lastName||'')+'" placeholder="Last name" '+disabled+
+        ' style="width:120px;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)"' +
+        ' onchange="teamUsers['+i+'].lastName=this.value">' +
         '<input type="email" value="'+esc(u.email||'')+'" placeholder="email@example.com" '+disabled+
         ' style="flex:1;background:var(--surface2);border:1px solid var(--border2);border-radius:var(--r-sm);padding:.5rem .7rem;font-size:.85rem;color:var(--text)"' +
         ' onchange="teamUsers['+i+'].email=this.value">' +
@@ -736,7 +783,7 @@ function syncTeamUsersRef() { teamUsers = teamDB.users; }
 
 function addTeamRow() {
   syncTeamUsersRef();
-  teamUsers.push({ email: '', role: 'contributor', articles:{}, blog:{}, catalog:{} });
+  teamUsers.push({ firstName: '', lastName: '', email: '', role: 'contributor', articles:{}, blog:{}, catalog:{} });
   teamDB.users = teamUsers;
   renderTeam(true);
 }
@@ -807,7 +854,7 @@ function renderBlogList() {
 function populateBlogSelects() {
   const catSel = document.getElementById('bf-category');
   const authSel = document.getElementById('bf-author');
-  catSel.innerHTML = (blogDB.categories||[]).map(c => '<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
+  catSel.innerHTML = getTaxonomyPool('blog-categories').map(c => '<option value="'+esc(c)+'">'+esc(c)+'</option>').join('');
   authSel.innerHTML = (blogDB.authors||[]).map(a => '<option value="'+esc(a.id)+'">'+esc(a.name)+'</option>').join('');
 }
 
@@ -834,7 +881,7 @@ function fillPostForm(p) {
   document.getElementById('bf-slug').value = p.slug || '';
   document.getElementById('bf-intro').value = p.intro || '';
   document.getElementById('bf-image').value = p.image || '';
-  document.getElementById('bf-tags').value = (p.tags||[]).join(', ');
+  renderPillPicker('bf-tags-picker', getTaxonomyPool('blog-tags'), p.tags || []);
   document.getElementById('bf-featured').checked = !!p.featured;
   document.getElementById('post-body').innerHTML = p.body || '';
   if (p.category) document.getElementById('bf-category').value = p.category;
@@ -865,7 +912,7 @@ async function savePost() {
     image: document.getElementById('bf-image').value.trim(),
     author: document.getElementById('bf-author').value,
     category: document.getElementById('bf-category').value,
-    tags: document.getElementById('bf-tags').value.split(',').map(t=>t.trim()).filter(Boolean),
+    tags: getPillSelection('bf-tags-picker'),
     featured,
     slug: document.getElementById('bf-slug').value.trim() || slugify(title),
     publishDate: document.getElementById('bf-date').value || now,
@@ -943,9 +990,9 @@ function formatDateDisplay(iso) {
 const CAT_FIELDS = [
   { key:'name',        label:'Product name',      type:'text' },
   { key:'image',       label:'Image URL',         type:'image' },
-  { key:'category',    label:'Category',          type:'text' },
-  { key:'family',      label:'Family',            type:'text' },
-  { key:'networks',    label:'Networks',          type:'text', hint:'comma-separated, e.g. 3G, 4G, 5G' },
+  { key:'category',    label:'Category',          type:'select', pool:'catalog-categories' },
+  { key:'family',      label:'Family',            type:'select', pool:'catalog-families' },
+  { key:'networks',    label:'Networks',          type:'multiselect', pool:'catalog-networks' },
   { key:'description', label:'Description',       type:'wysiwyg' },
   { key:'url',         label:'Product page URL',  type:'text' },
 ];
@@ -998,7 +1045,7 @@ function buildCatalogForm(data) {
   container.innerHTML = CAT_FIELDS.map(f => {
     const id = 'cf-' + f.key;
     const raw = data[f.key] || '';
-    let field;
+    let field, labelExtra = '';
     if (f.type === 'wysiwyg') {
       field = '<div class="wysiwyg-toolbar wysiwyg-toolbar-sm">' +
         '<button type="button" class="tb-btn" data-cmd="bold" onclick="wfmt(\''+id+'\',\'bold\')"><b>B</b></button>' +
@@ -1012,12 +1059,26 @@ function buildCatalogForm(data) {
     } else if (f.type === 'image') {
       field = '<input type="url" id="'+id+'" value="'+esc(raw)+'" oninput="previewGeneric(\''+id+'\',\'c-image-preview\',\'c-image-img\')">' +
               '<div id="c-image-preview"><img id="c-image-img" src="" alt=""></div>';
+    } else if (f.type === 'select') {
+      labelExtra = ' <button type="button" class="manage-link" onclick="openPoolManager(\''+f.pool+'\')">Manage</button>';
+      const pool = getTaxonomyPool(f.pool);
+      field = '<select id="'+id+'"><option value="">—</option>' +
+        pool.map(v => '<option value="'+esc(v)+'"'+(v===raw?' selected':'')+'>'+esc(v)+'</option>').join('') +
+        '</select>';
+    } else if (f.type === 'multiselect') {
+      labelExtra = ' <button type="button" class="manage-link" onclick="openPoolManager(\''+f.pool+'\')">Manage</button>';
+      field = '<div id="'+id+'-picker" class="pill-picker" data-pool="'+f.pool+'"></div>';
     } else {
       field = '<input type="text" id="'+id+'" value="'+esc(raw)+'">' + (f.hint ? '<span class="field-hint">'+f.hint+'</span>' : '');
     }
-    return '<div class="field" style="'+(f.type==='wysiwyg'?'grid-column:1/-1':'')+'"><label>'+esc(f.label)+'</label>'+field+'</div>';
+    return '<div class="field" style="'+(f.type==='wysiwyg'?'grid-column:1/-1':'')+'"><label>'+esc(f.label)+labelExtra+'</label>'+field+'</div>';
   }).join('');
   if (data.image) setTimeout(() => previewGeneric('cf-image','c-image-preview','c-image-img'), 50);
+  // Render multi-select picker(s) after DOM is in place
+  CAT_FIELDS.filter(f => f.type === 'multiselect').forEach(f => {
+    const current = (data[f.key] || '').split(',').map(s => s.trim()).filter(Boolean);
+    renderPillPicker('cf-' + f.key + '-picker', getTaxonomyPool(f.pool), current);
+  });
 }
 
 function newProduct() {
@@ -1042,6 +1103,10 @@ async function saveProduct() {
   const id = catalogEditingId || ('prod-' + Date.now());
   const product = { id };
   CAT_FIELDS.forEach(f => {
+    if (f.type === 'multiselect') {
+      product[f.key] = getPillSelection('cf-' + f.key + '-picker').join(', ');
+      return;
+    }
     const el = document.getElementById('cf-' + f.key);
     product[f.key] = f.type === 'wysiwyg' ? el.innerHTML : el.value;
   });
@@ -1072,6 +1137,194 @@ async function deleteProduct() {
 // ══════════════════════════════════════════════════════════════════════════
 // SHARED HELPERS: date, markdown editor, image insert
 // ══════════════════════════════════════════════════════════════════════════
+// ══════════════════════════════════════════════════════════════════════════
+// TAXONOMY POOLS (categories, tags, authors, families, networks)
+// Admin-managed lists shared across items in a module.
+// ══════════════════════════════════════════════════════════════════════════
+function getOrDeriveArticlesCategories() {
+  if (articlesDB.categories && articlesDB.categories.length) return articlesDB.categories;
+  const set = new Set();
+  (articlesDB.articles||[]).forEach(a => (a.categorie||'').split(',').forEach(c => { c=c.trim(); if(c) set.add(c); }));
+  return Array.from(set).sort();
+}
+function getOrDeriveBlogCategories() {
+  if (blogDB.categories && blogDB.categories.length) return blogDB.categories;
+  const set = new Set();
+  (blogDB.posts||[]).forEach(p => { if (p.category) set.add(p.category); });
+  return Array.from(set).sort();
+}
+function getOrDeriveBlogTags() {
+  if (blogDB.tags && blogDB.tags.length) return blogDB.tags;
+  const set = new Set();
+  (blogDB.posts||[]).forEach(p => (p.tags||[]).forEach(t => { if(t) set.add(t); }));
+  return Array.from(set).sort();
+}
+function getOrDeriveCatalogPool(field, dbKey) {
+  if (catalogDB[dbKey] && catalogDB[dbKey].length) return catalogDB[dbKey];
+  const set = new Set();
+  (catalogDB.products||[]).forEach(p => {
+    if (field === 'networks') (p.networks||'').split(',').forEach(v => { v=v.trim(); if(v) set.add(v); });
+    else { const v = (p[field]||'').trim(); if (v) set.add(v); }
+  });
+  return Array.from(set).sort();
+}
+function getTaxonomyPool(poolKey) {
+  switch (poolKey) {
+    case 'articles-categories': return getOrDeriveArticlesCategories();
+    case 'blog-categories':     return getOrDeriveBlogCategories();
+    case 'blog-tags':           return getOrDeriveBlogTags();
+    case 'catalog-categories':  return getOrDeriveCatalogPool('category', 'categories');
+    case 'catalog-families':    return getOrDeriveCatalogPool('family', 'families');
+    case 'catalog-networks':    return getOrDeriveCatalogPool('networks', 'networks');
+    default: return [];
+  }
+}
+
+// ── Pill picker (multi-select UI) ───────────────────────────────────────────
+function renderPillPicker(containerId, pool, selected) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  if (!pool.length) { el.innerHTML = '<span class="pill-empty">No options yet — click Manage to add some.</span>'; return; }
+  el.innerHTML = pool.map(v => {
+    const isSel = (selected||[]).includes(v);
+    return '<span class="pill'+(isSel?' selected':'')+'" data-value="'+esc(v)+'" onclick="togglePill(this)">'+esc(v)+'</span>';
+  }).join('');
+}
+function togglePill(el) { el.classList.toggle('selected'); }
+function getPillSelection(containerId) {
+  const el = document.getElementById(containerId);
+  if (!el) return [];
+  return Array.from(el.querySelectorAll('.pill.selected')).map(p => p.dataset.value);
+}
+
+// ── Generic list manager (categories / tags / families / networks) ─────────
+let poolManagerTarget = null;
+let poolManagerItems = [];
+
+function openPoolManager(poolKey) {
+  poolManagerTarget = poolKey;
+  poolManagerItems = [...getTaxonomyPool(poolKey)];
+  const titles = {
+    'articles-categories': 'Manage article categories',
+    'blog-categories':     'Manage blog categories',
+    'blog-tags':           'Manage blog tags',
+    'catalog-categories':  'Manage catalog categories',
+    'catalog-families':    'Manage catalog families',
+    'catalog-networks':    'Manage catalog networks',
+  };
+  document.getElementById('pool-modal-title').textContent = titles[poolKey] || 'Manage list';
+  document.getElementById('pool-new-item').value = '';
+  renderPoolManagerItems();
+  document.getElementById('pool-modal').classList.add('open');
+}
+function closePoolManager() { document.getElementById('pool-modal').classList.remove('open'); }
+function renderPoolManagerItems() {
+  const list = document.getElementById('pool-items');
+  if (!poolManagerItems.length) { list.innerHTML = '<div class="pill-empty">Nothing yet.</div>'; return; }
+  list.innerHTML = poolManagerItems.map((v,i) =>
+    '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
+    '<span style="font-size:.85rem">'+esc(v)+'</span>' +
+    '<button class="btn btn-danger btn-sm btn-icon" onclick="poolRemoveItem('+i+')">✕</button></div>'
+  ).join('');
+}
+function poolAddItem() {
+  const input = document.getElementById('pool-new-item');
+  const v = input.value.trim();
+  if (!v) return;
+  if (poolManagerItems.some(x => x.toLowerCase() === v.toLowerCase())) { toast('Already in the list', true); return; }
+  poolManagerItems.push(v);
+  input.value = '';
+  renderPoolManagerItems();
+}
+function poolRemoveItem(i) { poolManagerItems.splice(i,1); renderPoolManagerItems(); }
+
+async function savePoolManager() {
+  const [moduleName, dbKey] = poolManagerTarget.split('-');
+  let db = moduleName === 'articles' ? articlesDB : moduleName === 'blog' ? blogDB : catalogDB;
+  db[dbKey] = [...poolManagerItems];
+  try {
+    let result;
+    if (moduleName === 'articles') { result = await ghPutFile('articles', articlesDB, articlesSha, 'Update ' + dbKey); articlesSha = result.content.sha; }
+    if (moduleName === 'blog')     { result = await ghPutFile('blog', blogDB, blogSha, 'Update ' + dbKey); blogSha = result.content.sha; }
+    if (moduleName === 'catalog')  { result = await ghPutFile('catalog', catalogDB, catalogSha, 'Update ' + dbKey); catalogSha = result.content.sha; }
+    toast('✓ List saved');
+    closePoolManager();
+    refreshOpenPickers();
+  } catch(e) { toast(e.message, true); }
+}
+
+// Refresh any taxonomy-driven controls currently visible in an open editor
+function refreshOpenPickers() {
+  const afPicker = document.getElementById('af-categorie-picker');
+  if (afPicker) renderPillPicker('af-categorie-picker', getTaxonomyPool('articles-categories'), getPillSelection('af-categorie-picker'));
+
+  const bfTagsPicker = document.getElementById('bf-tags-picker');
+  if (bfTagsPicker) renderPillPicker('bf-tags-picker', getTaxonomyPool('blog-tags'), getPillSelection('bf-tags-picker'));
+
+  const bfCategorySelect = document.getElementById('bf-category');
+  if (bfCategorySelect) {
+    const cur = bfCategorySelect.value;
+    bfCategorySelect.innerHTML = getTaxonomyPool('blog-categories').map(v=>'<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>').join('');
+  }
+  const cfCategorySelect = document.getElementById('cf-category');
+  if (cfCategorySelect) {
+    const cur = cfCategorySelect.value;
+    cfCategorySelect.innerHTML = '<option value="">—</option>' + getTaxonomyPool('catalog-categories').map(v=>'<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>').join('');
+  }
+  const cfFamilySelect = document.getElementById('cf-family');
+  if (cfFamilySelect) {
+    const cur = cfFamilySelect.value;
+    cfFamilySelect.innerHTML = '<option value="">—</option>' + getTaxonomyPool('catalog-families').map(v=>'<option value="'+esc(v)+'"'+(v===cur?' selected':'')+'>'+esc(v)+'</option>').join('');
+  }
+  const cfNetworksPicker = document.getElementById('cf-networks-picker');
+  if (cfNetworksPicker) renderPillPicker('cf-networks-picker', getTaxonomyPool('catalog-networks'), getPillSelection('cf-networks-picker'));
+}
+
+// ── Author manager (Blog only — richer objects, not a flat string list) ────
+let authorManagerItems = [];
+function openAuthorManager() {
+  authorManagerItems = JSON.parse(JSON.stringify(blogDB.authors || []));
+  document.getElementById('author-new-name').value = '';
+  document.getElementById('author-new-role').value = '';
+  renderAuthorManagerItems();
+  document.getElementById('author-modal').classList.add('open');
+}
+function closeAuthorManager() { document.getElementById('author-modal').classList.remove('open'); }
+function renderAuthorManagerItems() {
+  const list = document.getElementById('author-items');
+  if (!authorManagerItems.length) { list.innerHTML = '<div class="pill-empty">Nothing yet.</div>'; return; }
+  list.innerHTML = authorManagerItems.map((a,i) =>
+    '<div style="display:flex;align-items:center;justify-content:space-between;background:var(--surface2);border:1px solid var(--border);border-radius:var(--r-sm);padding:.4rem .7rem">' +
+    '<span style="font-size:.85rem">'+esc(a.name)+(a.role?' <span style="color:var(--muted)">— '+esc(a.role)+'</span>':'')+'</span>' +
+    '<button class="btn btn-danger btn-sm btn-icon" onclick="authorRemoveItem('+i+')">✕</button></div>'
+  ).join('');
+}
+function authorAddItem() {
+  const nameEl = document.getElementById('author-new-name');
+  const roleEl = document.getElementById('author-new-role');
+  const name = nameEl.value.trim();
+  if (!name) return;
+  const id = name.toLowerCase().replace(/[^a-z0-9]+/g,'-');
+  authorManagerItems.push({ id, name, role: roleEl.value.trim() });
+  nameEl.value = ''; roleEl.value = '';
+  renderAuthorManagerItems();
+}
+function authorRemoveItem(i) { authorManagerItems.splice(i,1); renderAuthorManagerItems(); }
+async function saveAuthorManager() {
+  blogDB.authors = [...authorManagerItems];
+  try {
+    const result = await ghPutFile('blog', blogDB, blogSha, 'Update authors');
+    blogSha = result.content.sha;
+    toast('✓ Authors saved');
+    closeAuthorManager();
+    const sel = document.getElementById('bf-author');
+    if (sel) {
+      const cur = sel.value;
+      sel.innerHTML = (blogDB.authors||[]).map(a=>'<option value="'+esc(a.id)+'"'+(a.id===cur?' selected':'')+'>'+esc(a.name)+'</option>').join('');
+    }
+  } catch(e) { toast(e.message, true); }
+}
+
 function englishDateToISO(str) {
   if (!str) return '';
   const m1 = str.match(/^([A-Za-z]+)\s+(\d{1,2}),?\s+(\d{4})$/);
