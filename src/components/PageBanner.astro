@@ -4,6 +4,8 @@
 // vers la droite (quitte à être coupé) sur une bande courte, avec le titre
 // et la description de la page calés à gauche.
 interface Props {
+  // Peut contenir du HTML simple (ex: "Line one<br />Line two") pour forcer
+  // un retour à la ligne — voir products/index.astro.
   title: string;
   description?: string;
   accentTitle?: boolean;
@@ -11,8 +13,11 @@ interface Props {
   // Petit label vert au-dessus du titre (ex: "Use Case" sur les 6 pages
   // use-cases/*) — absent sur les autres pages utilisant ce bandeau.
   kicker?: string;
+  // Taille du titre (px) pour une page donnée uniquement (ex: Technology) ;
+  // par défaut, garde la taille commune définie ci-dessous (48px).
+  titleSize?: number;
 }
-const { title, description, accentTitle = false, icon, kicker } = Astro.props;
+const { title, description, accentTitle = false, icon, kicker, titleSize } = Astro.props;
 ---
 
 <section class="page-banner">
@@ -22,7 +27,12 @@ const { title, description, accentTitle = false, icon, kicker } = Astro.props;
   </div>
   <div class="container page-banner__content">
     {kicker && <p class="page-banner__kicker" data-reveal>{kicker}</p>}
-    <h1 data-reveal class:list={[{ 'is-accent': accentTitle }]}>{title}</h1>
+    <h1
+      data-reveal
+      class:list={[{ 'is-accent': accentTitle }]}
+      style={titleSize ? `font-size:${titleSize}px` : undefined}
+      set:html={title}
+    />
     {description && <p data-reveal>{description}</p>}
   </div>
   {

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import PageBanner from '../../components/PageBanner.astro';
 
 const items = [
   {
@@ -43,32 +44,28 @@ const [capif, ...rest] = items;
 ---
 
 <BaseLayout title="Products" description="Self-contained Lightweight Cloud Communication Engines. One solution for all networks.">
-  <section class="section hero">
-    <div class="container">
-      <h1>Self-contained Lightweight<br />Cloud Communication Engines</h1>
-    </div>
-  </section>
+  <PageBanner title="Self-contained Lightweight<br />Cloud Communication Engines" titleSize={56} />
 
   <section class="section section--gray">
     <div class="container">
       <h2 class="diagram-title">One solution for all networks</h2>
       <div class="diagram">
         <img
-          src="/images/diagrams/products-architecture.png"
+          src="/images/diagrams/5g linkedin post 2.gif"
           alt="Architecture diagram: Public Cloud APIs connect to Application Functions (Unified value added services), which connect through the 3GPP Common API Framework and Common Data Store to API Exposure Functions and Interworking Functions, which connect to telecom protocol aware Load Balancers in front of the 3G, 4G and 5G Core Networks."
-          width="1156"
-          height="842"
+          width="1272"
+          height="872"
           loading="lazy"
         />
       </div>
     </div>
   </section>
 
-  <section class="section">
+  <section class="section section--pods">
     <div class="container">
       <div class="entry entry--featured">
         <div class="entry__icon">
-          <img src={capif.icon} alt="" width="100" height="100" loading="lazy" />
+          <img src={capif.icon} alt="" width="165" height="165" loading="lazy" />
         </div>
         <div class="entry__text">
           <h2>{capif.title}</h2>
@@ -82,7 +79,7 @@ const [capif, ...rest] = items;
           rest.map((item) => (
             <div class="entry">
               <div class="entry__icon">
-                <img src={item.icon} alt="" width="100" height="100" loading="lazy" />
+                <img src={item.icon} alt="" width="165" height="165" loading="lazy" />
               </div>
               <div class="entry__text">
                 <h2>{item.title}</h2>
@@ -100,29 +97,33 @@ const [capif, ...rest] = items;
 </BaseLayout>
 
 <style>
-  .hero {
-    padding-top: var(--space-16);
-    padding-bottom: var(--space-16);
-    background: var(--color-black-soft);
-    color: var(--text-inverse);
-    text-align: center;
-  }
-
-  .hero h1 {
-    color: var(--text-inverse);
-  }
-
   .section {
     padding-block: var(--space-12);
   }
 
   .section--gray {
     background: var(--color-section-gray);
+    /* Espace gris sous le diagramme : triplé (le padding-top, entre le
+       bandeau noir et le titre, reste celui de .section, 48px). */
+    padding-bottom: calc(var(--space-12) * 3);
+  }
+
+  /* Cette section est la dernière avant le footer : on augmente juste son
+     padding-bottom (le padding-top reste celui de .section, 48px). */
+  .section--pods {
+    /* Espace blanc entre la fin du fond gris et "Common API Framework" :
+       triplé. */
+    padding-top: calc(var(--space-12) * 3);
+    padding-bottom: var(--space-24);
   }
 
   .diagram-title {
     text-align: center;
-    margin-bottom: var(--space-10);
+    /* var(--space-10) n'existe pas dans les tokens du projet : cette marge
+       n'a donc jamais eu d'effet (titre et diagramme étaient collés).
+       Remplacée par une vraie valeur, triplée par rapport au défaut normal
+       d'un titre (var(--space-4)). */
+    margin-bottom: calc(var(--space-4) * 3);
   }
 
   .diagram {
@@ -156,14 +157,26 @@ const [capif, ...rest] = items;
     margin-bottom: var(--space-2);
   }
 
+  /* Le titre de l'entrée mise en avant (Common API Framework) doit ressortir
+     davantage que les autres. */
+  .entry--featured .entry__text h2 {
+    font-size: 32px;
+  }
+
   .entry__text p {
-    color: var(--text-muted);
+    color: var(--color-ink);
     margin-bottom: var(--space-3);
+  }
+
+  /* Seules les 4 entrées de la grille (pas celle mise en avant, Common API
+     Framework) doivent avoir un texte recadré en largeur. */
+  .grid .entry__text p {
+    max-width: 300px;
   }
 
   .read-more {
     color: var(--color-ink);
-    font-weight: 700;
+    font-weight: 400;
     text-decoration: underline;
   }
 
@@ -171,7 +184,7 @@ const [capif, ...rest] = items;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     column-gap: var(--space-12);
-    row-gap: var(--space-10);
+    row-gap: var(--space-24);
   }
 
   @media (max-width: 760px) {

@@ -18,7 +18,7 @@ export type NavGroup = {
 
 export const productsMenu: NavGroup[] = [
   { label: 'Catalog', href: '/products/catalog' },
-  { label: 'Common API Framework', href: '/products/capif-core-function' },
+  { label: 'CAPIF Core Function', href: '/products/capif-core-function' },
   {
     label: 'API Exposure Functions',
     href: '/products/api-exposure-functions',
@@ -89,7 +89,7 @@ export const mainNav: NavLink[] = [
 
 export const footerNav = {
   products: [
-    { label: 'Common API Framework', href: '/products/capif-core-function' },
+    { label: 'CAPIF Core Function', href: '/products/capif-core-function' },
     { label: 'API Exposure Functions', href: '/products/api-exposure-functions' },
     { label: 'Application Functions', href: '/products/application-functions' },
     { label: 'Interworking Functions', href: '/products/interworking-functions' },

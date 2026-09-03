@@ -55,7 +55,7 @@ const components = [
   title="Technology"
   description="Slicce develops microservices that focus on performing specific tasks on top of the telecom core network."
 >
-  <PageBanner title="Technology" />
+  <PageBanner title="Technology" titleSize={56} />
 
   <section class="section">
     <div class="container tech-intro">
@@ -76,7 +76,7 @@ const components = [
 
   <SectionDots count={4} active={1} />
 
-  <section class="section">
+  <section class="section section--flush-bottom">
     <div class="container">
       <h2 class="section-title">The slicce cloud communication engine foundation</h2>
       <p class="section-intro">
@@ -112,9 +112,9 @@ const components = [
     </div>
   </section>
 
-  <SectionDots count={3} active={2} />
+  <SectionDots count={3} active={2} class="section-dots--wide" />
 
-  <section class="section">
+  <section class="section section--flush-top">
     <div class="container">
       <p class="section-intro">
         The foundation components are reusable across cloud communication engines to reduce the time of development
@@ -176,8 +176,38 @@ const components = [
     background: var(--color-section-gray);
   }
 
+  /* Cette section se termine par .diagram-band, qui a déjà son propre
+     padding bas (fond gris) : sans ce reset, son padding s'ajoutait à celui
+     de .diagram-band, ce qui décentrait les points de séparation suivants
+     (bien plus d'espace au-dessus qu'en dessous). */
+  .section--flush-bottom {
+    padding-bottom: 0;
+  }
+
+  /* Symétrique de flush-bottom, côté haut : sans ça, cette section gardait
+     son propre padding-top qui s'ajoutait à la marge des points juste
+     au-dessus, alors que la section précédente (flush-bottom) n'en a plus
+     de son côté — les points se retrouvaient décentrés (moins d'espace
+     au-dessus qu'en dessous). */
+  .section--flush-top {
+    padding-top: 0;
+  }
+
+  /* Points entre le diagramme et la grille des composants : plus d'air que
+     la marge par défaut du composant (les deux côtés restent égaux, donc
+     ça reste centré). !important nécessaire : la règle interne scopée du
+     composant (.section-dots[data-astro-cid-...]) est plus spécifique que
+     ce sélecteur global, donc gagnerait sinon malgré l'ordre des règles. */
+  :global(.section-dots--wide) {
+    margin-block: var(--space-16) !important;
+  }
+
   .tech-intro p {
     text-align: justify;
+    /* Sans ça, la marge basse par défaut du paragraphe (16px) s'ajoutait au
+       padding de la section suivie des points, ce qui décentrait ces
+       derniers (plus d'espace au-dessus qu'en dessous). */
+    margin-bottom: 0;
   }
 
   .section-title {
@@ -231,7 +261,7 @@ const components = [
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     column-gap: var(--space-8);
-    row-gap: var(--space-8);
+    row-gap: var(--space-12);
   }
 
   .entry h3 {

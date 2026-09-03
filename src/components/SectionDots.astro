@@ -3,12 +3,16 @@
 interface Props {
   count?: 3 | 4;
   active?: number;
+  // Permet à une page d'élargir l'espacement d'une occurrence précise (voir
+  // technology.astro) sans changer la marge par défaut partagée par tout le
+  // site.
+  class?: string;
 }
-const { count = 4, active = 0 } = Astro.props;
+const { count = 4, active = 0, class: className } = Astro.props;
 const dots = Array.from({ length: count }, (_, i) => i);
 ---
 
-<div class="section-dots" aria-hidden="true">
+<div class:list={['section-dots', className]} aria-hidden="true">
   {dots.map((i) => (
     <span class:list={['section-dots__dot', { 'is-active': i === active }]}></span>
   ))}
@@ -19,7 +23,7 @@ const dots = Array.from({ length: count }, (_, i) => i);
     display: flex;
     justify-content: center;
     gap: var(--space-1);
-    margin-block: var(--space-24); margin-bottom: var(--space-8);
+    margin-block: var(--space-8);
   }
 
   .section-dots__dot {
