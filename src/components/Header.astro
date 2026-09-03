@@ -5,8 +5,9 @@ import ProductNavItem from './ProductNavItem.astro';
 import { mainNav, productsMenu, useCasesMenu } from '../data/navigation';
 
 const currentPath = Astro.url.pathname;
-// Page d'accueil : header transparent par-dessus le hero noir, avec un gros
-// logo qui rétrécit au scroll (cf. style + script plus bas). Sur les autres
+// Page d'accueil : header transparent par-dessus le hero noir (nav/logo en
+// blanc), qui passe en blanc (nav/logo sombres) une fois le hero dépassé,
+// dans les 2 sens au scroll (cf. style + script plus bas). Sur les autres
 // pages, le header garde son apparence normale (fond blanc, logo sombre).
 const isHome = currentPath === '/';
 
@@ -125,37 +126,22 @@ function isActive(href: string) {
     });
   });
 
-  // Intro du header sur la home (grand écran uniquement) : au chargement, le
-  // header est transparent, superposé au hero noir, avec un gros logo. Au
-  // premier scroll, le logo rétrécit à sa taille normale (classe
-  // "is-shrunk"), puis une fois le bas du hero dépassé (section blanche
-  // suivante atteinte), le header devient blanc et le logo/la nav passent en
-  // sombre (classe "is-flipped"). Effet à sens unique et joué une seule fois :
-  // une fois déclenché, il n'est jamais rejoué ni inversé si on remonte
-  // ensuite en haut de page (seul un rechargement de page le réinitialise).
+  // Header à 2 tons sur la home (grand écran uniquement) : transparent avec
+  // nav/logo blancs tant qu'on est sur le hero noir, puis blanc avec nav/logo
+  // sombres ("is-flipped") une fois le bas du hero dépassé. Réversible : on
+  // recalcule à chaque scroll, dans les deux sens (remonter en haut repasse
+  // le header en transparent/blanc).
   const heroHeader = document.querySelector<HTMLElement>('.site-header--hero');
   const heroSection = document.getElementById('hero');
-  const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const isDesktop = window.matchMedia('(min-width: 961px)').matches;
 
-  if (heroHeader && heroSection && isDesktop && !prefersReducedMotion) {
-    let shrunk = false;
-    let flipped = false;
+  if (heroHeader && heroSection && isDesktop) {
     let ticking = false;
 
     const update = () => {
       ticking = false;
-      if (!shrunk && window.scrollY > 4) {
-        shrunk = true;
-        heroHeader.classList.add('is-shrunk');
-      }
-      if (!flipped && window.scrollY >= heroSection.offsetHeight - 1) {
-        flipped = true;
-        heroHeader.classList.add('is-flipped');
-      }
-      if (shrunk && flipped) {
-        window.removeEventListener('scroll', onHeroScroll);
-      }
+      const pastHero = window.scrollY >= heroSection.offsetHeight - 1;
+      heroHeader.classList.toggle('is-flipped', pastHero);
     };
 
     const onHeroScroll = () => {
@@ -168,9 +154,9 @@ function isActive(href: string) {
     window.addEventListener('scroll', onHeroScroll, { passive: true });
     update(); // cas d'un chargement déjà scrollé (retour navigateur, ancre…)
   } else if (heroHeader) {
-    // Mobile / tablette ou "reduced motion" : pas d'effet hero, le header se
-    // comporte comme sur les autres pages dès le chargement.
-    heroHeader.classList.add('is-shrunk', 'is-flipped');
+    // Mobile / tablette : pas d'effet hero, le header se comporte comme sur
+    // les autres pages dès le chargement.
+    heroHeader.classList.add('is-flipped');
   }
 </script>
 
@@ -393,29 +379,27 @@ function isActive(href: string) {
     }
   }
 
-  /* --- Effet "hero" (home, grand écran uniquement) ---
-     Au chargement : header transparent superposé au hero noir (le skyline
-     monte jusqu'en haut de la fenêtre), logo agrandi, nav en blanc.
-     Au 1er scroll : le logo revient à sa taille normale ("is-shrunk").
-     Une fois le bas du hero dépassé : header blanc, logo et nav en sombre
-     ("is-flipped"). Ces deux étapes ne se rejouent/inversent jamais après
-     coup (cf. script) : elles n'ont lieu qu'au chargement de la page. */
+  /* --- Header à 2 tons (home, grand écran uniquement) ---
+     Tant qu'on est sur le hero noir : header transparent superposé (le
+     skyline monte jusqu'en haut de la fenêtre), logo légèrement agrandi,
+     nav en blanc. Une fois le bas du hero dépassé (section blanche
+     atteinte) : header blanc, logo et nav en sombre ("is-flipped"). Pas
+     d'animation de taille sur le logo ; réversible dans les 2 sens au
+     scroll (cf. script). */
   @media (min-width: 961px) {
     .site-header--hero {
-      --hero-logo-scale: 4.5;
       position: fixed;
       top: 0;
       left: 0;
       right: 0;
       background: transparent;
       border-bottom-color: transparent;
-      transition: background-color 0.4s ease, border-color 0.4s ease;
+      transition: background-color 0.3s ease, border-color 0.3s ease;
     }
 
-    .site-header--hero .site-header__logo {
-      transform-origin: top left;
-      transform: scale(var(--hero-logo-scale));
-      transition: transform 0.6s ease;
+    .site-header--hero .site-header__logo-img {
+      height: 30px;
+      width: auto;
     }
 
     .site-header--hero .site-header__logo-img--white {
@@ -431,11 +415,7 @@ function isActive(href: string) {
     .site-header--hero .site-header__search,
     .site-header--hero .site-header__toggle {
       color: var(--color-white);
-      transition: color 0.4s ease;
-    }
-
-    .site-header--hero.is-shrunk .site-header__logo {
-      transform: scale(1);
+      transition: color 0.3s ease;
     }
 
     .site-header--hero.is-flipped {
@@ -460,7 +440,14 @@ function isActive(href: string) {
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .site-header--hero .site-header__logo {
+    .site-header--hero {
+      transition: none;
+    }
+
+    .site-header--hero .site-nav__link,
+    .site-header--hero .site-nav__chevron,
+    .site-header--hero .site-header__search,
+    .site-header--hero .site-header__toggle {
       transition: none;
     }
   }
